@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class AblautMatchDemo {
   static Scanner input = new Scanner(System.in);
   public static void main(String[] args) {
-    System.out.println("This is a demo for the new FynotekWord class. You will be prompted for a (non-proper) noun and a case to conjugate it to, two suffixes for the noun, and a detached modifier for the noun.");
+    System.out.println("This is a demo for the new FynotekWord class. You will be prompted for a (non-proper) noun and a case to conjugate it to, two suffixes for the noun, and a detached root as a modifier for the noun.");
     FynotekWord word = new FynotekWord(prompt("Enter a fynotek noun:  "));
     char nounCase = getCase(word);
     String suffix1 = prompt("Enter the first suffix:  ");
