@@ -160,7 +160,7 @@ public class FynotekWord {
     } else {
       if (this.toString().equals("folo") && !proper) {
         // "folo" is a special case and cannot be conjugated for nominative, so the accusative is the root form.
-        if (caseOfNoun == 'a') return this;
+        if (caseOfNoun == 'a') return new FynotekWord("fol", "o", "", 'o', false);
         if (caseOfNoun == 'g') return new FynotekWord("fol", "i", "", 'i', false);
         else return new FynotekWord("fol", "a", "", 'a', false);
       }
