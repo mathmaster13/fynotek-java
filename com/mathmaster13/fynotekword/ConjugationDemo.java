@@ -9,7 +9,7 @@ public class ConjugationDemo {
 
     // Noun cases
     if (!word.getProper()) System.out.println("Noun Cases:");
-    System.out.println("Nominative:  " + word.nounCase('n'));
+    System.out.println("Nominative:  " + (!word.toString().equals("folo") ? word.nounCase('n') : "N/A"));
     System.out.println("Accusative:  " + word.nounCase('a'));
     System.out.println("Genitive:  " + word.nounCase('g'));
     System.out.println("Dative:  " + word.nounCase('d'));
