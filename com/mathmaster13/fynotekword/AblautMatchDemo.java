@@ -6,7 +6,7 @@ public class AblautMatchDemo {
   public static void main(String[] args) {
     System.out.println("This is a demo for the new FynotekWord class. You will be prompted for a (non-proper) noun and a case to conjugate it to, two suffixes for the noun, and a detached modifier for the noun.");
     FynotekWord word = new FynotekWord(prompt("Enter a fynotek noun:  "));
-    char nounCase = getCase();
+    char nounCase = getCase(word);
     String suffix1 = prompt("Enter the first suffix:  ");
     String suffix2 = prompt("Enter the second suffix:  ");
     FynotekWord modifier = new FynotekWord(prompt("Enter the detached modifier:  "));
@@ -19,12 +19,13 @@ public class AblautMatchDemo {
     System.out.print(message);
     return input.next();
   }
-  public static char getCase() {
+  public static char getCase(FynotekWord word) {
     char nounCase;
+    boolean isFolo = (word.toString().equals("folo") && !word.getProper());
     do {
-      System.out.print("What case is this word? (N = nominative, A = accusative, D = dative, G = genitive):  ");
+      System.out.print("What case is this word? (" + (isFolo ? "" : "N = nominative, ") + "A = accusative, D = dative, G = genitive):  ");
       nounCase = Character.toLowerCase(input.next().charAt(0));
-    } while (!(nounCase == 'n' || nounCase == 'a' || nounCase == 'd' || nounCase == 'g'));
+    } while (isFolo ? (!(nounCase == 'a' || nounCase == 'd' || nounCase == 'g')) : (!(nounCase == 'n' || nounCase == 'a' || nounCase == 'd' || nounCase == 'g')));
     return nounCase;
   }
 }
