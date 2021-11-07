@@ -1,4 +1,4 @@
-*lipu ni lon toki pona li lon [ni](OLUKIN.md).*
+*lipu ni pi toki pona li lon [ni](OLUKIN.md).*
 
 # FynotekWord
 A class for working with words in Fynotek, a conlang by mochaspen.
