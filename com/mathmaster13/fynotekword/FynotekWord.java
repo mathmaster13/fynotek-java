@@ -38,7 +38,7 @@ public class FynotekWord {
     hypoTenseList.put('g', "r");
   }
 
-    private static HashMap<Character, String> tenseList = new HashMap<Character, String>();
+  private static HashMap<Character, String> tenseList = new HashMap<Character, String>();
   static {
     tenseList.put('a', "i");
     tenseList.put('f', "o");
@@ -69,37 +69,37 @@ public class FynotekWord {
     this(word, '\u0000', false);
   }
 
-    // Private constructors
-    private FynotekWord(String a, String b, String c, char ablaut, boolean isProper) {
-      beginning = a;
-      vowels = b;
-      end = c;
-      ablautMode = ablaut;
-      proper = isProper;
-    }
-    private FynotekWord(String word, char ablaut, boolean isProper) {
-      ablautMode = ablaut;
-      proper = isProper;
-      int vowelIndex = 0;
-      int vowelLength = 0;
-      for (int i = word.length() - 1; i >= 0; i--) {
-        if (isVowel(word.charAt(i))) {
-          if (isVowel(word.charAt(i - 1))) {
-            vowelIndex = i - 1;
-            vowelLength = 2;
-          } else {
-            vowelIndex = i;
-            vowelLength = 1;
-          }
-          break;
+  // Private constructors
+  private FynotekWord(String a, String b, String c, char ablaut, boolean isProper) {
+    beginning = a;
+    vowels = b;
+    end = c;
+    ablautMode = ablaut;
+    proper = isProper;
+  }
+  private FynotekWord(String word, char ablaut, boolean isProper) {
+    ablautMode = ablaut;
+    proper = isProper;
+    int vowelIndex = 0;
+    int vowelLength = 0;
+    for (int i = word.length() - 1; i >= 0; i--) {
+      if (isVowel(word.charAt(i))) {
+        if (isVowel(word.charAt(i - 1))) {
+          vowelIndex = i - 1;
+          vowelLength = 2;
+        } else {
+          vowelIndex = i;
+          vowelLength = 1;
         }
+        break;
       }
-      beginning = word.substring(0, vowelIndex);
-      vowels = word.substring(vowelIndex, vowelIndex + vowelLength);
-      end = word.substring(vowelIndex + vowelLength, word.length());
     }
+    beginning = word.substring(0, vowelIndex);
+    vowels = word.substring(vowelIndex, vowelIndex + vowelLength);
+    end = word.substring(vowelIndex + vowelLength, word.length());
+  }
 
-  // Internally-used methods
+  // Internal-use methods
   private static boolean isVowel(char letter) {
     boolean output = false;
     for (char i : vowelList) {
