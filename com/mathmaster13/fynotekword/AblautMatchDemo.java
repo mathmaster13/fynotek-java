@@ -21,7 +21,7 @@ public class AblautMatchDemo {
   }
   public static char getCase(FynotekWord word) {
     char nounCase;
-    boolean isFolo = (word.toString().equals("folo") && !word.getProper());
+    boolean isFolo = word.toString().equals("folo");
     do {
       System.out.print("What case is this word? (" + (isFolo ? "" : "N = nominative, ") + "A = accusative, D = dative, G = genitive):  ");
       nounCase = Character.toLowerCase(input.next().charAt(0));
