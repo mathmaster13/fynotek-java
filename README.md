@@ -13,3 +13,6 @@ Demos can be found in the `com/mathmaster13/fynotekword` folder along with the `
 
 ## Planned features
 [ ] Convert a number to the Fynotek number system
+
+## Credits
+mochaspen, for making [Fynotek](https://linktr.ee/fynotek "Fynotek Resources") and a Fynotek Conjugator in [Scratch](https://scratch.mit.edu/projects/584256352/ "Fynotek Conjugator in Scratch") that inspired this.
