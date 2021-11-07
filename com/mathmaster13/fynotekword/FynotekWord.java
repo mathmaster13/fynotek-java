@@ -60,6 +60,7 @@ public class FynotekWord {
   public String toString() {
     return (beginning + vowels + end);
   }
+  
 
   // Public constructors
   public FynotekWord(String word, boolean isProper) {
@@ -157,6 +158,12 @@ public class FynotekWord {
     if (caseOfNoun == 'n') {
       return this;
     } else {
+      if (this.toString().equals("folo") && !proper) {
+        // "folo" is a special case and cannot be conjugated for nominative, so the accusative is the root form.
+        if (caseOfNoun == 'a') return this;
+        if (caseOfNoun == 'g') return new FynotekWord("fol", "i", "", 'i', false);
+        else return new FynotekWord("fol", "a", "", 'a', false);
+      }
       String caseLetter = caseList.get(caseOfNoun);
       if (proper) { // While there is an actual suffix function, I prefer to leave this simplified ome in for speed.
         if (end.length() == 0 && vowels.length() >= 2)
