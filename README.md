@@ -7,9 +7,7 @@ A class for working with words in Fynotek, a conlang by mochaspen.
 Demos can be found in the `com/mathmaster13/fynotekword` folder along with the `FynotekWord` library itself.
 
 ## Current Features
-- Apply ablaut to a word
-- Mark a common or proper noun for case
-- Mark a verb for tense
+- Mark noun case/verb tense
 - Apply prefixes and suffixes to words
 - Match the marking of one word to another
 
