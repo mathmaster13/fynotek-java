@@ -7,7 +7,7 @@ public class FynotekWord {
   private String vowels;
   private String end;
   private boolean proper;
-  private char ablautMode; // This class expects you to only create objects from root words, not ablauted forms. Create ablauted words with ablaut(), and the method will mark the word as such.
+  private char markVowel; // This class expects you to only create objects from root words, not ablauted forms. Create ablauted words with ablaut(), and the method will mark the word as such.
 
   // Constants
   private static final char[] vowelList = {'a', 'e', 'i', 'o', 'u', 'y'};
@@ -23,11 +23,11 @@ public class FynotekWord {
     ablautList.put('u', "o");
   }
   
-  private static HashMap<Character, String> caseList = new HashMap<Character, String>();
+  private static HashMap<Character, Character> caseList = new HashMap<Character, Character>();
   static {
-    caseList.put('a', "o");
-    caseList.put('g', "i");
-    caseList.put('d', "a");
+    caseList.put('a', 'o');
+    caseList.put('g', 'i');
+    caseList.put('d', 'a');
   }
   
   private static HashMap<Character, String> hypoTenseList = new HashMap<Character, String>(); // hypothetical tenses
@@ -71,33 +71,45 @@ public class FynotekWord {
   }
 
   // Private constructors
-  private FynotekWord(String a, String b, String c, char ablaut, boolean isProper) {
+  private FynotekWord(String a, String b, String c, char mark, boolean isProper) {
     beginning = a;
     vowels = b;
     end = c;
-    ablautMode = ablaut;
+    markVowel = mark;
     proper = isProper;
   }
-  private FynotekWord(String word, char ablaut, boolean isProper) {
-    ablautMode = ablaut;
+  private FynotekWord(String word, char mark, boolean isProper) {
+    markVowel = mark;
     proper = isProper;
-    int vowelIndex = 0;
-    int vowelLength = 0;
-    for (int i = word.length() - 1; i >= 0; i--) {
-      if (isVowel(word.charAt(i))) {
-        if (isVowel(word.charAt(i - 1))) {
-          vowelIndex = i - 1;
-          vowelLength = 2;
-        } else {
-          vowelIndex = i;
-          vowelLength = 1;
-        }
-        break;
+    if (word == null || word.isEmpty()) {
+      beginning = vowels = end = "";
+    } else if (word.length() == 1) {
+      if (isVowel(word.charAt(0))) {
+        vowels = word;
+        beginning = end = "";
+      } else {
+        end = word;
+        beginning = vowels = "";
       }
+    } else {
+      int vowelIndex = 0;
+      int vowelLength = 0;
+      for (int i = word.length() - 1; i >= 0; i--) {
+        if (isVowel(word.charAt(i))) {
+          if (isVowel(word.charAt(i - 1))) {
+            vowelIndex = i - 1;
+            vowelLength = 2;
+          } else {
+            vowelIndex = i;
+            vowelLength = 1;
+          }
+          break;
+        }
+      }
+      beginning = word.substring(0, vowelIndex);
+      vowels = word.substring(vowelIndex, vowelIndex + vowelLength);
+      end = word.substring(vowelIndex + vowelLength, word.length());
     }
-    beginning = word.substring(0, vowelIndex);
-    vowels = word.substring(vowelIndex, vowelIndex + vowelLength);
-    end = word.substring(vowelIndex + vowelLength, word.length());
   }
 
   // Internal-use methods
@@ -124,8 +136,14 @@ public class FynotekWord {
 
   // Public methods
   public FynotekWord ablaut(char vowel) {
-    if (vowel == '\u0000')
+    if (vowel == '\u0000' || vowels.isEmpty())
       return this;
+    if (this.toString().equals("folo") && !proper) {
+      // "folo" is a special case and cannot be conjugated for nominative, so the accusative is the root form.
+      if (vowel == 'a') return new FynotekWord("fol", "a", "", 'a', false);
+      if (vowel == 'i') return new FynotekWord("fol", "i", "", 'i', false);
+      else return new FynotekWord("fol", "o", "", 'o', false);
+    }
     String newVowels = vowels;
     if (vowel != 'r') { // 'r' is for reduplcation
       if (vowels.charAt(vowels.length() - 1) != vowel) {
@@ -158,21 +176,19 @@ public class FynotekWord {
     if (caseOfNoun == 'n') {
       return this;
     } else {
-      if (this.toString().equals("folo") && !proper) {
-        // "folo" is a special case and cannot be conjugated for nominative, so the accusative is the root form.
-        if (caseOfNoun == 'a') return new FynotekWord("fol", "o", "", 'o', false);
-        if (caseOfNoun == 'g') return new FynotekWord("fol", "i", "", 'i', false);
-        else return new FynotekWord("fol", "a", "", 'a', false);
-      }
-      String caseLetter = caseList.get(caseOfNoun);
+      char caseLetter = caseList.get(caseOfNoun);
       if (proper) { // While there is an actual suffix function, I prefer to leave this simplified ome in for speed.
-        if (end.length() == 0 && vowels.length() >= 2)
-          caseLetter = "n" + caseLetter;
-        return new FynotekWord(this.toString() + caseLetter, proper);
+        return this.properSuffix(caseLetter);
       } else {
-        return this.ablaut(caseLetter.charAt(0));
+        return this.ablaut(caseLetter);
       }
     }
+  }
+  private FynotekWord properSuffix(char vowel) {
+    String suffix = Character.toString(vowel);
+    if (end.length() == 0 && vowels.length() >= 2)
+      suffix = "n" + suffix;
+    return new FynotekWord(this.toString() + suffix, vowel, proper);
   }
   public FynotekWord verbTense(char tenseOfVerb, boolean hypothetical) { // 'a' is used for the past tense.
     if (hypothetical) {
@@ -187,9 +203,9 @@ public class FynotekWord {
   }
   public FynotekWord suffix(String suffix) {
     String output = this.toString();
-    if (end.length() == 0) {
+    if (end.isEmpty()) {
       // Check for VVV sequence
-      if (isVowel(suffix.charAt(0)) && ((vowels.length() >= 2) || (isVowel(suffix.charAt(1))))) {
+      if (isVowel(suffix.charAt(0)) && ((vowels.length() >= 2) || (suffix.length() >= 2 && (isVowel(suffix.charAt(1)))))) {
         output += ("n" + suffix);
       } else {
         output += suffix;
@@ -202,7 +218,7 @@ public class FynotekWord {
         output += suffix;
       }
     }
-    return new FynotekWord(output, ablautMode, proper);
+    return new FynotekWord(output, markVowel, proper);
   }
   // The prefix function just calls the suffix function on the reverse of the input, then reverses it back.
   public FynotekWord prefix(String prefix) {
@@ -210,12 +226,13 @@ public class FynotekWord {
     FynotekWord reverseWord = new FynotekWord(temp.reverse().toString());
     temp = new StringBuilder(prefix);
     temp = new StringBuilder(reverseWord.suffix(temp.reverse().toString()).toString());
-    return new FynotekWord(temp.reverse().toString(), ablautMode, proper);
+    return new FynotekWord(temp.reverse().toString(), markVowel, proper);
   }
-  public FynotekWord matchAblaut(FynotekWord word) {
-    return this.ablaut(word.ablautMode);
+  public FynotekWord match(FynotekWord word) {
+    if (!word.proper) return this.ablaut(word.markVowel);
+    else return this.properSuffix(word.markVowel);
   }
-  public boolean hasAblaut() {
-    return (ablautMode != '\u0000');
+  public boolean marked() {
+    return (markVowel != '\u0000');
   }
 }

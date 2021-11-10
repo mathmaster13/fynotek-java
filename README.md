@@ -18,7 +18,7 @@ Demos can be found in the `com/mathmaster13/fynotekword` folder along with the `
 - [ ] Set up a way to run this code online
 
 ## Known Bugs
-- Inputting `folo` as the detached modifier in the `AblautMatchDemo` (and the `matchAblaut()` function in general) causes incorrect behavior. This should be fixed soon.
+None yet. Report any if you find them!
 
 ## Credits
 mochaspen, for making [Fynotek](https://linktr.ee/fynotek "Fynotek Resources") and a Fynotek Conjugator in [Scratch](https://scratch.mit.edu/projects/584256352/ "Fynotek Conjugator in Scratch") that inspired this.
