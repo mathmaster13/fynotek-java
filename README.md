@@ -11,7 +11,7 @@ Demos can be found in the `com/mathmaster13/fynotekword` folder along with the `
 - Mark a common or proper noun for case
 - Mark a verb for tense
 - Apply prefixes and suffixes to words
-- Match the ablaut of one word to another
+- Match the marking of one word to another
 
 ## Planned Features
 - [ ] Convert a number to the Fynotek number system

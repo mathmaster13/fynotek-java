@@ -6,17 +6,18 @@ public class ConjugationDemo {
   public static void main(String[] args) {
     FynotekWord word = new FynotekWord(prompt("Enter a fynotek root:  "), getProper());
     System.out.println();
-
+    boolean showVerbs = (!word.getProper() && !word.toString().equals("folo")); // true if the "Verb Tenses" section is shown.
+    
     // Noun cases
-    if (!word.getProper()) System.out.println("Noun Cases:");
-    System.out.println("Nominative:  " + (!word.toString().equals("folo") ? word.nounCase('n') : "N/A"));
+    if (showVerbs) System.out.println("Noun Cases:");
+    System.out.println("Nominative:  " + ((word.toString().equals("folo") && !word.getProper()) ? "N/A" : word.nounCase('n')));
     System.out.println("Accusative:  " + word.nounCase('a'));
     System.out.println("Genitive:  " + word.nounCase('g'));
     System.out.println("Dative:  " + word.nounCase('d'));
     System.out.println();
 
-    // Verb tenses, if the word is not a proper noun:
-    if (!word.getProper()) {
+    // Verb tenses, if the word is not a proper noun or "folo"
+    if (showVerbs) {
       System.out.println("Non-Hypothetical Tenses:");
       System.out.println("Present:  " + word.verbTense('p', false));
       System.out.println("Past:  " + word.verbTense('a', false));
