@@ -113,29 +113,7 @@ public class FynotekWord {
   }
 
   // Internal-use methods
-  private static boolean isVowel(char letter) {
-    boolean output = false;
-    for (char i : vowelList) {
-      if (letter == i) {
-        output = true;
-        break;
-      }
-    }
-    return output;
-  }
-  private static boolean isStop(char letter) {
-    boolean output = false;
-    for (char i : stopList) {
-      if (letter == i) {
-        output = true;
-        break;
-      }
-    }
-    return output;
-  }
-
-  // Public methods
-  public FynotekWord ablaut(char vowel) {
+  private FynotekWord ablaut(char vowel) {
     if (vowel == '\u0000') return this;
     if (vowels.isEmpty()) return new FynotekWord(beginning, vowels, end, markVowel, proper);
     if (this.toString().equals("folo") && !proper) {
@@ -166,6 +144,34 @@ public class FynotekWord {
     }
     return new FynotekWord(beginning, newVowels, end, vowel, proper);
   }
+  private FynotekWord properSuffix(char vowel) {
+    String suffix = Character.toString(vowel);
+    if (end.length() == 0 && vowels.length() >= 2)
+      suffix = "n" + suffix;
+    return new FynotekWord(this.toString() + suffix, vowel, proper);
+  }
+  private static boolean isVowel(char letter) {
+    boolean output = false;
+    for (char i : vowelList) {
+      if (letter == i) {
+        output = true;
+        break;
+      }
+    }
+    return output;
+  }
+  private static boolean isStop(char letter) {
+    boolean output = false;
+    for (char i : stopList) {
+      if (letter == i) {
+        output = true;
+        break;
+      }
+    }
+    return output;
+  }
+
+  // Public methods
   public void setProper(boolean isProper) { // Old function, not really needed much nowadays, but still there.
     proper = isProper;
   }
@@ -183,12 +189,6 @@ public class FynotekWord {
         return this.ablaut(caseLetter);
       }
     }
-  }
-  private FynotekWord properSuffix(char vowel) {
-    String suffix = Character.toString(vowel);
-    if (end.length() == 0 && vowels.length() >= 2)
-      suffix = "n" + suffix;
-    return new FynotekWord(this.toString() + suffix, vowel, proper);
   }
   public FynotekWord verbTense(char tenseOfVerb, boolean hypothetical) { // 'a' is used for the past tense.
     if (hypothetical) {
