@@ -136,8 +136,8 @@ public class FynotekWord {
 
   // Public methods
   public FynotekWord ablaut(char vowel) {
-    if (vowel == '\u0000' || vowels.isEmpty())
-      return this;
+    if (vowel == '\u0000') return this;
+    if (vowels.isEmpty()) return new FynotekWord(beginning, vowels, end, markVowel, proper);
     if (this.toString().equals("folo") && !proper) {
       // "folo" is a special case and cannot be conjugated for nominative, so the accusative is the root form.
       if (vowel == 'a') return new FynotekWord("fol", "a", "", 'a', false);
