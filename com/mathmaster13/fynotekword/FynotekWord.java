@@ -1,7 +1,6 @@
 package com.mathmaster13.fynotekword;
 import java.util.HashMap;
 
-// Note: This class was designed such that each function creates a new object. If you don't like this behavior and want the class to modify the existing object, feel free to modify the class.
 public class FynotekWord {
   private String beginning;
   private String vowels;
