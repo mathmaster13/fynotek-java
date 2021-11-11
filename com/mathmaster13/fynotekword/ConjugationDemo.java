@@ -6,7 +6,7 @@ public class ConjugationDemo {
   public static void main(String[] args) {
     FynotekWord word = new FynotekWord(prompt("Enter a fynotek root:  "), getProper());
     System.out.println();
-    boolean showVerbs = (!word.getProper() && !word.toString().equals("folo")); // true if the "Verb Tenses" section is shown.
+    boolean showVerbs = (!word.getProper() && !word.toString().equals("folo")); // true if the "Verb Tenses" section should be shown.
     
     // Noun cases
     if (showVerbs) System.out.println("Noun Cases:");
@@ -34,7 +34,7 @@ public class ConjugationDemo {
     }
   }
 
-// Convenience functions
+  // Convenience functions
   public static String prompt(String message) {
     System.out.print(message);
     return input.next();
