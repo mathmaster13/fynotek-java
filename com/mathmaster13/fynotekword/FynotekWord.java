@@ -39,6 +39,7 @@ public class FynotekWord {
 
   private static HashMap<Character, Character> tenseList = new HashMap<Character, Character>();
   static {
+    tenseList.put('p', '\u0000');
     tenseList.put('a', 'i');
     tenseList.put('f', 'o');
     tenseList.put('g', 'y');
@@ -162,16 +163,12 @@ public class FynotekWord {
   public FynotekWord nounCase(char caseOfNoun) {
     if (!(caseOfNoun == 'a' || caseOfNoun == 'd' || caseOfNoun == 'g')) return this;
     char caseLetter = caseList.get(caseOfNoun);
-    if (proper) return this.properSuffix(caseLetter); // While there is an actual suffix function, I prefer to leave this simplified ome in for speed.
-    else return this.ablaut(caseLetter);
+    // While there is an actual suffix function, I prefer to leave this simplified ome in for speed.
+    return (proper ? this.properSuffix(caseLetter) : this.ablaut(caseLetter));
   }
   public FynotekWord verbTense(char tenseOfVerb, boolean hypothetical) { // 'a' is used for the past tense.
     if (!(tenseOfVerb == 'p' || tenseOfVerb == 'a' || tenseOfVerb == 'f' || tenseOfVerb == 'g')) return this;
-    if (hypothetical) return this.ablaut(hypoTenseList.get(tenseOfVerb));
-    else {
-      if (tenseOfVerb == 'p') return this;
-      else return this.ablaut(tenseList.get(tenseOfVerb));
-    }
+    return (hypothetical ? this.ablaut(hypoTenseList.get(tenseOfVerb)) : this.ablaut(tenseList.get(tenseOfVerb)));
   }
   public FynotekWord verbTense(char tenseOfVerb) {
     return this.verbTense(tenseOfVerb, false);
