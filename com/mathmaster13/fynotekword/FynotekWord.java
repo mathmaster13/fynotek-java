@@ -201,8 +201,7 @@ public class FynotekWord {
     return new FynotekWord(temp.reverse().toString(), markVowel, proper);
   }
   public FynotekWord match(FynotekWord word) {
-    if (!word.proper) return this.ablaut(word.markVowel);
-    else return this.properSuffix(word.markVowel);
+    return (word.proper ? this.properSuffix(word.markVowel) : this.ablaut(word.markVowel));
   }
   public boolean marked() {
     return (markVowel != '\u0000');
