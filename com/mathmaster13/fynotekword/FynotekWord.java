@@ -29,19 +29,19 @@ public class FynotekWord {
     caseList.put('d', 'a');
   }
   
-  private static HashMap<Character, String> hypoTenseList = new HashMap<Character, String>(); // hypothetical tenses
+  private static HashMap<Character, Character> hypoTenseList = new HashMap<Character, Character>(); // hypothetical tenses
   static {
-    hypoTenseList.put('p', "a");
-    hypoTenseList.put('a', "e");
-    hypoTenseList.put('f', "u");
-    hypoTenseList.put('g', "r");
+    hypoTenseList.put('p', 'a');
+    hypoTenseList.put('a', 'e');
+    hypoTenseList.put('f', 'u');
+    hypoTenseList.put('g', 'r');
   }
 
-  private static HashMap<Character, String> tenseList = new HashMap<Character, String>();
+  private static HashMap<Character, Character> tenseList = new HashMap<Character, Character>();
   static {
-    tenseList.put('a', "i");
-    tenseList.put('f', "o");
-    tenseList.put('g', "y");
+    tenseList.put('a', 'i');
+    tenseList.put('f', 'o');
+    tenseList.put('g', 'y');
   }
 
   
@@ -167,11 +167,14 @@ public class FynotekWord {
   }
   public FynotekWord verbTense(char tenseOfVerb, boolean hypothetical) { // 'a' is used for the past tense.
     if (!(tenseOfVerb == 'p' || tenseOfVerb == 'a' || tenseOfVerb == 'f' || tenseOfVerb == 'g')) return this;
-    if (hypothetical) return this.ablaut(hypoTenseList.get(tenseOfVerb).charAt(0));
+    if (hypothetical) return this.ablaut(hypoTenseList.get(tenseOfVerb));
     else {
       if (tenseOfVerb == 'p') return this;
-      else return this.ablaut(tenseList.get(tenseOfVerb).charAt(0));
+      else return this.ablaut(tenseList.get(tenseOfVerb));
     }
+  }
+  public FynotekWord verbTense(char tenseOfVerb) {
+    return this.verbTense(tenseOfVerb, false);
   }
   public FynotekWord suffix(String suffix) {
     String output = this.toString();
