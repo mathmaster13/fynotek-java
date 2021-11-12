@@ -173,6 +173,9 @@ public class FynotekWord {
       else return this.ablaut(tenseList.get(tenseOfVerb));
     }
   }
+  public FynotekWord verbTense(char tenseOfVerb) {
+    return this.verbTense(tenseOfVerb, false);
+  }
   public FynotekWord suffix(String suffix) {
     String output = this.toString();
     if (end.isEmpty()) {
