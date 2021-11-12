@@ -45,16 +45,6 @@ public class FynotekWord {
     tenseList.put('g', "y");
   }
 
-  private static HashMap<Integer, String> numberList = new HashMap<Integer, String>();
-  static {
-    numberList.put(0, "");
-    numberList.put(1, "ay");
-    numberList.put(2, "fo");
-    numberList.put(3, "us");
-    numberList.put(4, "nos");
-    numberList.put(5, "pur");
-  }
-
   
   @Override
   public String toString() {
@@ -151,24 +141,16 @@ public class FynotekWord {
     return new FynotekWord(this.toString() + suffix, vowel, proper);
   }
   private static boolean isVowel(char letter) {
-    boolean output = false;
     for (char i : vowelList) {
-      if (letter == i) {
-        output = true;
-        break;
-      }
+      if (letter == i) return true;
     }
-    return output;
+    return false;
   }
   private static boolean isStop(char letter) {
-    boolean output = false;
     for (char i : stopList) {
-      if (letter == i) {
-        output = true;
-        break;
-      }
+      if (letter == i) return true;
     }
-    return output;
+    return false;
   }
 
   // Public methods
@@ -179,26 +161,17 @@ public class FynotekWord {
     return proper;
   }
   public FynotekWord nounCase(char caseOfNoun) {
-    if (caseOfNoun == 'n') {
-      return this;
-    } else {
-      char caseLetter = caseList.get(caseOfNoun);
-      if (proper) { // While there is an actual suffix function, I prefer to leave this simplified ome in for speed.
-        return this.properSuffix(caseLetter);
-      } else {
-        return this.ablaut(caseLetter);
-      }
-    }
+    if (!(caseOfNoun == 'a' || caseOfNoun == 'd' || caseOfNoun == 'g')) return this;
+    char caseLetter = caseList.get(caseOfNoun);
+    if (proper) return this.properSuffix(caseLetter); // While there is an actual suffix function, I prefer to leave this simplified ome in for speed.
+    else return this.ablaut(caseLetter);
   }
   public FynotekWord verbTense(char tenseOfVerb, boolean hypothetical) { // 'a' is used for the past tense.
-    if (hypothetical) {
-      return this.ablaut(hypoTenseList.get(tenseOfVerb).charAt(0));
-    } else {
-      if (tenseOfVerb == 'p') {
-        return this;
-      } else {
-        return this.ablaut(tenseList.get(tenseOfVerb).charAt(0));
-      }
+    if (!(tenseOfVerb == 'p' || tenseOfVerb == 'a' || tenseOfVerb == 'f' || tenseOfVerb == 'g')) return this;
+    if (hypothetical) return this.ablaut(hypoTenseList.get(tenseOfVerb).charAt(0));
+    else {
+      if (tenseOfVerb == 'p') return this;
+      else return this.ablaut(tenseList.get(tenseOfVerb).charAt(0));
     }
   }
   public FynotekWord suffix(String suffix) {
