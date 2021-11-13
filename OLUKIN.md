@@ -17,7 +17,7 @@ lipu lili li lon `com/mathmaster13/fynotekword`. sina ken kama sona e ken pi ilo
 - [ ] lipu pi nasin ilo ma li ken kepeken ilo ni li pana e sona tawa sina.
 
 ## pakala
-tenpo pi sitelen ni la mi sona e pakala ala pi ilo ni.  sina sona e pakala la o toki e ona tawa mi!
+tenpo pi sitelen ni la mi sona e pakala ala pi ilo ni. sina sona e pakala la o toki e ona tawa mi!
 
 ## ijo pali
 soweli Mokapen li pali e [toki Fynotek](https://linktr.ee/fynotek "lipu pi kama sona") e [ilo nimi ni](https://scratch.mit.edu/projects/584256352/ "Fynotek Conjugator in Scratch") kepeken nasin Scratch. mi pali e lipu ni e ilo ni tan lipu ona.
