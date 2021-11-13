@@ -227,7 +227,7 @@ public class FynotekWord {
     return number(num.toString(6), (num.signum() == -1));
   }
   public static String number(long num) {
-    return number(Long.toString(num, 6), (Math.signum(num) == -1));
+    return number(Long.toString(Math.abs(num), 6), (Math.signum(num) == -1));
   }
   private static String number(String seximalString, boolean isNegative) {
     if (seximalString.equals("0")) return "fui";
