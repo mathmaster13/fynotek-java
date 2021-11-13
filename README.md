@@ -3,6 +3,9 @@
 # FynotekWord
 A class for working with words in Fynotek, a conlang by mochaspen.
 
+## Documentation
+See [DOCS/index.html](DOCS/index.html).
+
 ## Demos
 Demos can be found in the `com/mathmaster13/fynotekword` folder along with the `FynotekWord` library itself.
 

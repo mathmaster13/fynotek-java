@@ -9,7 +9,7 @@ public class AblautMatchDemo {
     char nounCase = getCase(word);
     String suffix1 = prompt("Enter the first suffix:  ");
     String suffix2 = prompt("Enter the second suffix:  ");
-    FynotekWord modifier = new FynotekWord(getModifier(nounCase, word.getProper()));
+    FynotekWord modifier = new FynotekWord(getModifier(nounCase, word.isProper()));
     FynotekWord inflectedNoun = word.nounCase(nounCase).suffix(suffix1).suffix(suffix2);
     System.out.println(inflectedNoun + " " + modifier.match(inflectedNoun));
   }
@@ -21,7 +21,7 @@ public class AblautMatchDemo {
   }
   public static char getCase(FynotekWord word) {
     char nounCase;
-    boolean isFolo = !word.getProper() && word.toString().equals("folo");
+    boolean isFolo = !word.isProper() && word.toString().equals("folo");
     do {
       System.out.print("What case is this word? (" + (isFolo ? "" : "N = nominative, ") + "A = accusative, D = dative, G = genitive):  ");
       nounCase = Character.toLowerCase(input.next().charAt(0));

@@ -3,7 +3,10 @@
 # FynotekWord
 toki Fynotek li toki pali pi soweli Mokapen. ilo ni li ken pali e nimi pi toki ni.
 
-## lipu lili pi toki ilo
+## lipu sona
+o lukin e [DOCS/index.html](DOCS/index.html).
+
+## lipu lili kepeken toki ilo
 lipu lili li lon `com/mathmaster13/fynotekword`. sina ken kama sona e ken pi ilo ni kepeken ona. (lipu `FynotekWord` kin pi toki ilo li lon ni.)
 
 ## ken pi ilo ni

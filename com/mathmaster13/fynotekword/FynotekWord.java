@@ -2,6 +2,10 @@ package com.mathmaster13.fynotekword;
 import java.util.HashMap;
 import java.math.BigInteger;
 
+/**
+A class for handling words in Fynotek, a conlang by mochaspen.
+@author mathmaster13
+*/
 public class FynotekWord {
   private String beginning;
   private String vowels;
@@ -13,8 +17,12 @@ public class FynotekWord {
   private static final String[] digitList = {"", "ay", "fo", "us", "nos", "pur"};
 
   private static final String[] binaryList = {"po", "pura", "poña", "sola", "manta", "tauwa"};
-  
-  private static final BigInteger MAX_MAGNITUDE = new BigInteger(new byte[]{43, 86, -44, -81, -113, 121, 50, 39, -116, 121, 126, -67, 0, -1, -1, -1, -1, -1, -1, -1, -1}); // The biggest number supported by the number system.
+
+  /**
+  The maximum integer supported by Fynotek's number system. You can compare if a number <code>x</code> is too large or small with <code>(x.abs().compareTo(MAX_MAGNITUDE) &gt; 0)</code>.
+  @see #number(BigInteger)
+  */
+  public static final BigInteger MAX_MAGNITUDE = new BigInteger(new byte[]{43, 86, -44, -81, -113, 121, 50, 39, -116, 121, 126, -67, 0, -1, -1, -1, -1, -1, -1, -1, -1}); // The biggest number supported by the number system.
   
   private static final char[] vowelList = {'a', 'e', 'i', 'o', 'u', 'y'};
   private static final char[] stopList = {'p', 't', 'k'};
@@ -53,6 +61,10 @@ public class FynotekWord {
   }
 
   
+  /**
+  Returns a String representation of this FynotekWord. The String returned only contains the actual word, and not any other data (such as whether the word is proper or not).
+  @return String representation of this FynotekWord.
+  */
   @Override
   public String toString() {
     return (beginning + vowels + end);
@@ -60,18 +72,21 @@ public class FynotekWord {
   
 
   // Public constructors
+
+  /**
+  Converts a String and a boolean into a FynotekWord. The String contains the word itself, while the boolean represents whether the word is a proper noun: <code>true</code> if it is, and <code>false</code> if it is not.
+  @param word word to be converted to a FynotekWord.
+  @param isProper whether the word is a proper noun or not.
+  */
   public FynotekWord(String word, boolean isProper) {
     this(word, '\u0000', isProper);
   }
+  /**
+  Converts a String into a FynotekWord. The word is assumed not to be a proper noun.
+  @param word word to be converted to a FynotekWord.
+  */
   public FynotekWord(String word) {
     this(word, '\u0000', false);
-  }
-  public FynotekWord(FynotekWord word) {
-    beginning = word.beginning;
-    vowels = word.vowels;
-    end = word.end;
-    markVowel = word.markVowel;
-    proper = word.proper;
   }
 
   // Private constructors
@@ -116,6 +131,7 @@ public class FynotekWord {
     }
   }
 
+  
   // Internal-use methods
   private FynotekWord ablaut(char vowel) {
     if (vowel == '\u0000') return this;
@@ -167,26 +183,46 @@ public class FynotekWord {
     return false;
   }
 
+  
   // Public methods
-  public void setProper(boolean isProper) { // Old function, not really needed much nowadays, but still there.
-    proper = isProper;
-  }
-  public boolean getProper() {
-    return proper;
-  }
+
+  /**
+  Returns this FynotekWord inflected for the noun case specified by <code>caseOfNoun</code>. <code>caseOfNoun</code> should be either <code>'n'</code> (nominative), <code>'a'</code> (accusative), <code>'g'</code> (genitive), or <code>'d'</code> (dative). All other charcters will cause the original object to be returned.
+  @param caseOfNoun the noun case to inflect this FynotekWord for.
+  @return this FynotekWord inflected for the specified noun case.
+  */
   public FynotekWord nounCase(char caseOfNoun) {
     if (!(caseOfNoun == 'a' || caseOfNoun == 'd' || caseOfNoun == 'g')) return this;
     char caseLetter = caseList.get(caseOfNoun);
     // While there is an actual suffix function, I prefer to leave this simplified ome in for speed.
     return (proper ? this.properSuffix(caseLetter) : this.ablaut(caseLetter));
   }
+
+  /**
+  Returns this FynotekWord inflected for the verb tense specified by <code>tenseOfVerb</code>. <code>tenseOfVerb</code> should be either <code>'p'</code> (present), <code>'a'</code> (past), <code>'f'</code> (future), or <code>'g'</code> (gnomic). All other charcters will cause the original object to be returned. If <code>hypothetical</code> is set to <code>true</code>, the word will be marked for a hypothetical tense; otherwise, the word will be inflected for a non-hypothetical tense.
+  @param tenseOfVerb the verb tense to inflect this FynotekWord for.
+  @param hypothetical whether this word should be inflected for a hypothetical tense or not.
+  @return this FynotekWord inflected for the specified verb tense.
+  */
   public FynotekWord verbTense(char tenseOfVerb, boolean hypothetical) { // 'a' is used for the past tense.
     if (!(tenseOfVerb == 'p' || tenseOfVerb == 'a' || tenseOfVerb == 'f' || tenseOfVerb == 'g')) return this;
     return (hypothetical ? this.ablaut(hypoTenseList.get(tenseOfVerb)) : this.ablaut(tenseList.get(tenseOfVerb)));
   }
+  /**
+  Returns this FynotekWord inflected for the non-hypothetical verb tense specified by <code>tenseOfVerb</code>. <code>tenseOfVerb</code> should be either <code>'p'</code> (present), <code>'a'</code> (past), <code>'f'</code> (future), or <code>'g'</code> (gnomic). All other charcters will cause the original object to be returned.
+  @param tenseOfVerb the verb tense to inflect this FynotekWord for.
+  @return this FynotekWord inflected for the specified verb tense.
+  */
   public FynotekWord verbTense(char tenseOfVerb) {
     return this.verbTense(tenseOfVerb, false);
   }
+
+  /**
+  Returns a FynotekWord with the specified suffix appended to the end of this word. If the suffix creates a phonotactically invalid sequence, <i>n</i> or <i>a</i> will be infixed as needed to make the resulting word phonotactically valid.
+  @param suffix the suffix to be appended to the end of this FynotekWord.
+  @return a FynotekWord with the specified suffix appended to the end of it.
+  @see #prefix(String)
+  */
   public FynotekWord suffix(String suffix) {
     String output = this.toString();
     if (end.isEmpty()) {
@@ -206,7 +242,14 @@ public class FynotekWord {
     }
     return new FynotekWord(output, markVowel, proper);
   }
+
   // The prefix function just calls the suffix function on the reverse of the input, then reverses it back.
+  /**
+  Returns a FynotekWord with the specified prefix appended to the beginning of this word. If the prefix creates a phonotactically invalid sequence, <i>n</i> or <i>a</i> will be infixed as needed to make the resulting word phonotactically valid.
+  @param prefix the prefix to be appended to the beginning of this FynotekWord.
+  @return a FynotekWord with the specified prefix appended to the beginning of it.
+  @see #suffix(String)
+  */
   public FynotekWord prefix(String prefix) {
     StringBuilder temp = new StringBuilder(this.toString());
     FynotekWord reverseWord = new FynotekWord(temp.reverse().toString());
@@ -214,25 +257,62 @@ public class FynotekWord {
     temp = new StringBuilder(reverseWord.suffix(temp.reverse().toString()).toString());
     return new FynotekWord(temp.reverse().toString(), markVowel, proper);
   }
+
+  /**
+  Returns this FynotekWord inflected for the same case or tense as <code>word</code>.
+  @param word the FynotekWord to match this word's inflection with.
+  @return this FynotekWord inflected for the same case or tense as <code>word</code>.
+  @see #nounCase(char)
+  @see verbTense(char, boolean)
+  */
   public FynotekWord match(FynotekWord word) {
     return (word.proper ? this.properSuffix(word.markVowel) : this.ablaut(word.markVowel));
   }
+
+  /**
+  Returns whether this FynotekWord has been marked previously or not. To be specific, this function returns <code>true</code> if and only if this word was created as an output from the <code>nounCase</code> or <code>verbTense</code> method. You can use this method to make sure a word does not get marked more than once.
+  @return a FynotekWord with the specified suffix appended to the end of it.
+  @see #nounCase(char)
+  @see verbTense(char, boolean)
+  */
   public boolean marked() {
     return (markVowel != '\u0000');
+    }
+  
+  /**
+  Returns whether this FynotekWord is a proper noun or not. Specifically, this returns <code>true</code> if this word is a proper noun, and <code>false</code> if it is not.
+  @return whether this FynotekWord is a proper noun or not.
+  @see #FynotekWord(String, boolean)
+  */
+  public boolean isProper() {
+    return proper;
   }
 
+  
   // Static methods
+
+  /**
+  Returns the Fynotek translation of the specified number. If the number's absolute value is greater than <code>MAX_MAGNITUDE</code>, an empty String is returned.
+  @param num the number to be translated.
+  @return the Fynotek translation of the specified number.
+  @see #MAX_MAGNITUDE
+  */
   public static String number(BigInteger num) {
     if (num == null || num.abs().compareTo(MAX_MAGNITUDE) > 0) return "";
     return number(num.toString(6), (num.signum() == -1));
   }
+
+  /**
+  Returns the Fynotek translation of the specified number.
+  @return the Fynotek translation of the specified number.
+  @param num the number to be translated.
+  */
   public static String number(long num) {
     return number(Long.toString(Math.abs(num), 6), (Math.signum(num) == -1));
   }
   private static String number(String seximalString, boolean isNegative) {
     if (seximalString.equals("0")) return "fui";
-    String output = "";
-    if (isNegative) output = "ñy ";
+    String output = (isNegative ? "ñy " : "");
     for (int i = 0; i < seximalString.length(); i++) {
       int seximalDigit = seximalString.charAt(i) - 48;
       if (seximalDigit == 0) continue;
@@ -242,7 +322,7 @@ public class FynotekWord {
   }
   private static String binarySuffix(int num) {
     String output = "";
-    for (int i = 0; i <= 5; i++) {
+    for (byte i = 0; i <= 5; i++) {
       if (((num >> i) & 1) == 1) output += binaryList[i];
     }
     return output;
