@@ -10,9 +10,9 @@ Demos can be found in the `com/mathmaster13/fynotekword` folder along with the `
 - Mark noun case/verb tense
 - Apply prefixes and suffixes to words
 - Match the marking of one word to another
+- Convert a number to the Fynotek number system
 
 ## Planned Features
-- [ ] Convert a number to the Fynotek number system
 - [ ] Set up a way to run this code online
 
 ## Known Bugs

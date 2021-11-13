@@ -11,9 +11,9 @@ lipu lili li lon `com/mathmaster13/fynotekword`. sina ken kama sona e ken pi ilo
 - ante e nimi pali kepeken tenpo ona
 - wan e nimi tu lon open nimi lon pini nimi
 - ante e nimi sama nimi ante
+- toki Fynotek e nanpa
 
 ## mi wile pana e ken ni:
-- [ ] sina ken pana e nanpa tawa ilo. ilo li toki Fynotek e ona.
 - [ ] lipu pi nasin ilo ma li ken kepeken ilo ni li pana e sona tawa sina.
 
 ## pakala

@@ -1,5 +1,6 @@
 package com.mathmaster13.fynotekword;
 import java.util.HashMap;
+import java.math.BigInteger;
 
 public class FynotekWord {
   private String beginning;
@@ -9,6 +10,12 @@ public class FynotekWord {
   private char markVowel; // This class expects you to only create objects from root words, not ablauted forms. Create ablauted words with ablaut(), and the method will mark the word as such.
 
   // Constants
+  private static final String[] digitList = {"", "ay", "fo", "us", "nos", "pur"};
+
+  private static final String[] binaryList = {"po", "pura", "poña", "sola", "manta", "tauwa"};
+  
+  private static final BigInteger MAX_MAGNITUDE = new BigInteger(new byte[]{43, 86, -44, -81, -113, 121, 50, 39, -116, 121, 126, -67, 0, -1, -1, -1, -1, -1, -1, -1, -1}); // The biggest number supported by the number system.
+  
   private static final char[] vowelList = {'a', 'e', 'i', 'o', 'u', 'y'};
   private static final char[] stopList = {'p', 't', 'k'};
   
@@ -58,6 +65,13 @@ public class FynotekWord {
   }
   public FynotekWord(String word) {
     this(word, '\u0000', false);
+  }
+  public FynotekWord(FynotekWord word) {
+    beginning = word.beginning;
+    vowels = word.vowels;
+    end = word.end;
+    markVowel = word.markVowel;
+    proper = word.proper;
   }
 
   // Private constructors
@@ -205,5 +219,32 @@ public class FynotekWord {
   }
   public boolean marked() {
     return (markVowel != '\u0000');
+  }
+
+  // Static methods
+  public static String number(BigInteger num) {
+    if (num == null || num.abs().compareTo(MAX_MAGNITUDE) > 0) return "";
+    return number(num.toString(6), (num.signum() == -1));
+  }
+  public static String number(long num) {
+    return number(Long.toString(num, 6), (Math.signum(num) == -1));
+  }
+  private static String number(String seximalString, boolean isNegative) {
+    if (seximalString.equals("0")) return "fui";
+    String output = "";
+    if (isNegative) output = "ñy ";
+    for (int i = 0; i < seximalString.length(); i++) {
+      int seximalDigit = seximalString.charAt(i) - 48;
+      if (seximalDigit == 0) continue;
+      output += (digitList[seximalDigit] + binarySuffix(seximalString.length() - i - 1) + " ");
+    }
+    return output.trim();
+  }
+  private static String binarySuffix(int num) {
+    String output = "";
+    for (int i = 0; i <= 5; i++) {
+      if (((num >> i) & 1) == 1) output += binaryList[i];
+    }
+    return output;
   }
 }
