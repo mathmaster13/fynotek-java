@@ -100,7 +100,7 @@ public class FynotekWord {
   private FynotekWord(String word, char mark, boolean isProper) {
     markVowel = mark;
     proper = isProper;
-    if (word == null || word.isEmpty()) {
+    if (word.isEmpty()) { // If you want to re-add the null check, change the condition to (word == null || word.isEmpty())
       beginning = vowels = end = "";
     } else if (word.length() == 1) {
       if (isVowel(word.charAt(0))) {
@@ -263,7 +263,7 @@ public class FynotekWord {
   @param word the FynotekWord to match this word's inflection with.
   @return this FynotekWord inflected for the same case or tense as <code>word</code>.
   @see #nounCase(char)
-  @see verbTense(char, boolean)
+  @see #verbTense(char, boolean)
   */
   public FynotekWord match(FynotekWord word) {
     return (word.proper ? this.properSuffix(word.markVowel) : this.ablaut(word.markVowel));
@@ -273,7 +273,7 @@ public class FynotekWord {
   Returns whether this FynotekWord has been marked previously or not. To be specific, this function returns <code>true</code> if and only if this word was created as an output from the <code>nounCase</code> or <code>verbTense</code> method. You can use this method to make sure a word does not get marked more than once.
   @return a FynotekWord with the specified suffix appended to the end of it.
   @see #nounCase(char)
-  @see verbTense(char, boolean)
+  @see #verbTense(char, boolean)
   */
   public boolean marked() {
     return (markVowel != '\u0000');
@@ -295,17 +295,18 @@ public class FynotekWord {
   Returns the Fynotek translation of the specified number. If the number's absolute value is greater than <code>MAX_MAGNITUDE</code>, an empty String is returned.
   @param num the number to be translated.
   @return the Fynotek translation of the specified number.
+  @throws IllegalArgumentException If the number provided is too large for the number system to handle.
   @see #MAX_MAGNITUDE
   */
   public static String number(BigInteger num) {
-    if (num == null || num.abs().compareTo(MAX_MAGNITUDE) > 0) return "";
+    if (num.abs().compareTo(MAX_MAGNITUDE) > 0) throw new IllegalArgumentException("Number is too large");
     return number(num.toString(6), (num.signum() == -1));
   }
 
   /**
   Returns the Fynotek translation of the specified number.
-  @return the Fynotek translation of the specified number.
   @param num the number to be translated.
+  @return the Fynotek translation of the specified number.
   */
   public static String number(long num) {
     return number(Long.toString(Math.abs(num), 6), (Math.signum(num) == -1));
@@ -326,5 +327,56 @@ public class FynotekWord {
       if (((num >> i) & 1) == 1) output += binaryList[i];
     }
     return output;
+  }
+
+  /**
+  Returns whether the given sequence is phonotactically and orthographically valid in Fynotek. Multiple words can be separated by whitespace, and this function will only return <code>true</code> if all words in <code>sequence</code> are valid.  Leading and trailing whitespace is ignored. A sequence containing punctuation marks, numbers, or other non-letter characters returns <code>false</code>, as well as an empty sequence or one containing only whitespace.
+  @param sequence the sequence to be checked for validity.
+  @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
+  */
+  public static boolean isValidSequence(String sequence) {
+    sequence = sequence.toLowerCase().trim();
+    // Blank string check
+    if (sequence.equals("")) return false;
+    
+    // Orthographic validity check
+    if (!sequence.replaceAll("[aeiouyptkmnñrfshjwl\\s]", "").equals("")) return false;
+
+    // Check for a multiple-word sequence
+    String[] wordArray = sequence.split("\\s+");
+    if (wordArray.length == 0) return false;
+    if (wordArray.length > 1) {
+      boolean output = true;
+      for (String j : wordArray) output = (isValidSequence(j) && output);
+      return output;
+    }
+    
+    // Phonotactic vallidity check
+    int i = 0;
+    while (i < sequence.length()) {
+      char testChar = sequence.charAt(i);
+      if (isVowel(testChar)) {
+        if (i > sequence.length() - 3) return true; // If we get to this point, no VVV can occur.
+        // VVV check
+        int j;
+        for (j = i + 1; j < sequence.length(); j++) if (!isVowel(sequence.charAt(j))) break;
+        if (j - i > 2) return false;
+        i = j;
+        
+      } else {
+        // Stop+Stop check
+        int j;
+        for (j = i; j < sequence.length(); j++) if (!isStop(sequence.charAt(j))) break;
+        int stopAmount = j - i;
+        if (stopAmount > 1) return false;
+        
+        // CCCC check (CCC at beginning or end)
+        int k;
+        for (k = j; k < sequence.length(); k++) if (isVowel(sequence.charAt(k))) break;
+        if (k - j + stopAmount + (i == 0 || k == sequence.length() ? 1 : 0) > 3) return false;
+        i = k;
+      }
+    }
+    return true;
   }
 }
