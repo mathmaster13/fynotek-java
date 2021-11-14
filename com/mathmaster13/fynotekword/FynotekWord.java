@@ -182,6 +182,23 @@ public class FynotekWord {
     }
     return false;
   }
+  private static String number(String seximalString, boolean isNegative) {
+    if (seximalString.equals("0")) return "fui";
+    String output = (isNegative ? "ñy " : "");
+    for (int i = 0; i < seximalString.length(); i++) {
+      int seximalDigit = seximalString.charAt(i) - 48;
+      if (seximalDigit == 0) continue;
+      output += (digitList[seximalDigit] + binarySuffix(seximalString.length() - i - 1) + " ");
+    }
+    return output.trim();
+  }
+  private static String binarySuffix(int num) {
+    String output = "";
+    for (byte i = 0; i <= 5; i++) {
+      if (((num >> i) & 1) == 1) output += binaryList[i];
+    }
+    return output;
+  }
 
   
   // Public methods
@@ -190,6 +207,7 @@ public class FynotekWord {
   Returns this FynotekWord inflected for the noun case specified by <code>caseOfNoun</code>. <code>caseOfNoun</code> should be either <code>'n'</code> (nominative), <code>'a'</code> (accusative), <code>'g'</code> (genitive), or <code>'d'</code> (dative). All other charcters will cause the original object to be returned.
   @param caseOfNoun the noun case to inflect this FynotekWord for.
   @return this FynotekWord inflected for the specified noun case.
+  @see #match(FynotekWord)
   */
   public FynotekWord nounCase(char caseOfNoun) {
     if (!(caseOfNoun == 'a' || caseOfNoun == 'd' || caseOfNoun == 'g')) return this;
@@ -203,6 +221,7 @@ public class FynotekWord {
   @param tenseOfVerb the verb tense to inflect this FynotekWord for.
   @param hypothetical whether this word should be inflected for a hypothetical tense or not.
   @return this FynotekWord inflected for the specified verb tense.
+  @see #match(FynotekWord)
   */
   public FynotekWord verbTense(char tenseOfVerb, boolean hypothetical) { // 'a' is used for the past tense.
     if (!(tenseOfVerb == 'p' || tenseOfVerb == 'a' || tenseOfVerb == 'f' || tenseOfVerb == 'g')) return this;
@@ -212,6 +231,7 @@ public class FynotekWord {
   Returns this FynotekWord inflected for the non-hypothetical verb tense specified by <code>tenseOfVerb</code>. <code>tenseOfVerb</code> should be either <code>'p'</code> (present), <code>'a'</code> (past), <code>'f'</code> (future), or <code>'g'</code> (gnomic). All other charcters will cause the original object to be returned.
   @param tenseOfVerb the verb tense to inflect this FynotekWord for.
   @return this FynotekWord inflected for the specified verb tense.
+  @see #match(FynotekWord)
   */
   public FynotekWord verbTense(char tenseOfVerb) {
     return this.verbTense(tenseOfVerb, false);
@@ -311,23 +331,7 @@ public class FynotekWord {
   public static String number(long num) {
     return number(Long.toString(Math.abs(num), 6), (Math.signum(num) == -1));
   }
-  private static String number(String seximalString, boolean isNegative) {
-    if (seximalString.equals("0")) return "fui";
-    String output = (isNegative ? "ñy " : "");
-    for (int i = 0; i < seximalString.length(); i++) {
-      int seximalDigit = seximalString.charAt(i) - 48;
-      if (seximalDigit == 0) continue;
-      output += (digitList[seximalDigit] + binarySuffix(seximalString.length() - i - 1) + " ");
-    }
-    return output.trim();
-  }
-  private static String binarySuffix(int num) {
-    String output = "";
-    for (byte i = 0; i <= 5; i++) {
-      if (((num >> i) & 1) == 1) output += binaryList[i];
-    }
-    return output;
-  }
+
 
   /**
   Returns whether the given sequence is phonotactically and orthographically valid in Fynotek. Multiple words can be separated by whitespace, and this function will only return <code>true</code> if all words in <code>sequence</code> are valid.  Leading and trailing whitespace is ignored. A sequence containing punctuation marks, numbers, or other non-letter characters returns <code>false</code>, as well as an empty sequence or one containing only whitespace.
