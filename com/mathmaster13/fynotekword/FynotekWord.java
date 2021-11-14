@@ -22,7 +22,7 @@ public class FynotekWord {
   The maximum integer supported by Fynotek's number system. You can compare if a number <code>x</code> is too large or small with <code>(x.abs().compareTo(MAX_MAGNITUDE) &gt; 0)</code>.
   @see #number(BigInteger)
   */
-  public static final BigInteger MAX_MAGNITUDE = new BigInteger(new byte[]{43, 86, -44, -81, -113, 121, 50, 39, -116, 121, 126, -67, 0, -1, -1, -1, -1, -1, -1, -1, -1}); // The biggest number supported by the number system.
+  public static final BigInteger MAX_MAGNITUDE = new BigInteger(new byte[]{43, 86, -44, -81, -113, 121, 50, 39, -116, 121, 126, -67, 0, -1, -1, -1, -1, -1, -1, -1, -1});
   
   private static final char[] vowelList = {'a', 'e', 'i', 'o', 'u', 'y'};
   private static final char[] stopList = {'p', 't', 'k'};
