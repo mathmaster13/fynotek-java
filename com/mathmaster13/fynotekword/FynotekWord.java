@@ -244,6 +244,7 @@ public class FynotekWord {
   @see #prefix(String)
   */
   public FynotekWord suffix(String suffix) {
+    if (suffix.isEmpty()) return this;
     String output = this.toString();
     if (end.isEmpty()) {
       // Check for VVV sequence
@@ -271,6 +272,7 @@ public class FynotekWord {
   @see #suffix(String)
   */
   public FynotekWord prefix(String prefix) {
+    if (prefix.isEmpty()) return this;
     StringBuilder temp = new StringBuilder(this.toString());
     FynotekWord reverseWord = new FynotekWord(temp.reverse().toString());
     temp = new StringBuilder(prefix);
@@ -334,17 +336,17 @@ public class FynotekWord {
 
 
   /**
-  Returns whether the given sequence is phonotactically and orthographically valid in Fynotek. Multiple words can be separated by whitespace, and this function will only return <code>true</code> if all words in <code>sequence</code> are valid.  Leading and trailing whitespace is ignored. A sequence containing punctuation marks, numbers, or other non-letter characters returns <code>false</code>, as well as an empty sequence or one containing only whitespace.
+  Returns whether the given sequence is phonotactically and orthographically valid in Fynotek. Capitalization is ignored (for example, <code>"A"</code> and <code>"a"</code> are treated the same way). Multiple words can be separated by whitespace, and this function will only return <code>true</code> if all words in <code>sequence</code> are valid.  Leading and trailing whitespace is ignored. A sequence containing punctuation marks, numbers, or other non-letter characters returns <code>false</code>, as well as an empty sequence or one containing only whitespace.
   @param sequence the sequence to be checked for validity.
   @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
   */
   public static boolean isValidSequence(String sequence) {
     sequence = sequence.toLowerCase().trim();
     // Blank string check
-    if (sequence.equals("")) return false;
+    if (sequence.isEmpty()) return false;
     
     // Orthographic validity check
-    if (!sequence.replaceAll("[aeiouyptkmnñrfshjwl\\s]", "").equals("")) return false;
+    if (!sequence.replaceAll("[aeiouyptkmnñrfshjwl\\s]", "").isEmpty()) return false;
 
     // Check for a multiple-word sequence
     String[] wordArray = sequence.split("\\s+");
