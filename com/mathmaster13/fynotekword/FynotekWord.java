@@ -11,7 +11,7 @@ public class FynotekWord {
   private String vowels;
   private String end;
   private boolean proper;
-  private char markVowel; // This class expects you to only create objects from root words, not ablauted forms. Create ablauted words with ablaut(), and the method will mark the word as such.
+  private char markVowel; // This class expects you to only create objects from root words, not marked forms. Create marked words with nounCase(), verbTense(), or match(), and the method will mark the word as such.
 
   // Constants
   private static final String[] digitList = {"", "ay", "fo", "us", "nos", "pur"};
