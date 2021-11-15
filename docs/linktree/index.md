@@ -1,6 +1,6 @@
 ---
 title: Fynotek Conjugator
-description: &nbsp;
+description: A program to conjugate Fynotek words.
 ---
 
 # Run the Fynotek Conjugator
