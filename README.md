@@ -18,10 +18,6 @@ Demos can be found in the [demos](demos) folder. The `fynotek` package itself is
 - Match the marking of one word to another
 - Convert a number to the Fynotek number system
 
-## Planned Features
-- [ ] Look up words in the Fynotek dictionary
-- [ ] Set up a way to run this code online
-
 ## Known Bugs
 None yet. Report any if you find them!
 
