@@ -1,10 +1,9 @@
-package com.mathmaster13.fynotekword;
 import java.util.Scanner;
 
 public class ConjugationDemo {
   static Scanner input = new Scanner(System.in);
   public static void main(String[] args) {
-    FynotekWord word = new FynotekWord(prompt("Enter a fynotek root:  "), getProper());
+    ModernFynotekWord word = new ModernFynotekWord(prompt("Enter a fynotek root:  "), getProper());
     System.out.println();
     boolean showVerbs = (!word.isProper() && !word.toString().equals("folo")); // true if the "Verb Tenses" section should be shown.
     

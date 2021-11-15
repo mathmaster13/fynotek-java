@@ -1,11 +1,10 @@
-package com.mathmaster13.fynotekword;
 import java.util.Scanner;
 
 public class NumberDemo {
   static Scanner input = new Scanner(System.in);
   public static void main(String[] args) {
     int radix = (Character.toLowerCase(prompt("This is a demo for the number function of the FynotekWord class. Would you like to enter a decimal (D) or seximal (S) string? (default is decimal). ").charAt(0)) == 's' ? 6 : 10);
-    System.out.println(FynotekWord.number(getNum(radix)));
+    System.out.println(ModernFynotekWord.number(getNum(radix)));
   }
 
   // Convenience functions
