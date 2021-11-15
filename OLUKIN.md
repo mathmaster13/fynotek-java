@@ -16,10 +16,6 @@ lipu lili li lon poki [demos](demos). sina ken kama sona e ken pi ilo ni kepeken
 - ante e nimi sama nimi ante
 - toki Fynotek e nanpa
 
-## mi wile pana e ken ni:
-- [ ] ilo li ken pana e kon nimi tawa sina.
-- [ ] lipu pi nasin ilo ma li ken kepeken ilo ni li pana e sona tawa sina.
-
 ## pakala
 tenpo pi sitelen ni la mi sona e pakala ala pi ilo ni. sina sona e pakala la o toki e ona tawa mi!
 
