@@ -1,6 +1,6 @@
 ---
 title: Fynotek Conjugator
-description: 
+description: &#0;
 ---
 
 # Run the Fynotek Conjugator
