@@ -9,7 +9,7 @@ Source code can be found [here](https://mathmaster13.github.io/FynotekWord/linkt
 
 ## Run
 Run this command in a terminal, in the folder you downloaded the file in:
-```
+```java
 java -jar FynotekConjugator.jar
 ```
 
