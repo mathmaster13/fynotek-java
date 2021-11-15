@@ -3,6 +3,9 @@
 # FynotekWord
 A class for working with words in Fynotek, a conlang by mochaspen.
 
+## Linktree
+If you came here from the [Linktree](https://linktr.ee/fynotek "Fynotek Resources"), you probably want to see [this](linktree.md).
+
 ## Documentation
 See the [javadoc](https://mathmaster13.github.io/FynotekWord/overview-tree.html).
 
