@@ -1,5 +1,4 @@
 package com.mathmaster13.fynotek;
-
 import java.util.HashMap;
 
 /**
@@ -51,7 +50,7 @@ public abstract class FynotekWord {
 
   // Public constructors
   /**
-  Converts a String into a FynotekWord.
+  Converts a String into a FynotekWord. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
   @param word word to be converted to a FynotekWord.
   */
   public FynotekWord(String word) {
@@ -89,11 +88,12 @@ public abstract class FynotekWord {
   }
 
   /**
-  Converts a String into a FynotekWord, and marks the word as having the specified ablaut.
+  Converts a String into a FynotekWord, and marks the word as having the specified ablaut.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>sequence</code>).
   @param word word to be converted to a FynotekWord.
   @param mark the type of ablaut this word has.
   */
   protected FynotekWord(String word, char mark) {
+    word = word.trim();
     markVowel = mark;
     if (word.isEmpty()) { // If you want to re-add the null check, change the condition to (word == null || word.isEmpty())
       beginning = vowels = end = "";

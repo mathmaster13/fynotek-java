@@ -32,7 +32,7 @@ public class OldFynotekWord extends FynotekWord {
   // Public constructors
 
   /**
-  Converts a String into an OldFynotekWord.
+  Converts a String into an OldFynotekWord. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
   @param word word to be converted to a OldFynotekWord.
   */
   public OldFynotekWord(String word) {
@@ -98,7 +98,7 @@ public class OldFynotekWord extends FynotekWord {
   }
 
   /**
-  Returns whether the given sequence is phonotactically and orthographically valid in old Fynotek. Capitalization is ignored (for example, <code>"A"</code> and <code>"a"</code> are treated the same way). Multiple words can be separated by whitespace, and this function will only return <code>true</code> if all words in <code>sequence</code> are valid.  Leading and trailing whitespace is ignored. A sequence containing punctuation marks, numbers, or other non-letter characters (with the exception of <code>'</code>) returns <code>false</code>, as well as an empty sequence or one containing only whitespace.
+  Returns whether the given sequence is phonotactically and orthographically valid in old Fynotek. Capitalization is ignored (for example, <code>"A"</code> and <code>"a"</code> are treated the same way). Multiple words can be separated by whitespace, and this function will only return <code>true</code> if all words in <code>sequence</code> are valid.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>sequence</code>). A sequence containing punctuation marks, numbers, or other non-letter characters (with the exception of <code>'</code>) returns <code>false</code>, as well as an empty sequence or one containing only whitespace.
   @param sequence the sequence to be checked for validity.
   @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
   */
