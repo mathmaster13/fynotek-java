@@ -14,4 +14,4 @@ java -jar FynotekConjugator.jar
 ```
 
 ## GitHub
-This file contains a simplified version of the `FynotekWord` library.&nbsp; The full library and project is on [GitHub](https://github.com/mathmaster13/FynotekWord).
+This file contains a simplified version of the `FynotekWord` library.&nbsp;  The full library and project is on [GitHub](https://github.com/mathmaster13/FynotekWord).
