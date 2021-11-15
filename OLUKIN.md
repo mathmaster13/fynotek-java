@@ -4,10 +4,10 @@
 toki Fynotek li toki pali pi soweli Mokapen. ilo ni li ken pali e nimi pi toki ni.
 
 ## lipu sona
-o lukin e [javadoc/com/mathmaster13/fynotekword/FynotekWord.html](javadoc/com/mathmaster13/fynotekword/FynotekWord.html).
+o lukin e [javadoc/com/mathmaster13/fynotek/index.html](javadoc/com/mathmaster13/fynotek/index.html).
 
 ## lipu lili kepeken toki ilo
-lipu lili li lon [demos](demos). sina ken kama sona e ken pi ilo ni kepeken ona. (poki `fynotek` pi toki ilo li lon [com/mathmaster13/fynotek](com/mathmaster13/fynotek).)
+lipu lili li lon poki [demos](demos). sina ken kama sona e ken pi ilo ni kepeken ona. (poki `fynotek` pi toki ilo li lon [com/mathmaster13/fynotek](com/mathmaster13/fynotek).)
 
 ## ken pi ilo ni
 - ante e nimi ijo kepeken pali ona

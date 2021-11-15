@@ -4,10 +4,10 @@
 A class for working with words in Fynotek, a conlang by mochaspen.
 
 ## Documentation
-See [javadoc/com/mathmaster13/fynotekword/FynotekWord.html](javadoc/com/mathmaster13/fynotekword/FynotekWord.html).
+See [javadoc/com/mathmaster13/fynotek/index.html](javadoc/com/mathmaster13/fynotek/index.html).
 
 ## Demos
-Demos can be found in the [demos](demos). The `fynotek` package itself is at [com/mathmaster13/fynotek](com/mathmaster13/fynotek).
+Demos can be found in the [demos](demos) folder. The `fynotek` package itself is at [com/mathmaster13/fynotek](com/mathmaster13/fynotek).
 
 ## Current Features
 - Mark noun case/verb tense
