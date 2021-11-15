@@ -3,11 +3,8 @@
 # FynotekWord
 A class for working with words in Fynotek, a conlang by mochaspen.
 
-## Linktree
-If you came here from the [Linktree](https://linktr.ee/fynotek "Fynotek Resources"), you probably want to see [this](https://mathmaster13.github.io/FynotekWord/linktree/linktree.html).
-
 ## Documentation
-See the [javadoc](https://mathmaster13.github.io/FynotekWord/overview-tree.html).
+See the [javadoc](https://mathmaster13.github.io/FynotekWord/javadoc/overview-tree.html).
 
 ## Demos
 Demos can be found in the [demos](demos) folder. The `fynotek` package itself is at [com/mathmaster13/fynotek](com/mathmaster13/fynotek).

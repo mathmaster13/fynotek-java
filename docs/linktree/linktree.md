@@ -1,6 +1,12 @@
 # Run the Fynotek Conjugator
 
-This page assumes you have Java installed.
+## Check if Java is installed
+Run this command in a terminal:
+```java
+java -version
+```
+If a number is displayed, you're good to go. If it says that a command is not found, use mochaspen's
+[Scratch](https://scratch.mit.edu/projects/584256352/ "Fynotek Conjugator in Scratch") conjugator instead of this.
 
 ## Download
 Download the jar file [here](https://mathmaster13.github.io/FynotekWord/linktree/FynotekConjugator.jar).
