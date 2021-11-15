@@ -265,7 +265,7 @@ public abstract class FynotekWord {
   }
 
   /**
-  Returns this FynotekWord inflected for the same case or tense as <code>word</code>.
+  Returns this FynotekWord inflected for the same case or tense as <code>word</code>. It is recommended to override this implementation if a programmer extends this class.
   @param word the FynotekWord to match this word's inflection with.
   @return this FynotekWord inflected for the same case or tense as <code>word</code>.
   @see #verbTense(char, boolean)

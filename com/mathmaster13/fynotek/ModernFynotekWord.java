@@ -3,7 +3,7 @@ import java.util.HashMap;
 import java.math.BigInteger;
 
 /**
-A class for handling words in Fynotek, a conlang by mochaspen. All objects created by this class are immutable.
+A class for handling words in Fynotek, a conlang by mochaspen. All objects created by this class are immutable. Fynotek documentarion can be found <a href="https://docs.google.com/document/d/1qb2M0042xSuhgb5d_8MYy1Ged-GpyNfHWsgZ_TZxeOQ/edit">here</a>.
 @author mathmaster13
 */
 public class ModernFynotekWord extends FynotekWord {

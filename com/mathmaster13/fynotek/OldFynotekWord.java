@@ -2,7 +2,7 @@ package com.mathmaster13.fynotek;
 import java.util.HashMap;
 
 /**
-A class for handling words in an older version of Fynotek. All objects created by this class are immutable.
+A class for handling words in an older version of Fynotek. All objects created by this class are immutable. Old Fynotek documentation can be found <a href="https://docs.google.com/document/d/1U66rWinK0Qy-xab_ifZ4KC4c95icbjSgiUk9Qc27-80/edit">here</a>.
 @author mathmaster13
 */
 public class OldFynotekWord extends FynotekWord {
