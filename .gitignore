@@ -1,3 +1,4 @@
 *.class
 .replit
 Test.java
+package-info.java
