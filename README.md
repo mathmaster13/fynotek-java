@@ -4,7 +4,7 @@
 A class for working with words in Fynotek, a conlang by mochaspen.
 
 ## Documentation
-See [javadoc/com/mathmaster13/fynotek/index.html](javadoc/com/mathmaster13/fynotek/index.html).
+See [javadoc/com/mathmaster13/fynotek/overview-tree.html](javadoc/com/mathmaster13/fynotek/overview-tree.html).
 
 ## Demos
 Demos can be found in the [demos](demos) folder. The `fynotek` package itself is at [com/mathmaster13/fynotek](com/mathmaster13/fynotek).
