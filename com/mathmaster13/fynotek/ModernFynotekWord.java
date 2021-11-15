@@ -51,7 +51,7 @@ public class ModernFynotekWord extends FynotekWord {
   // Public constructors
 
   /**
-  Converts a String and a boolean into a ModernFynotekWord. The String contains the word itself, while the boolean represents whether the word is a proper noun: <code>true</code> if it is, and <code>false</code> if it is not.
+  Converts a String and a boolean into a ModernFynotekWord. The String contains the word itself, while the boolean represents whether the word is a proper noun: <code>true</code> if it is, and <code>false</code> if it is not. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
   @param word word to be converted to a ModernFynotekWord.
   @param isProper whether the word is a proper noun or not.
   */
@@ -59,7 +59,7 @@ public class ModernFynotekWord extends FynotekWord {
     this(word, '\u0000', isProper);
   }
   /**
-  Converts a String into a ModernFynotekWord. The word is assumed not to be a proper noun.
+  Converts a String into a ModernFynotekWord. The word is assumed not to be a proper noun. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
   @param word word to be converted to a ModernFynotekWord.
   */
   public ModernFynotekWord(String word) {
@@ -176,7 +176,7 @@ public class ModernFynotekWord extends FynotekWord {
   }
 
   /**
-  Returns a ModernFynotekWord with the specified suffix appended to the end of this word. If the suffix creates a phonotactically invalid sequence, <i>n</i> or <i>a</i> will be infixed as needed to make the resulting word phonotactically valid.
+  Returns a ModernFynotekWord with the specified suffix appended to the end of this word. If the suffix creates a phonotactically invalid sequence, <i>n</i> or <i>a</i> will be infixed as needed to make the resulting word phonotactically valid.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>suffix</code>).
   @param suffix the suffix to be appended to the end of this ModernFynotekWord.
   @return a ModernFynotekWord with the specified suffix appended to the end of it.
   @see #prefix(String)
@@ -204,7 +204,7 @@ public class ModernFynotekWord extends FynotekWord {
 
   // The prefix function just calls the suffix function on the reverse of the input, then reverses it back.
   /**
-  Returns a ModernFynotekWord with the specified prefix appended to the beginning of this word. If the prefix creates a phonotactically invalid sequence, <i>n</i> or <i>a</i> will be infixed as needed to make the resulting word phonotactically valid.
+  Returns a ModernFynotekWord with the specified prefix appended to the beginning of this word. If the prefix creates a phonotactically invalid sequence, <i>n</i> or <i>a</i> will be infixed as needed to make the resulting word phonotactically valid.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called in the <code>suffix</code> method).
   @param prefix the prefix to be appended to the beginning of this ModernFynotekWord.
   @return a ModernFynotekWord with the specified prefix appended to the beginning of it.
   @see #suffix(String)
@@ -272,7 +272,7 @@ public class ModernFynotekWord extends FynotekWord {
 
 
   /**
-  Returns whether the given sequence is phonotactically and orthographically valid in Fynotek. Capitalization is ignored (for example, <code>"A"</code> and <code>"a"</code> are treated the same way). Multiple words can be separated by whitespace, and this function will only return <code>true</code> if all words in <code>sequence</code> are valid.  Leading and trailing whitespace is ignored. A sequence containing punctuation marks, numbers, or other non-letter characters returns <code>false</code>, as well as an empty sequence or one containing only whitespace.
+  Returns whether the given sequence is phonotactically and orthographically valid in Fynotek. Capitalization is ignored (for example, <code>"A"</code> and <code>"a"</code> are treated the same way). Multiple words can be separated by whitespace, and this function will only return <code>true</code> if all words in <code>sequence</code> are valid.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>sequence</code>). A sequence containing punctuation marks, numbers, or other non-letter characters returns <code>false</code>, as well as an empty sequence or one containing only whitespace.
   @param sequence the sequence to be checked for validity.
   @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
   */
