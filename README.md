@@ -4,7 +4,7 @@
 A class for working with words in Fynotek, a conlang by mochaspen.
 
 ## Documentation
-See [javadoc/com/mathmaster13/fynotek/overview-tree.html](javadoc/com/mathmaster13/fynotek/overview-tree.html).
+See .
 
 ## Demos
 Demos can be found in the [demos](demos) folder. The `fynotek` package itself is at [com/mathmaster13/fynotek](com/mathmaster13/fynotek).
@@ -16,6 +16,7 @@ Demos can be found in the [demos](demos) folder. The `fynotek` package itself is
 - Convert a number to the Fynotek number system
 
 ## Planned Features
+- [ ] Look up words in the Fynotek dictionary
 - [ ] Set up a way to run this code online
 
 ## Known Bugs
