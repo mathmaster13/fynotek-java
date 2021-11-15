@@ -1,6 +1,6 @@
-# FynotekConjugator
+# Run the Fynotek Conjugator
 
-This document assumes you have Java installed.
+This page assumes you have Java installed.
 
 ## Download
 Download the jar file [here](https://mathmaster13.github.io/FynotekWord/linktree/FynotekConjugator.jar).
@@ -14,4 +14,4 @@ java -jar FynotekConjugator.jar
 ```
 
 ## GitHub
-This file contains a simplified version of the `FynotekWord` library. The full library and project is on [GitHub](https://github.com/mathmaster13/FynotekWord).
+This file contains a simplified version of the `FynotekWord` library.  The full library and project is on [GitHub](https://github.com/mathmaster13/FynotekWord).
