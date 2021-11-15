@@ -1,6 +1,5 @@
 ---
 title: Fynotek Conjugator
-description: null
 ---
 
 # Run the Fynotek Conjugator
