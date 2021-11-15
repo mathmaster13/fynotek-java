@@ -7,7 +7,7 @@ A class for working with words in Fynotek, a conlang by mochaspen.
 See [javadoc/com/mathmaster13/fynotekword/FynotekWord.html](javadoc/com/mathmaster13/fynotekword/FynotekWord.html).
 
 ## Demos
-Demos can be found in the `com/mathmaster13/fynotekword` folder along with the `FynotekWord` library itself.
+Demos can be found in the [demos](demos). The `fynotek` package itself is at [com/mathmaster13/fynotek](com/mathmaster13/fynotek).
 
 ## Current Features
 - Mark noun case/verb tense

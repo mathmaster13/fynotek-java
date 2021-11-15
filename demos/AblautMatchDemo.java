@@ -1,16 +1,15 @@
-package com.mathmaster13.fynotekword;
 import java.util.Scanner;
 
 public class AblautMatchDemo {
   static Scanner input = new Scanner(System.in);
   public static void main(String[] args) {
-    System.out.println("This is a demo for the new FynotekWord class. You will be prompted for a noun and a case to conjugate it to, two suffixes for the noun, and a detached root as a modifier for the noun.");
-    FynotekWord word = new FynotekWord(prompt("Enter a fynotek noun:  "), getProper());
+    System.out.println("This is a demo for the new ModernFynotekWord class. You will be prompted for a noun and a case to conjugate it to, two suffixes for the noun, and a detached root as a modifier for the noun.");
+    ModernFynotekWord word = new ModernFynotekWord(prompt("Enter a fynotek noun:  "), getProper());
     char nounCase = getCase(word);
     String suffix1 = prompt("Enter the first suffix:  ");
     String suffix2 = prompt("Enter the second suffix:  ");
-    FynotekWord modifier = new FynotekWord(getModifier(nounCase, word.isProper()));
-    FynotekWord inflectedNoun = word.nounCase(nounCase).suffix(suffix1).suffix(suffix2);
+    ModernFynotekWord modifier = new ModernFynotekWord(getModifier(nounCase, word.isProper()));
+    ModernFynotekWord inflectedNoun = word.nounCase(nounCase).suffix(suffix1).suffix(suffix2);
     System.out.println(inflectedNoun + " " + modifier.match(inflectedNoun));
   }
 
@@ -19,7 +18,7 @@ public class AblautMatchDemo {
     System.out.print(message);
     return input.next();
   }
-  public static char getCase(FynotekWord word) {
+  public static char getCase(ModernFynotekWord word) {
     char nounCase;
     boolean isFolo = !word.isProper() && word.toString().equals("folo");
     do {
