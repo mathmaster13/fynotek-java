@@ -3,7 +3,7 @@ import java.util.HashMap;
 import java.math.BigInteger;
 
 /**
-A class for handling words in Fynotek, a conlang by mochaspen.
+A class for handling words in Fynotek, a conlang by mochaspen. All objects created by this class are immutable.
 @author mathmaster13
 */
 public class ModernFynotekWord extends FynotekWord {
@@ -82,7 +82,12 @@ public class ModernFynotekWord extends FynotekWord {
 
   
   // Internal-use methods
-
+  /**
+  {@inheritDoc}
+  There is also a special case for the word <code>"folo"</code> if it is not a proper noun, since its ablaut is irregular.
+  @param {@inheritDoc}
+  @return {@inheritDoc}
+  */
   protected ModernFynotekWord ablaut(char vowel) {
     if (vowel == '\u0000') return this;
     if (vowels.isEmpty()) return new ModernFynotekWord(beginning, vowels, end, markVowel, proper);

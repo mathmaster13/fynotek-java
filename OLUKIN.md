@@ -4,7 +4,7 @@
 toki Fynotek li toki pali pi soweli Mokapen. ilo ni li ken pali e nimi pi toki ni.
 
 ## lipu sona
-o lukin e [javadoc/com/mathmaster13/fynotek/overview-tree.html](javadoc/com/mathmaster13/fynotek/overview-tree.html).
+o lukin e .
 
 ## lipu lili kepeken toki ilo
 lipu lili li lon poki [demos](demos). sina ken kama sona e ken pi ilo ni kepeken ona. (poki `fynotek` pi toki ilo li lon [com/mathmaster13/fynotek](com/mathmaster13/fynotek).)
@@ -17,6 +17,7 @@ lipu lili li lon poki [demos](demos). sina ken kama sona e ken pi ilo ni kepeken
 - toki Fynotek e nanpa
 
 ## mi wile pana e ken ni:
+- [ ] ilo li ken pana e kon nimi tawa sina.
 - [ ] lipu pi nasin ilo ma li ken kepeken ilo ni li pana e sona tawa sina.
 
 ## pakala

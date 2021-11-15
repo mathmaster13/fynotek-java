@@ -2,7 +2,7 @@ package com.mathmaster13.fynotek;
 import java.util.HashMap;
 
 /**
-A class for handling words in an older version of Fynotek.
+A class for handling words in an older version of Fynotek. All objects created by this class are immutable.
 @author mathmaster13
 */
 public class OldFynotekWord extends FynotekWord {
@@ -49,7 +49,6 @@ public class OldFynotekWord extends FynotekWord {
 
   
   // Internal-use methods
-
   protected OldFynotekWord ablaut(char vowel) {
     if (vowel == '\u0000') return this;
     if (vowels.isEmpty()) return new OldFynotekWord(beginning, vowels, end, markVowel);
@@ -90,7 +89,6 @@ public class OldFynotekWord extends FynotekWord {
 
   
   // Public methods
-
   public OldFynotekWord personSuffix(int person) {
     if (person < 1 || person > 3) throw new IllegalArgumentException("person can only be a value of 1, 2, or 3");
     if (person == 1) return this;
