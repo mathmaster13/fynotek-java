@@ -1,6 +1,6 @@
 *The English version of this file is [here](README.md).*
 
-# FynotekWord
+# Fynotek
 toki Fynotek li toki pali pi soweli Mokapen. ilo ni li ken pali e nimi pi toki ni.
 
 ## lipu sona
