@@ -277,7 +277,7 @@ public abstract class FynotekParent {
   }
 
   /**
-  Returns whether this FynotekParent is marked or not. Specifically, returns <code>(markVowel != '\u0000')</code>. <b>Be careful:</b> this means that, in <code>FynotekWord</code> nominative-case nouns and present-tense verbs will return <code>false</code>, and "folo" in the accusative case (if "folo" is not a proper noun) will return <code>true</code>,
+  Returns whether this FynotekParent is marked or not. Specifically, returns <code>(markVowel != '\u0000')</code>. <b>Be careful:</b> this means that non-hypothetical present-tense verbs will return <code>false</code>, and in <code>FynotekWord</code> specifically nominative-case nouns will also return <code>false</code>, and "folo" in the accusative case (if "folo" is not a proper noun) will return <code>true</code>.
   @return <code>true</code> if this FynotekParent has been marked by ablaut or a proper noun suffix, and <code>false</code> if it has not been.
   @see #markVowel
   */

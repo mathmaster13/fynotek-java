@@ -97,7 +97,7 @@ public class OldFynotekWord extends FynotekParent {
    @param tenseOfVerb the verb tense to inflect this OldFynotekWord for.
    @param hypothetical whether this word should be inflected for a hypothetical tense or not.
    @return this OldFynotekWord inflected for the specified verb tense.
-   @see #match(OldFynotekWord)
+   @see #match(FynotekParent)
    @see FynotekParent#verbTense(char, boolean)
    */
    @Override
