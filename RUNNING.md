@@ -2,11 +2,11 @@
 ## Running from source
 Clone the repo:
 ```
-git clone https://github.com/mathmaster13/FynotekWord.git
+git clone https://github.com/mathmaster13/fynotek.git
 ```
-Copy the `com` folder to `FynotekWord/demos`.
+Copy the `com` folder to `fynotek/demos`.
 
-Run the rest of the commands here in `FynotekWord/demos`.
+Run the rest of the commands here in `fynotek/demos`.
 
 Compile the library:
 ```
