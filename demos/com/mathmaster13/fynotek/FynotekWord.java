@@ -10,8 +10,6 @@ public class FynotekWord extends FynotekParent {
   private boolean proper;
 
   // Constants
-  private static final char FOLO_ROOT = '\uF766';
-  
   private static final String[] digitList = {"", "ay", "fo", "us", "nos", "pur"};
 
   private static final String[] binaryList = {"po", "pura", "poña", "sola", "manta", "tauwa"};
@@ -53,7 +51,7 @@ public class FynotekWord extends FynotekParent {
   // Public constructors
 
   /**
-  Converts a String and a boolean into a FynotekWord. The String contains the word itself, while the boolean represents whether the word is a proper noun: <code>true</code> if it is, and <code>false</code> if it is not. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
+  Converts a String and a boolean into a FynotekWord. The String contains the word itself, while the boolean represents whether the word is a proper noun: <code>true</code> if it is, and <code>false</code> if it is not. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>). If <code>word</code> is <code>"folo"</code> and <code>isProper</code> is <code>false</code>, the word's <code>markVowel</code> will be set to <code>'o'</code> immediately.
   @param word word to be converted to a FynotekWord.
   @param isProper whether the word is a proper noun or not.
   */
@@ -61,7 +59,7 @@ public class FynotekWord extends FynotekParent {
     this(word, '\u0000', isProper);
   }
   /**
-  Converts a String into a FynotekWord. The word is assumed not to be a proper noun. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
+  Converts a String into a FynotekWord. The word is assumed not to be a proper noun. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>). If <code>word</code> is <code>"folo"</code>, the word's <code>markVowel</code> will be set to <code>'o'</code> immediately.
   @param word word to be converted to a FynotekWord.
   */
   public FynotekWord(String word) {
@@ -92,7 +90,7 @@ public class FynotekWord extends FynotekParent {
   
   // Internal-use methods
   private void checkForFolo() {
-    if (this.toString().equals("folo") && !proper) markVowel = FOLO_ROOT;
+    if (this.toString().equals("folo") && !proper) markVowel = 'o';
   }
   
   protected FynotekWord ablaut(char vowel) {
@@ -274,20 +272,8 @@ public class FynotekWord extends FynotekParent {
   */
   @Override
   public FynotekWord match(FynotekParent word) {
-    char mark = word.markVowel;
-    if (word instanceof FynotekWord) {
-      if (word.markVowel == FOLO_ROOT) {
-         if (markVowel == FOLO_ROOT) return this;
-        mark = 'o';
-      }
-      return (proper ? properSuffix(mark) : ablaut(mark));
-    }
+    if (word instanceof FynotekWord) return (proper ? properSuffix(word.markVowel) : ablaut(word.markVowel));
     return new FynotekWord(super.match(word));
-  }
-
-  @Override
-  public boolean isMarked() {
-    return (markVowel != '\u0000' && markVowel != FOLO_ROOT);
   }
   
   /**
