@@ -20,9 +20,9 @@ java <demo name>
 ```
 
 ## Running from `.jar` file
-Download a jar file.
+Download a jar file from the [releases](https://github.com/mathmaster13/fynotek/releases/latest).
 
 Run a demo (do not add the `.java` extension to the demo name):
 ```
-java -cp fynotek.jar com.mathmaster13.fynotek.<demo name>
+java -cp fynotek-<version>.jar <demo name>
 ```
