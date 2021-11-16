@@ -1,38 +1,39 @@
 import java.util.Scanner;
 import java.util.HashMap;
 
-// The Fynotek Conjugator for linktree people!
+/*
+A stripped-down version of the FynotekWord class that contains only methods needed to run ConjugationDemo.java (here called FynotekConjugator). Some methods are only partially implemented, because they do not need all of their functionality for this specific program. If you'd like to examine the full FynotekWord library, please use the files on GitHub and not this one.
+*/
 public class FynotekConjugator {
   static Scanner input = new Scanner(System.in);
   public static void main(String[] args) {
-    ModernFynotekWord word = new ModernFynotekWord(prompt("Enter a fynotek root:  "), getProper());
+    FynotekWord word = new FynotekWord(prompt("Enter a fynotek root:  "), getProper());
     System.out.println();
-    boolean showVerbs = (!word.isProper() && !word.toString().equals("folo")); // true if the "Verb Tenses" section should be shown.
+    boolean isFolo = !word.isProper() && word.toString().equals("folo");
     
     // Noun cases
-    if (showVerbs) System.out.println("Noun Cases:");
-    System.out.println("Nominative:  " + ((word.toString().equals("folo") && !word.isProper()) ? "N/A" : word.nounCase('n')));
+    System.out.println("Noun Cases:");
+    System.out.println("Nominative:  " + (isFolo ? "N/A" : word.nounCase('n')));
     System.out.println("Accusative:  " + word.nounCase('a'));
     System.out.println("Genitive:  " + word.nounCase('g'));
     System.out.println("Dative:  " + word.nounCase('d'));
     System.out.println();
 
-    // Verb tenses, if the word is not a proper noun or "folo"
-    if (showVerbs) {
-      System.out.println("Non-Hypothetical Tenses:");
-      System.out.println("Present:  " + word.verbTense('p', false));
-      System.out.println("Past:  " + word.verbTense('a', false));
-      System.out.println("Future:  " + word.verbTense('f', false));
-      System.out.println("Gnomic:  " + word.verbTense('g', false));
-      System.out.println();
+    // Verb tenses or modifier forms, if the word is not a proper noun or "folo"
+    String infoString = (word.isProper() || isFolo ? "Verb Modifier Forms:" : "Verb Tenses:");
+    System.out.println("Non-Hypothetical " + infoString);
+    System.out.println("Present:  " + word.verbTense('p', false));
+    System.out.println("Past:  " + word.verbTense('a', false));
+    System.out.println("Future:  " + word.verbTense('f', false));
+    System.out.println("Gnomic:  " + word.verbTense('g', false));
+    System.out.println();
       
-      System.out.println("Hypothetical Tenses:");
-      System.out.println("Present:  " + word.verbTense('p', true));
-      System.out.println("Past:  " + word.verbTense('a', true));
-      System.out.println("Future:  " + word.verbTense('f', true));
-      System.out.println("Gnomic:  " + word.verbTense('g', true));
-      System.out.println();
-    }
+    System.out.println("Hypothetical " + infoString);
+    System.out.println("Present:  " + word.verbTense('p', true));
+    System.out.println("Past:  " + word.verbTense('a', true));
+    System.out.println("Future:  " + word.verbTense('f', true));
+    System.out.println("Gnomic:  " + word.verbTense('g', true));
+    System.out.println();
   }
 
   // Convenience functions
@@ -52,14 +53,15 @@ public class FynotekConjugator {
 }
 
 
-class ModernFynotekWord {
+class FynotekWord {
   private String beginning;
   private String vowels;
   private String end;
   private boolean proper;
 
   // Constants
-  private static final char[] vowelList = { 'a', 'e', 'i', 'o', 'u', 'y' };
+  private static final char[] vowelList = {'a', 'e', 'i', 'o', 'u', 'y'};
+  private static final char[] stopList = {'p', 't', 'k'};
   
   private static HashMap<Character, String> ablautList = new HashMap<Character, String>();
   static {
@@ -100,7 +102,7 @@ class ModernFynotekWord {
   }
   
   // Public constructors
-  public ModernFynotekWord(String word, boolean isProper) {
+  public FynotekWord(String word, boolean isProper) {
     word = word.trim();
     proper = isProper;
     if (word.isEmpty()) { // If you want to re-add the null check, change the condition to (word == null || word.isEmpty())
@@ -135,7 +137,7 @@ class ModernFynotekWord {
   }
 
   // Private constructors
-  private ModernFynotekWord(String a, String b, String c, boolean isProper) {
+  private FynotekWord(String a, String b, String c, boolean isProper) {
     beginning = a;
     vowels = b;
     end = c;
@@ -144,21 +146,16 @@ class ModernFynotekWord {
   
   // Internal-use methods
   private static boolean isVowel(char letter) {
-    for (char i : vowelList) {
-      if (letter == i)
-        return true;
-    }
+    for (char i : vowelList) if (letter == i) return true;
     return false;
   }
-  private ModernFynotekWord ablaut(char vowel) {
+  private static boolean isStop(char letter) {
+    for (char i : stopList) if (letter == i) return true;
+    return false;
+  }
+  private FynotekWord ablaut(char vowel) {
     if (vowel == '\u0000') return this;
-    if (vowels.isEmpty()) return new ModernFynotekWord(beginning, vowels, end, proper);
-    if (this.toString().equals("folo") && !proper) {
-      // "folo" is a special case and cannot be conjugated for nominative, so the accusative is the root form.
-      if (vowel == 'a') return new ModernFynotekWord("fol", "a", "", false);
-      if (vowel == 'i') return new ModernFynotekWord("fol", "i", "", false);
-      else return new ModernFynotekWord("fol", "o", "", false);
-    }
+    if (vowels.isEmpty()) return new FynotekWord(beginning, vowels, end, proper);
     String newVowels = vowels;
     if (vowel != 'r') { // 'r' is for reduplcation
       if (vowels.charAt(vowels.length() - 1) != vowel) {
@@ -179,28 +176,82 @@ class ModernFynotekWord {
         newVowels = newVowels.substring(0, 1);
         }
     }
-    return new ModernFynotekWord(beginning, newVowels, end, proper);
+    return new FynotekWord(beginning, newVowels, end, proper);
   }
 
-  private ModernFynotekWord properSuffix(char vowel) {
-    String suffix = Character.toString(vowel);
-    if (end.isEmpty() && vowels.length() > 2) suffix = "n" + suffix;
-    return new ModernFynotekWord(this.toString() + suffix, true);
+  private FynotekWord properSuffix(char vowel) {
+    if (vowel == '\u0000') return this;
+    if (vowel == 'r') {
+      int vowelLength = vowels.length();
+      if (vowelLength == 0) return this;
+      String temp = (vowelLength == 1 ? vowels : Character.toString(vowels.charAt(vowelLength - 1)));
+      return this.suffix(temp + temp);
+    } else {
+      String suffix = Character.toString(vowel);
+      if (end.length() == 0 && vowels.length() >= 2) suffix = "n" + suffix;
+      return new FynotekWord(this.toString() + suffix, proper);
+  }
+}
+  
+  private FynotekWord suffix(String suffix) {
+    if (suffix.isEmpty()) return this;
+    String output = this.toString();
+    if (end.isEmpty()) {
+      // Check for VVV sequence
+      if (isVowel(suffix.charAt(0)) && ((vowels.length() >= 2) || (suffix.length() >= 2 && (isVowel(suffix.charAt(1)))))) {
+        output += ("n" + suffix);
+      } else {
+        output += suffix;
+      }
+    } else {
+      // This is so complex that delegating it to the isValidSequence() function may be needed.
+      if (!isValidSequence(vowels + end + suffix)) {
+        output += ("a" + suffix);
+      } else {
+        output += suffix;
+      }
+    }
+    return new FynotekWord(output, proper);
   }
 
+  private static boolean isValidSequence(String sequence) {
+    sequence = sequence.toLowerCase().trim();
+    // Checks for consonant-related phonotactic problems
+    int i = 0;
+    while (i < sequence.length()) {
+      char testChar = sequence.charAt(i);
+      // Consonant check
+      int j;
+      for (j = i; j < sequence.length(); j++)
+        if (isVowel(sequence.charAt(j)))
+           break;
+      if (j - i + ((i == 0 || j == sequence.length()) ? 1 : 0) > 3) return false;
+      if (j - i == 0) j++;
+
+      // Stop+Stop check
+      boolean stopCheck = isStop(testChar);
+      for (int l = i + 1; l < j; l++) {
+        boolean currentCharIsStop = isStop(sequence.charAt(l));
+        if (stopCheck && currentCharIsStop) return false;
+        stopCheck = currentCharIsStop;
+      }
+      i = j;
+    }
+    return true;
+  }
   
   // Public methods
-  public ModernFynotekWord nounCase(char caseOfNoun) {
+  public FynotekWord nounCase(char caseOfNoun) {
     if (!(caseOfNoun == 'a' || caseOfNoun == 'd' || caseOfNoun == 'g')) return this;
     char caseLetter = caseList.get(caseOfNoun);
-    // While there is an actual suffix function, I prefer to leave this simplified ome in for speed.
+    if (this.toString().equals("folo") && !proper) return (caseOfNoun == 'a' ? this : this.ablaut(caseLetter));
     return (proper ? this.properSuffix(caseLetter) : this.ablaut(caseLetter));
   }
 
-  public ModernFynotekWord verbTense(char tenseOfVerb, boolean hypothetical) { // 'a' is used for the past tense.
-    if (!(tenseOfVerb == 'p' || tenseOfVerb == 'a' || tenseOfVerb == 'f' || tenseOfVerb == 'g'))
-      return this;
-    return (hypothetical ? ablaut(hypoTenseList.get(tenseOfVerb)) : ablaut(tenseList.get(tenseOfVerb)));
+  public FynotekWord verbTense(char tenseOfVerb, boolean hypothetical) { // 'a' is used for the past tense.
+    if (!(tenseOfVerb == 'p' || tenseOfVerb == 'a' || tenseOfVerb == 'f' || tenseOfVerb == 'g')) return this;
+    if (!proper) return (hypothetical ? ablaut(hypoTenseList.get(tenseOfVerb)) : ablaut(tenseList.get(tenseOfVerb)));
+    return (hypothetical ? properSuffix(hypoTenseList.get(tenseOfVerb)) : properSuffix(tenseList.get(tenseOfVerb)));
   }
   
   public boolean isProper() {
