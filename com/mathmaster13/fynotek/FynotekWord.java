@@ -10,7 +10,7 @@ public class FynotekWord extends FynotekParent {
   private boolean proper;
 
   // Constants
-  private static final char FOLO_ROOT = '\uF766';
+  private static final char O_NOUN = '\uF766'; // If 'o' is used in a noun-related thing. If it's in a verb-related thing, normal 'o' is used.
   
   private static final String[] digitList = {"", "ay", "fo", "us", "nos", "pur"};
 
@@ -92,18 +92,20 @@ public class FynotekWord extends FynotekParent {
   
   // Internal-use methods
   private void checkForFolo() {
-    if (this.toString().equals("folo") && !proper) markVowel = FOLO_ROOT;
+    if (this.toString().equals("folo") && !proper) markVowel = O_NOUN;
   }
   
   protected FynotekWord ablaut(char vowel) {
+    if (this.toString().equals("folo") && vowel == O_NOUN) return this;
     if (vowel == '\u0000') return this;
     if (vowels.isEmpty()) return new FynotekWord(beginning, vowels, end, markVowel, proper);
     String newVowels = vowels;
     if (vowel != 'r') { // 'r' is for reduplcation
-      if (vowels.charAt(vowels.length() - 1) != vowel) {
-        newVowels = (vowels.length() == 1 ? Character.toString(vowel) : (Character.toString(vowels.charAt(0)) + Character.toString(vowel)));
+      char convertedVowel = (vowel == O_NOUN ? 'o' : vowel);
+      if (vowels.charAt(vowels.length() - 1) != convertedVowel) {
+        newVowels = (vowels.length() == 1 ? Character.toString(convertedVowel) : (Character.toString(vowels.charAt(0)) + Character.toString(convertedVowel)));
       } else {
-        newVowels += ablautList.get(vowel);
+        newVowels += ablautList.get(convertedVowel);
         if (newVowels.length() > 2) {
           newVowels = newVowels.substring(newVowels.length()-2, newVowels.length());
         }
@@ -133,7 +135,7 @@ public class FynotekWord extends FynotekParent {
       String temp = (vowelLength == 1 ? vowels : Character.toString(vowels.charAt(vowelLength - 1)));
       return this.suffix(temp + temp);
     } else {
-      String suffix = Character.toString(vowel);
+      String suffix = ((vowel == O_NOUN) ? "o" : Character.toString(vowel));
       if (end.length() == 0 && vowels.length() >= 2) suffix = "n" + suffix;
       return new FynotekWord(this.toString() + suffix, vowel, proper);
     }
@@ -275,19 +277,13 @@ public class FynotekWord extends FynotekParent {
   @Override
   public FynotekWord match(FynotekParent word) {
     char mark = word.markVowel;
-    if (word instanceof FynotekWord) {
-      if (word.markVowel == FOLO_ROOT) {
-         if (markVowel == FOLO_ROOT) return this;
-        mark = 'o';
-      }
-      return (proper ? properSuffix(mark) : ablaut(mark));
-    }
+    if (word instanceof FynotekWord) return (proper ? properSuffix(mark) : ablaut(mark));
     return new FynotekWord(super.match(word));
   }
 
   @Override
   public boolean isMarked() {
-    return (markVowel != '\u0000' && markVowel != FOLO_ROOT);
+    return (markVowel != '\u0000');
   }
   
   /**
