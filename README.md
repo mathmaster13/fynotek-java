@@ -1,7 +1,7 @@
 *lipu ni pi toki pona li lon [ni](OLUKIN.md).*
 
-# FynotekWord
-A class for working with words in Fynotek, a conlang by mochaspen.
+# Fynotek
+A package for working with words in Fynotek, a conlang by mochaspen.
 
 ## Documentation
 See the [javadoc](https://mathmaster13.github.io/FynotekWord/javadoc/overview-tree.html).
