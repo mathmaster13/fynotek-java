@@ -5,7 +5,7 @@ import java.util.HashMap;
 A class for handling words in an older version of Fynotek. All objects created by this class are immutable. Old Fynotek documentation can be found <a href="https://docs.google.com/document/d/1U66rWinK0Qy-xab_ifZ4KC4c95icbjSgiUk9Qc27-80/edit">here</a>.
 @author mathmaster13
 */
-public class OldFynotekWord extends FynotekWord {
+public class OldFynotekWord extends FynotekParent {
   // Constants
   // private static final String[] digitList = {"", "ay", "fo", "us", "nos", "pur"}; May or may not be used later?
 
@@ -33,7 +33,7 @@ public class OldFynotekWord extends FynotekWord {
 
   /**
   Converts a String into an OldFynotekWord. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
-  @param word word to be converted to a OldFynotekWord.
+  @param word word to be converted to an OldFynotekWord.
   */
   public OldFynotekWord(String word) {
     super(word, '\u0000');
@@ -45,6 +45,9 @@ public class OldFynotekWord extends FynotekWord {
   }
   private OldFynotekWord(String word, char mark) {
     super(word, mark);
+  }
+  private OldFynotekWord(FynotekParent word) {
+    super(word);
   }
 
   
@@ -89,6 +92,20 @@ public class OldFynotekWord extends FynotekWord {
 
   
   // Public methods
+  /**
+  Returns this OldFynotekWord inflected for the verb tense specified by <code>tenseOfVerb</code>. <code>tenseOfVerb</code> should be either <code>'p'</code> (present), <code>'a'</code> (past), <code>'f'</code> (future), or <code>'g'</code> (gnomic). All other charcters will cause the original object to be returned. If <code>hypothetical</code> is set to <code>true</code>, the word will be marked for a hypothetical tense; otherwise, the word will be inflected for a non-hypothetical tense. Note that <code>verbTense('g', false)</code> and <code>verbTense('g', true)</code> will always return the same result. 
+   @param tenseOfVerb the verb tense to inflect this OldFynotekWord for.
+   @param hypothetical whether this word should be inflected for a hypothetical tense or not.
+   @return this OldFynotekWord inflected for the specified verb tense.
+   @see #match(OldFynotekWord)
+   @see FynotekParent#verbTense(char, boolean)
+   */
+   @Override
+  public OldFynotekWord verbTense(char tenseOfVerb, boolean hypothetical) { // 'a' is used for the past tense.
+    return new OldFynotekWord(super.verbTense(tenseOfVerb, hypothetical));
+  }
+
+  
   public OldFynotekWord personSuffix(int person) {
     if (person < 1 || person > 3) throw new IllegalArgumentException("person can only be a value of 1, 2, or 3");
     if (person == 1) return this;
@@ -103,6 +120,6 @@ public class OldFynotekWord extends FynotekWord {
   @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
   */
   public static boolean isValidSequence(String sequence) {
-    return FynotekWord.isValidSequence(sequence, "[aeiouyptkmnñrfshjw'\\s]", (byte) 2, true);
+    return FynotekParent.isValidSequence(sequence, "[aeiouyptkmnñrfshjw'\\s]", (byte) 2, true);
   }
 }

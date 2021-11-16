@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import com.mathmaster13.fynotek.OldFynotekWord;
 
 public class OldFynotekConjugationDemo {
   static Scanner input = new Scanner(System.in);
