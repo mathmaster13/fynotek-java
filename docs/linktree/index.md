@@ -1,13 +1,13 @@
 ---
 title: Fynotek Conjugator
-description: A program to conjugate Fynotek words.
+description: A Java program to conjugate Fynotek words.
 ---
 
 # Run the Fynotek Conjugator
 
 ## Check if Java is installed
 Run this command in a terminal:
-```java
+```bash
 java -version
 ```
 If a number is displayed, you're good to go. If it says that a command is not found, use mochaspen's
@@ -20,7 +20,7 @@ Source code can be found [here](https://mathmaster13.github.io/fynotek/linktree/
 
 ## Run
 Run this command in a terminal, in the folder you downloaded the file in:
-```java
+```bash
 java -jar FynotekConjugator.jar
 ```
 
