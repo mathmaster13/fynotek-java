@@ -10,7 +10,7 @@ public class FynotekWord extends FynotekParent {
   private boolean proper;
 
   // Constants
-  private static final char O_NOUN = '\uF766'; // If 'o' is used in a noun-related thing. If it's in a verb-related thing, normal 'o' is used.
+  private static final char O_NOUN = '}'; // If 'o' is used in a noun-related thing. If it's in a verb-related thing, normal 'o' is used.
   
   private static final String[] digitList = {"", "ay", "fo", "us", "nos", "pur"};
 
@@ -36,7 +36,7 @@ public class FynotekWord extends FynotekParent {
   
   private static HashMap<Character, Character> caseList = new HashMap<Character, Character>();
   static {
-    caseList.put('a', 'o');
+    caseList.put('a', O_NOUN);
     caseList.put('g', 'i');
     caseList.put('d', 'a');
   }
@@ -197,7 +197,7 @@ public class FynotekWord extends FynotekParent {
   Returns this FynotekWord inflected for the noun case specified by <code>caseOfNoun</code>. <code>caseOfNoun</code> should be either <code>'n'</code> (nominative), <code>'a'</code> (accusative), <code>'g'</code> (genitive), or <code>'d'</code> (dative). All other charcters will cause the original object to be returned. There is also a special case for the word "folo", which is irregular.
   @param caseOfNoun the noun case to inflect this FynotekWord for.
   @return this FynotekWord inflected for the specified noun case.
-  @see #match(FynotekWord)
+  @see #match(FynotekParent)
   */
   public FynotekWord nounCase(char caseOfNoun) {
     if (!(caseOfNoun == 'a' || caseOfNoun == 'd' || caseOfNoun == 'g')) return this;
@@ -212,7 +212,7 @@ public class FynotekWord extends FynotekParent {
    @param tenseOfVerb the verb tense to inflect this FynotekWord for.
    @param hypothetical whether this word should be inflected for a hypothetical tense or not.
    @return this FynotekWord inflected for the specified verb tense.
-   @see #match(FynotekWord)
+   @see #match(FynotekParent)
    @see FynotekParent#verbTense(char, boolean)
    */
    @Override
