@@ -6,7 +6,7 @@ A class for handling words in an older version of Fynotek. All objects created b
 @author mathmaster13
 @since 1.0
 */
-public final class OldFynotekWord extends FynotekParent {
+public class OldFynotekWord extends FynotekParent {
   // Constants
   // private static final String[] digitList = {"", "ay", "fo", "us", "nos", "pur"}; May or may not be used later?
 
