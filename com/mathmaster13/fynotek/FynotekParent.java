@@ -4,6 +4,7 @@ import java.util.HashMap;
 /**
 A class for handling words in Fynotek, a conlang by mochaspen, in both its modern and old form. The parent class of <code>FynotekWord</code> and <code>OldFynotekWord</code>, containing all shared code between the two.
 @author mathmaster13
+@since 1.0
 */
 public abstract class FynotekParent {
   /** The part of a Fynotek word before its final vowel or diphthong.
