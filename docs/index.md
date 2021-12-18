@@ -1,3 +1,7 @@
+---
+title: Fynotek
+---
+
 ## Welcome!
 - [GitHub](https://github.com/mathmaster13/fynotek)
 - [Javadoc](https://mathmaster13.github.io/fynotek/javadoc/overview-tree.html)
