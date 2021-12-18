@@ -2,11 +2,11 @@ package com.mathmaster13.fynotek;
 import java.util.HashMap;
 
 /**
-A class for handling words in Fynotek, a conlang by mochaspen, in both its modern and old form. The parent class of <code>FynotekWord</code> and <code>OldFynotekWord</code>, containing all shared code between the two.
+A class for handling words in Fynotek, a conlang by mochaspen, in both its modern and old form. The parent class of <code>FynotekWord</code> and <code>OldFynotekWord</code>, containing all shared code between the two. Do not extend this class.
 @author mathmaster13
 @since 1.0
 */
-public abstract class FynotekParent {
+abstract class FynotekParent {
   /** The part of a Fynotek word before its final vowel or diphthong.
   @see #FynotekParent(String, char)
   */
@@ -143,7 +143,7 @@ public abstract class FynotekParent {
   protected abstract FynotekParent ablaut(char vowel);
 
   /**
-  An internal-use method used in <code>verbTense</code>. It is not recommended to use this method when extending this class. As such, documentation will not be provided. When extending this class, one can simply make this method return <code>'\u0000'</code> or something similar.
+  An internal-use method used in <code>verbTense</code>. As such, documentation will not be provided.
   */
   protected abstract char getNonHypoTense(char tense);
 
@@ -166,7 +166,7 @@ public abstract class FynotekParent {
   }
 
   /**
-  A back-end for the <code>isValidSequence</code> functions in this class' subclasses. Not recommended to be used if a programmer extends this class. As such, implementation details will not be provided.
+  A back-end for the <code>isValidSequence</code> functions in this class' subclasses. As such, implementation details will not be provided.
   @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if not.
   @see OldFynotekWord#isValidSequence(String)
   @see FynotekWord#isValidSequence(String)
