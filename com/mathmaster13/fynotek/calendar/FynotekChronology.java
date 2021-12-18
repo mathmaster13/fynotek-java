@@ -3,8 +3,7 @@ package com.mathmaster13.fynotek.calendar;
 import java.time.chrono.*;
 import java.time.format.*;
 import static java.time.temporal.ChronoField.*;
-import static java.time.temporal.ChronoField.DAYS;
-import static java.time.temporal.ChronoField.WEEKS;
+import static java.time.temporal.ChronoUnit.*;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -417,7 +416,6 @@ public final class FynotekChronology extends AbstractChronology implements Seria
     return (FynotekDate) super.resolveDate(fieldValues, resolverStyle);
   }
 
-  @Override  // override for better proleptic algorithm
   void resolveProlepticMonth(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
     Long pMonth = fieldValues.remove(PROLEPTIC_MONTH);
     if (pMonth != null) {
@@ -429,7 +427,6 @@ public final class FynotekChronology extends AbstractChronology implements Seria
     }
   }
 
-  @Override  // override for enhanced behaviour
   FynotekDate resolveYearOfEra(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
     Long yoeLong = fieldValues.remove(YEAR_OF_ERA);
     if (yoeLong != null) {
@@ -464,7 +461,6 @@ public final class FynotekChronology extends AbstractChronology implements Seria
     return null;
   }
 
-  @Override  // override for performance
   FynotekDate resolveYMD(Map <TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
     int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
     if (resolverStyle == ResolverStyle.LENIENT) {
@@ -570,22 +566,27 @@ public final class FynotekChronology extends AbstractChronology implements Seria
     return field.range();
   }
 
-  //-----------------------------------------------------------------------
+  // package private functions my BELOATHED
   /**
-  Writes the Chronology using a
-  <a href="../../../serialized-form.html#java.time.chrono.Ser">dedicated serialized form</a>.
-  @serialData
-  <pre>
-   out.writeByte(1);   // identifies a Chronology
-   out.writeUTF(getId());
-  </pre>
-  @return the instance of {@code Ser}, not null
+  Adds a field-value pair to the map, checking for conflicts.
+  <p>
+  If the field is not already present, then the field-value pair is added to the map.
+  If the field is already present and it has the same value as that specified, no action occurs.
+  If the field is already present and it has a different value to that specified, then an exception is thrown.
+  @param field  the field to add, not null
+  @param value  the value to add, not null
+  @throws java.time.DateTimeException if the field is already present with a different value
   */
-  @Override
-  Object writeReplace() {
-    return super.writeReplace();
+  void addFieldValue(Map<TemporalField, Long> fieldValues, ChronoField field, long value) {
+    Long old = fieldValues.get(field);  // check first for better error message
+    if (old != null && old.longValue() != value) throw new DateTimeException("Conflict found: " + field + " " + old + " differs from " + field + " " + value);
+    fieldValues.put(field, value);
   }
-
+  
+  //-----------------------------------------------------------------------
+  
+  // If stuff breaks try re-adding the writeReplace function
+  
   /**
   Defend against malicious streams.
   @param s the stream to read
