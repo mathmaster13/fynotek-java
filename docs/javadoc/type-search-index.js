@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"com.mathmaster13.fynotek","l":"FynotekParent"},{"p":"com.mathmaster13.fynotek","l":"FynotekWord"},{"p":"com.mathmaster13.fynotek","l":"OldFynotekWord"}]
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"com.mathmaster13.fynotek","l":"FynotekWord"},{"p":"com.mathmaster13.fynotek","l":"OldFynotekWord"}]
