@@ -226,6 +226,17 @@ public class FynotekWord extends FynotekParent {
   }
 
   /**
+  Returns this FynotekWord inflected for the non-hypothetical verb tense specified by <code>tenseOfVerb</code>. <code>tenseOfVerb</code> should be either <code>'p'</code> (present), <code>'a'</code> (past), <code>'f'</code> (future), or <code>'g'</code> (gnomic). All other charcters will cause the original object to be returned.
+  @param tenseOfVerb the verb tense to inflect this FynotekWord for.
+  @return this FynotekWord inflected for the specified verb tense.
+  @see #match(FynotekParent)
+  */
+  @Override
+  public FynotekWord verbTense(char tenseOfVerb) {
+    return verbTense(tenseOfVerb, false);
+  }
+
+  /**
   Returns a FynotekWord with the specified suffix appended to the end of this word. If the suffix creates a phonotactically invalid sequence, <i>n</i> or <i>a</i> will be infixed as needed to make the resulting word phonotactically valid.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>suffix</code>).
   @param suffix the suffix to be appended to the end of this FynotekWord.
   @return a FynotekWord with the specified suffix appended to the end of it.

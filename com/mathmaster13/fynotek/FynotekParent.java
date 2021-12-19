@@ -6,7 +6,7 @@ A class for handling words in Fynotek, a conlang by mochaspen, in both its moder
 @author mathmaster13
 @since 1.0
 */
-abstract class FynotekParent {
+public abstract class FynotekParent {
   /** The part of a Fynotek word before its final vowel or diphthong.
   @see #FynotekParent(String, char)
   */
@@ -148,7 +148,7 @@ abstract class FynotekParent {
   protected abstract char getNonHypoTense(char tense);
 
   /**
-  Checks if a given character is a vowel. Specifically, returns <code>true</code> if and only if the given character is <code>'a'</code>, <code>'e'</code>, <code>'i'</code>, <code>'o'</code>, <code>'u'</code>, or <code>'y'</code>.
+  Checks if a given character is a vowel. Specifically,returns <code>true</code> if and only if the given character is <code>'a'</code>, <code>'e'</code>, <code>'i'</code>, <code>'o'</code>, <code>'u'</code>, or <code>'y'</code>.
   @param letter the character to be checked for whether it is a vowel or not.
   @return <code>true</code> if and only if <code>letter</code> is a vowel.
   */
