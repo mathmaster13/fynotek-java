@@ -72,25 +72,6 @@ public class OldFynotekWord extends FynotekParent {
     return tenseList.get(tense);
   }
 
-  /* Maybe we aren't using this?
-  private static String number(String seximalString, boolean isNegative) {
-    if (seximalString.equals("0")) return "fui";
-    String output = (isNegative ? "ñy " : "");
-    for (int i = 0; i < seximalString.length(); i++) {
-      int seximalDigit = seximalString.charAt(i) - 48;
-      if (seximalDigit == 0) continue;
-      output += (digitList[seximalDigit] + binarySuffix(seximalString.length() - i - 1) + " ");
-    }
-    return output.trim();
-  }
-  private static String binarySuffix(int num) {
-    String output = "";
-    for (byte i = 0; i <= 5; i++) {
-      if (((num >> i) & 1) == 1) output += binaryList[i];
-    }
-    return output;
-  } */
-
   
   // Public methods
   /**
@@ -106,7 +87,17 @@ public class OldFynotekWord extends FynotekParent {
     return new OldFynotekWord(super.verbTense(tenseOfVerb, hypothetical));
   }
 
-  
+  /**
+  Returns this OldFynotekWord inflected for the non-hypothetical verb tense specified by <code>tenseOfVerb</code>. <code>tenseOfVerb</code> should be either <code>'p'</code> (present), <code>'a'</code> (past), <code>'f'</code> (future), or <code>'g'</code> (gnomic). All other charcters will cause the original object to be returned.
+  @param tenseOfVerb the verb tense to inflect this OldFynotekWord for.
+  @return this OldFynotekWord inflected for the specified verb tense.
+  @see #match(FynotekParent)
+  */
+  @Override
+  public OldFynotekWord verbTense(char tenseOfVerb) {
+    return verbTense(tenseOfVerb, false);
+  }
+
   public OldFynotekWord personSuffix(int person) {
     if (person < 1 || person > 3) throw new IllegalArgumentException("person can only be a value of 1, 2, or 3");
     if (person == 1) return this;
