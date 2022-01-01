@@ -95,12 +95,12 @@ public abstract class FynotekParent {
   }
 
   /**
-  Converts a String into a FynotekParent, and marks the word as having the specified ablaut.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
+  Converts a String into a FynotekParent, and marks the word as having the specified ablaut.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>), and the word will always be converted to lowercase.
   @param word word to be converted to a FynotekParent.
   @param mark the type of ablaut this word has.
   */
   protected FynotekParent(String word, char mark) {
-    word = word.trim();
+    word = word.trim().toLowerCase(); // TODO: Change implementation to preserve capitalization (maybe?)
     markVowel = mark;
     if (word.isEmpty()) { // If you want to re-add the null check, change the condition to (word == null || word.isEmpty())
       beginning = vowels = end = "";

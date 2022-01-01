@@ -223,7 +223,8 @@ public final class FynotekChronology extends AbstractChronology implements Seria
     }
     return days;
   }
-  
+
+  // TODO: Replace these two so we can get rid of these wrappers
   /**
   Gets the number of days for the given month in the given year.
 
@@ -231,16 +232,9 @@ public final class FynotekChronology extends AbstractChronology implements Seria
   @param month the month-of-year to represent, from 1 to 5
   @return the number of days for the given month in the given year
   */
-  private int numberOfDaysOfMonth(int year, int month) {
-    if (year % 2 == 0) return ((month % 2 == 1 || (isLeapYear(year) && month == 2)) ? 30 : 29); // Even-numbered years
-    return ((month % 2 == 1) ? 29 : 30); // Odd-numbered years
-  }
+  private int numberOfDaysOfMonth(int year, int month) {return FynotekDate.lengthOfMonth(year, month);}
 
-  private int lengthOfYear(int year) {
-    if (isLeapYear(year)) return 149;
-    if (year % 2 == 0) return 148;
-    return 147;
-  }
+  private int lengthOfYear(int year) {return FynotekDate.lengthOfYear(year);}
 
   //-----------------------------------------------------------------------
   /**
@@ -413,7 +407,34 @@ public final class FynotekChronology extends AbstractChronology implements Seria
   */
   @Override  // override for performance
   public FynotekDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
-    return (FynotekDate) super.resolveDate(fieldValues, resolverStyle);
+    // check epoch-day before inventing era
+    if (fieldValues.containsKey(EPOCH_DAY)) {
+      return dateEpochDay(fieldValues.remove(EPOCH_DAY));
+    }
+
+    // fix proleptic month before inventing era
+    resolveProlepticMonth(fieldValues, resolverStyle);
+
+    // invent era if necessary to resolve year-of-era
+    ChronoLocalDate resolved = resolveYearOfEra(fieldValues, resolverStyle);
+    if (resolved != null) return resolved;
+
+    // build date
+    if (fieldValues.containsKey(YEAR)) {
+      if (fieldValues.containsKey(MONTH_OF_YEAR)) {
+        if (fieldValues.containsKey(DAY_OF_MONTH)) return resolveYMD(fieldValues, resolverStyle);
+        if (fieldValues.containsKey(ALIGNED_WEEK_OF_MONTH)) {
+          if (fieldValues.containsKey(ALIGNED_DAY_OF_WEEK_IN_MONTH)) return resolveYMAA(fieldValues, resolverStyle);
+          if (fieldValues.containsKey(DAY_OF_WEEK)) return resolveYMAD(fieldValues, resolverStyle);
+        }
+      }
+      if (fieldValues.containsKey(DAY_OF_YEAR)) return resolveYD(fieldValues, resolverStyle);
+      if (fieldValues.containsKey(ALIGNED_WEEK_OF_YEAR)) {
+        if (fieldValues.containsKey(ALIGNED_DAY_OF_WEEK_IN_YEAR)) return resolveYAA(fieldValues, resolverStyle);
+        if (fieldValues.containsKey(DAY_OF_WEEK)) return resolveYAD(fieldValues, resolverStyle);
+      }
+    }
+    return null;
   }
 
   void resolveProlepticMonth(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
@@ -559,6 +580,17 @@ public final class FynotekChronology extends AbstractChronology implements Seria
     int weeksMod4 = weeks % 4;
     return daysFromWeeks(year, (weeks - 1)/4 + 1, (weeksMod4 == 0 ? 4 : weeksMod4));
   }
+  
+  FynotekDate resolveYD(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) { // Copied from ChronoLocalDate
+    int y = range(YEAR).checkValidIntValue(fieldValues.remove(YEAR), YEAR);
+    if (resolverStyle == ResolverStyle.LENIENT) {
+      long days = Math.subtractExact(fieldValues.remove(DAY_OF_YEAR), 1);
+      return dateYearDay(y, 1).plus(days, DAYS);
+    }
+    int doy = range(DAY_OF_YEAR).checkValidIntValue(fieldValues.remove(DAY_OF_YEAR), DAY_OF_YEAR);
+    return dateYearDay(y, doy);  // smart is same as strict
+  }
+
 
   //-----------------------------------------------------------------------
   @Override
