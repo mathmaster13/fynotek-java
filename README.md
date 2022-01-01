@@ -19,4 +19,4 @@ Demos can be found in the [demos](demos) folder. See [RUNNING.md](RUNNING.md) fo
 None yet. Report any if you find them!
 
 ## Credits
-mochaspen, for making [Fynotek](https://docs.google.com/document/d/13O1ChA0bNeZpM-xgac-NJ3Z03fWdqXIxcv2j3ABGhQE/edit?usp=sharing "Fynotek Resources") and a Fynotek Conjugator in [Scratch](https://scratch.mit.edu/projects/584256352/ "Fynotek Conjugator in Scratch") that inspired this.
+mochaspen, for making [Fynotek](https://docs.google.com/spreadsheets/d/1xhD20vikLE6JgUWnj4EwJ9ycEKHQzH_Qi7ZsBBT4j6k/edit "Fynotek Resources") and a Fynotek Conjugator in [Scratch](https://scratch.mit.edu/projects/584256352/ "Fynotek Conjugator in Scratch") that inspired this.
