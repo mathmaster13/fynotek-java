@@ -1,5 +1,6 @@
 ---
 title: Fynotek Conjugator
+layout: show-github
 ---
 
 # Run the Fynotek Conjugator
@@ -13,9 +14,9 @@ If a number is displayed, you're good to go. If it says that a command is not fo
 [Scratch](https://scratch.mit.edu/projects/584256352/ "Fynotek Conjugator in Scratch") conjugator instead of this.
 
 ## Download
-Download the jar file [here](https://mathmaster13.github.io/fynotek/linktree/FynotekConjugator.jar).
+Download the jar file [here](https://mathmaster13.github.io/fynotek/conjugator/FynotekConjugator.jar).
 
-Source code can be found [here](https://mathmaster13.github.io/fynotek/linktree/FynotekConjugator.java).
+Source code can be found [here](https://mathmaster13.github.io/fynotek/conjugator/FynotekConjugator.java).
 
 ## Run
 Run this command in a terminal, in the folder you downloaded the file in:
