@@ -1,0 +1,3 @@
+- [Download](https://github.com/mathmaster13/fynotek-java/releases/latest)
+- [Javadoc](https://mathmaster13.github.io/fynotek-java/javadoc/overview-tree.html)
+- [Simple Conjugator](https://mathmaster13.github.io/fynotek-java/conjugator) 
