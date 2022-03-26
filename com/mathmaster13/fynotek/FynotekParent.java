@@ -77,7 +77,7 @@ public abstract sealed class FynotekParent permits FynotekWord, OldFynotekWord {
      Converts a String into a FynotekParent. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
      @param word word to be converted to a FynotekParent.
      */
-    public FynotekParent(String word) {
+    public FynotekParent(@NotNull String word) {
         this(word, Ablaut.NONE);
     }
 
@@ -291,10 +291,11 @@ public abstract sealed class FynotekParent permits FynotekWord, OldFynotekWord {
      @return this word with a suffix added to mark the first, second, or third person.
      @see #verbTense(Tense)
      */
-    public @NotNull abstract FynotekParent personSuffix(Person person);
+    public @NotNull abstract FynotekParent personSuffix(@NotNull Person person);
 
     /**
-     * Represents
+     * Represents Fynotek ablaut. If a field is not applicable to a particular form of ablaut, a null character (<code>\u0000</code>) is used.
+     *
      */
     protected enum Ablaut {
         NONE('\u0000', '\u0000'), A('a', 'e'), E('e', 'a'), I('i', 'y'), Y('y', 'i'),

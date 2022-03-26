@@ -15,10 +15,6 @@ Demos can be found in the [demos](demos) folder. See [RUNNING.md](RUNNING.md) fo
 - Match the marking of one word to another
 - Convert a number to the Fynotek number system
 
-## Plans
-- This code may become a mixed Java/Kotlin project.
-  - If this happens, KDoc and Javadoc will both be maintained.
-
 ## Known Bugs
 None yet. Report any if you find them!
 

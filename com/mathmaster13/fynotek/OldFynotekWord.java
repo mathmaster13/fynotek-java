@@ -20,18 +20,19 @@ public final class OldFynotekWord extends FynotekParent {
 
 
     // Private constructors
-    private OldFynotekWord(@NotNull String a, String b, String c, Ablaut ablaut) {
+    private OldFynotekWord(@NotNull String a, @NotNull String b, @NotNull String c, @NotNull Ablaut ablaut) {
         super(a, b, c, ablaut);
     }
-    private OldFynotekWord(String word, Ablaut ablaut) {
+    private OldFynotekWord(@NotNull String word, @NotNull Ablaut ablaut) {
         super(word, ablaut);
     }
-    private OldFynotekWord(FynotekParent word) {
+    private OldFynotekWord(@NotNull FynotekParent word) {
         super(word);
     }
 
 
     // Internal-use methods
+    @Override
     protected @NotNull OldFynotekWord ablaut(@NotNull Ablaut vowel) {
         if (vowel == Ablaut.NONE) return this;
         if (vowels.isEmpty()) return new OldFynotekWord(beginning, vowels, end, ablaut);
@@ -47,6 +48,7 @@ public final class OldFynotekWord extends FynotekParent {
         return new OldFynotekWord(beginning, newVowels, end, vowel);
     }
 
+
     // Public methods
     /**
      Returns this OldFynotekWord inflected for the verb tense specified by <code>tenseOfVerb</code>. Note that <code>verbTense(Tense.GNOMIC)</code> and <code>verbTense(Tense.HYP_GNOMIC)</code> will always return the same result.
@@ -60,7 +62,8 @@ public final class OldFynotekWord extends FynotekParent {
         return new OldFynotekWord(super.verbTense((tenseOfVerb == Tense.GNOMIC) ? Tense.HYP_GNOMIC : tenseOfVerb));
     }
 
-    public @NotNull OldFynotekWord personSuffix(Person person) {
+    @Override
+    public @NotNull OldFynotekWord personSuffix(@NotNull Person person) {
         if (person == Person.P1) return this;
         String suffix = (person == Person.P2 ? "a" : "o");
         if (end.isEmpty()) suffix = "n" + suffix;
@@ -72,7 +75,7 @@ public final class OldFynotekWord extends FynotekParent {
      @param sequence the sequence to be checked for validity.
      @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
      */
-    public static boolean isValidSequence(String sequence) {
+    public static boolean isValidSequence(@NotNull String sequence) {
         return FynotekParent.isValidSequence(sequence, "[aeiouyptkmnñrfshjw'\\s]", (byte) 2, true);
     }
 }

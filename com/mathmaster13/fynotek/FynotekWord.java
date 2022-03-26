@@ -1,6 +1,6 @@
 package com.mathmaster13.fynotek;
-import org.jetbrains.annotations.NotNull;
 
+import org.jetbrains.annotations.NotNull;
 import java.math.BigInteger;
 
 /**
@@ -13,6 +13,7 @@ public final class FynotekWord extends FynotekParent {
 
     // Constants
     /** The irregular word <i>folo</i>. */
+    @NotNull
     public static final FynotekWord FOLO = new FynotekWord("fol", "o", "", Ablaut.O_NOUN, false);
 
     private static final String[] digitList = {"", "ay", "fo", "us", "nos", "pur"};
@@ -43,6 +44,7 @@ public final class FynotekWord extends FynotekParent {
      The maximum integer supported by Fynotek's number system. You can compare if a number <code>x</code> is too large or small with <code>(x.abs().compareTo(MAX_MAGNITUDE) &gt; 0)</code>.
      @see #number(BigInteger)
      */
+    @NotNull
     public static final BigInteger MAX_MAGNITUDE = new BigInteger(new byte[]{43, 86, -44, -81, -113, 121, 50, 39, -116, 121, 126, -67, 0, -1, -1, -1, -1, -1, -1, -1, -1});
 
     private static final char[] stopList = {'p', 't', 'k'};
@@ -114,7 +116,7 @@ public final class FynotekWord extends FynotekParent {
         return new FynotekWord(beginning, newVowels, end, vowel, isProper);
     }
 
-    private FynotekWord properSuffix(@NotNull Ablaut vowel) {
+    private @NotNull FynotekWord properSuffix(@NotNull Ablaut vowel) {
         if (vowel == Ablaut.NONE) return this;
         if (vowel == Ablaut.REDUPLICATION) {
             int vowelLength = vowels.length();
@@ -143,7 +145,7 @@ public final class FynotekWord extends FynotekParent {
         }
         return output.toString().trim();
     }
-    private static String binarySuffix(int num) {
+    private static @NotNull String binarySuffix(int num) {
         final StringBuilder output = new StringBuilder();
         for (byte i = 0; i <= 5; i++) {
             if (((num >> i) & 1) == 1) output.append(binaryList[i]);
@@ -178,8 +180,8 @@ public final class FynotekWord extends FynotekParent {
         return true;
     }
 
-    // Public methods
 
+    // Public methods
     /**
      Returns this FynotekWord inflected for the noun case specified by <code>caseOfNoun</code>. Note that the word "folo" as a common noun cannot be marked for the nominative case, and doing so throws an <code>IllegalArgumentException</code>.
      @param caseOfNoun the noun case to inflect this FynotekWord for.
@@ -214,7 +216,7 @@ public final class FynotekWord extends FynotekParent {
      @return a FynotekWord with the specified suffix appended to the end of it.
      @see #prefix(String)
      */
-    public FynotekWord suffix(String suffix) {
+    public @NotNull FynotekWord suffix(@NotNull String suffix) {
         if (suffix.isEmpty()) return this;
         String output = this.toString();
         if (end.isEmpty()) {
@@ -242,7 +244,7 @@ public final class FynotekWord extends FynotekParent {
      @return a FynotekWord with the specified prefix appended to the beginning of it.
      @see #suffix(String)
      */
-    public FynotekWord prefix(String prefix) {
+    public @NotNull FynotekWord prefix(@NotNull String prefix) {
         if (prefix.isEmpty()) return this;
         StringBuilder temp = new StringBuilder(this.toString());
         FynotekWord reverseWord = new FynotekWord(temp.reverse().toString());
@@ -266,14 +268,13 @@ public final class FynotekWord extends FynotekParent {
     }
 
     @Override
-    public @NotNull FynotekWord personSuffix(Person person) {
+    public @NotNull FynotekWord personSuffix(@NotNull Person person) {
         if (person == Person.P1) return this;
         return this.suffix(person.suffix);
     }
 
 
     // Static methods
-
     /**
      Returns the Fynotek translation of the specified number. If the number's absolute value is greater than <code>MAX_MAGNITUDE</code>, an empty String is returned.
      @param num the number to be translated.
@@ -281,7 +282,7 @@ public final class FynotekWord extends FynotekParent {
      @throws IllegalArgumentException If the number provided is too large for the number system to handle.
      @see #MAX_MAGNITUDE
      */
-    public static String number(BigInteger num) {
+    public static @NotNull String number(@NotNull BigInteger num) {
         if (num.abs().compareTo(MAX_MAGNITUDE) > 0) throw new IllegalArgumentException("Number is too large");
         return number(num.toString(6), (num.signum() == -1));
     }
@@ -291,7 +292,7 @@ public final class FynotekWord extends FynotekParent {
      @param num the number to be translated.
      @return the Fynotek translation of the specified number.
      */
-    public static String number(long num) {
+    public static @NotNull String number(long num) {
         return number(Long.toString(Math.abs(num), 6), (Math.signum(num) == -1));
     }
 
@@ -301,9 +302,10 @@ public final class FynotekWord extends FynotekParent {
      @param sequence the sequence to be checked for validity.
      @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
      */
-    public static boolean isValidSequence(String sequence) {
+    public static boolean isValidSequence(@NotNull String sequence) {
         return FynotekParent.isValidSequence(sequence, "[aeiouyptkmnñrfshjwl\\s]", (byte) 3, false);
     }
+
 
     /**
      * Represents the case of a Fynotek noun.
@@ -312,10 +314,9 @@ public final class FynotekWord extends FynotekParent {
     public enum Case {
         NOMINATIVE(Ablaut.NONE), ACCUSATIVE(Ablaut.O_NOUN), GENITIVE(Ablaut.I), DATIVE(Ablaut.A);
 
-        @NotNull
         private final Ablaut ablaut;
 
-        Case(@NotNull Ablaut ablaut) {
+        Case(Ablaut ablaut) {
             this.ablaut = ablaut;
         }
     }
