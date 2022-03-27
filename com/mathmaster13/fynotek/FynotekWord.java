@@ -20,7 +20,10 @@ public final class FynotekWord extends FynotekParent {
     public final boolean isProper;
 
     // Constants
-    /** The irregular word <i>folo</i>, in its completely unmarked (root) form. */
+    /**
+     * The irregular word <i>folo</i>, in its completely unmarked (root) form.
+     * @since 2.0
+     */
     @NotNull
     public static final FynotekWord FOLO = new FynotekWord("fol", "o", "", null, false);
 
@@ -61,19 +64,34 @@ public final class FynotekWord extends FynotekParent {
 
     // Public constructors
     /**
-     Converts a String and a boolean into a FynotekWord. The String contains the word itself, while the boolean represents whether the word is a proper noun: <code>true</code> if it is, and <code>false</code> if it is not. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
+     Converts a String and a boolean to a FynotekWord. The String contains the word itself, while the boolean represents whether the word is a proper noun: <code>true</code> if it is, and <code>false</code> if it is not. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
+     This constructor assumes that a word is in its root form, with no inflection.
      @param word word to be converted to a FynotekWord.
-     @param isProper whether the word is a proper noun or not.
+     @param isProper <code>true</code> if this word is a proper noun, or <code>false</code> if it is not.
      */
     public FynotekWord(@NotNull String word, boolean isProper) {
         this(word, null, isProper);
     }
     /**
-     Converts a String into a FynotekWord. The word is assumed not to be a proper noun. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
+     Converts a String to a FynotekWord. The word is assumed not to be a proper noun. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
+     This constructor assumes that a word is in its root form, with no inflection.
      @param word word to be converted to a FynotekWord.
      */
     public FynotekWord(@NotNull String word) {
         this(word, null, false);
+    }
+    /**
+     Converts a String to a FynotekWord, and marks the word as having the specified inflection.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>), and the word will always be converted to lowercase.
+     This constructor should be used with words known at compile time.
+     For example, the accusative form of the word "hyr" is "hor", and would be created with <code>new FynotekWord("hor", Case.ACCUSATIVE, false)</code>.
+     A root form (the abstract form of a word with no case or tense marking) is represented by a <code>null</code> inflection.
+     @param word word to be converted to a FynotekWord.
+     @param inflection this word's inflection, or <code>null</code> if it does not have one.
+     @param isProper <code>true</code> if this word is a proper noun, or <code>false</code> if it is not.
+     */
+    public FynotekWord(@NotNull String word, @Nullable Inflection inflection, boolean isProper) {
+        super(word, inflection);
+        this.isProper = isProper;
     }
 
     // Private constructors
@@ -82,10 +100,6 @@ public final class FynotekWord extends FynotekParent {
         this.isProper = isProper;
     }
     private FynotekWord(@NotNull String[] word, @Nullable Inflection inflection, boolean isProper) {
-        super(word, inflection);
-        this.isProper = isProper;
-    }
-    private FynotekWord(@NotNull String word, @Nullable Inflection inflection, boolean isProper) {
         super(word, inflection);
         this.isProper = isProper;
     }
@@ -194,7 +208,7 @@ public final class FynotekWord extends FynotekParent {
     // Public methods
     @Override
     public @Nullable Ablaut getAblaut() {
-        if (this.looseEquals(FOLO) && inflection == Case.ACCUSATIVE) return Ablaut.DEFAULT;
+        if (this.toString().equals("folo") && inflection == Case.ACCUSATIVE) return Ablaut.DEFAULT;
         return super.getAblaut();
     }
 
@@ -338,6 +352,12 @@ public final class FynotekWord extends FynotekParent {
 
         private final Ablaut ablaut;
 
+        /**
+         * Gets the ablaut corresponding to this noun case.
+         * This method only gives the <i>typical</i> ablaut used, and does not account for irregular words. For that, use {@link FynotekWord#getAblaut()}.
+         * @return the ablaut corresponding to this noun case.
+         * @see FynotekWord#getAblaut()
+         */
         @Override
         public @NotNull Ablaut getAblaut() {
             return ablaut;

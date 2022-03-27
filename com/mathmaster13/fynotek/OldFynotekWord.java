@@ -11,19 +11,28 @@ public final class OldFynotekWord extends FynotekParent {
     // Public constructors
     /**
      Converts a String into an OldFynotekWord. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
+     This constructor assumes that a word is in its root form, with no inflection.
      @param word word to be converted to an OldFynotekWord.
      */
     public OldFynotekWord(@NotNull String word) {
         super(word, null);
     }
-
+    /**
+     * Converts a String to an OldFynotekWord, and marks the word as having the specified inflection.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>), and the word will always be converted to lowercase.
+     * This constructor should be used with words known at compile time.
+     * For example, the future-tense form of the word "ni" is "no", and would be created with <code>new OldFynotekWord("no", Tense.FUTURE)</code>.
+     * A root form (the abstract form of a word with no case or tense marking) is represented by a <code>null</code> inflection.
+     * While this constructor does not forbid you from using an instance of {@link FynotekWord.Case} as an inflection, this is not extremely useful, since Old Fynotek does not mark for case.
+     * @param word word to be converted to an OldFynotekWord.
+     * @param inflection this word's inflection, or <code>null</code> if it does not have one.
+     */
+    public OldFynotekWord(@NotNull String word, @NotNull Inflection inflection) {
+        super(word, inflection);
+    }
 
     // Private constructors
     private OldFynotekWord(@NotNull String a, @NotNull String b, @NotNull String c, @Nullable Inflection inflection) {
         super(a, b, c, inflection);
-    }
-    private OldFynotekWord(@NotNull String word, @NotNull Inflection inflection) {
-        super(word, inflection);
     }
     private OldFynotekWord(@NotNull String[] word, @NotNull Inflection inflection) {
         super(word, inflection);
