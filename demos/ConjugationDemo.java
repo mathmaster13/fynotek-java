@@ -2,13 +2,14 @@ import java.util.Scanner;
 import com.mathmaster13.fynotek.FynotekWord;
 import com.mathmaster13.fynotek.FynotekWord.Case;
 import com.mathmaster13.fynotek.FynotekParent.Tense;
+import com.mathmaster13.fynotek.Inflection;
 
 public class ConjugationDemo {
     public static final Scanner input = new Scanner(System.in);
     public static void main(String[] args) {
         FynotekWord word = new FynotekWord(prompt("Enter a fynotek root:  "), getProper());
         System.out.println();
-        boolean isFolo = !word.isProper && word.toString().equals("folo");
+        boolean isFolo = word.equals(FynotekWord.FOLO);
 
         // Noun cases
         System.out.println("Noun Cases:");

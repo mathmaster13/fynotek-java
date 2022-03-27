@@ -1,7 +1,6 @@
 package com.mathmaster13.fynotek;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
+import org.jetbrains.annotations.Nullable;
 
 /**
  A class for handling words in an older version of Fynotek. All objects created by this class are immutable. Old Fynotek documentation can be found <a href="https://docs.google.com/document/d/1U66rWinK0Qy-xab_ifZ4KC4c95icbjSgiUk9Qc27-80/edit">here</a>.
@@ -15,16 +14,19 @@ public final class OldFynotekWord extends FynotekParent {
      @param word word to be converted to an OldFynotekWord.
      */
     public OldFynotekWord(@NotNull String word) {
-        super(word, Ablaut.NONE);
+        super(word, null);
     }
 
 
     // Private constructors
-    private OldFynotekWord(@NotNull String a, @NotNull String b, @NotNull String c, @NotNull Ablaut ablaut) {
-        super(a, b, c, ablaut);
+    private OldFynotekWord(@NotNull String a, @NotNull String b, @NotNull String c, @Nullable Inflection inflection) {
+        super(a, b, c, inflection);
     }
-    private OldFynotekWord(@NotNull String word, @NotNull Ablaut ablaut) {
-        super(word, ablaut);
+    private OldFynotekWord(@NotNull String word, @NotNull Inflection inflection) {
+        super(word, inflection);
+    }
+    private OldFynotekWord(@NotNull String[] word, @NotNull Inflection inflection) {
+        super(word, inflection);
     }
     private OldFynotekWord(@NotNull FynotekParent word) {
         super(word);
@@ -33,25 +35,38 @@ public final class OldFynotekWord extends FynotekParent {
 
     // Internal-use methods
     @Override
-    protected @NotNull OldFynotekWord ablaut(@NotNull Ablaut vowel) {
-        if (vowel == Ablaut.NONE) return this;
-        if (vowels.isEmpty()) return new OldFynotekWord(beginning, vowels, end, ablaut);
-        final String newVowels;
+    protected @NotNull String[] ablaut(@NotNull Ablaut vowel) {
+        if (vowel == Ablaut.DEFAULT || vowels.isEmpty()) return new String[]{beginning, vowels, end};
         if (vowel == Ablaut.REDUPLICATION) {
             int vowelLength = vowels.length();
             String vowelToReduplicate = (vowelLength == 1 ? vowels : Character.toString(vowels.charAt(vowelLength - 1)));
-            newVowels = vowelToReduplicate + "'" + vowelToReduplicate;
+            return new String[]{beginning + vowelToReduplicate + "'", vowelToReduplicate, end};
         } else {
             String ablautAsString = Character.toString(vowel.asChar);
-            newVowels = (vowels.equals(ablautAsString) ? Character.toString(vowel.ablautPair) : ablautAsString);
+            String newVowels = (vowels.equals(ablautAsString) ?
+                    (vowel == Ablaut.E ? "i" : Character.toString(vowel.ablautPair)) // There is a slight difference between old and modern ablaut pairs. Since Old Fynotek isn't used much, this bodged implementation will do.
+                    : ablautAsString);
+            return new String[]{beginning, newVowels, end};
         }
-        return new OldFynotekWord(beginning, newVowels, end, vowel);
     }
 
 
     // Public methods
     /**
+     {@inheritDoc}
+     If this word was inflected with a noun case through the {@link #match(FynotekParent)} function, {@link Ablaut#DEFAULT} is returned.
+     */
+    @Override
+    public @Nullable Ablaut getAblaut() {
+        if (inflection instanceof FynotekWord.Case) return Ablaut.DEFAULT;
+        return super.getAblaut();
+    }
+
+    /**
      Returns this OldFynotekWord inflected for the verb tense specified by <code>tenseOfVerb</code>. Note that <code>verbTense(Tense.GNOMIC)</code> and <code>verbTense(Tense.HYP_GNOMIC)</code> will always return the same result.
+     This function should be called before any suffix functions, not after.
+     If a word has previously been marked for case or tense, it usually should not be marked again.
+     If this function is called on a marked word, a warning will be generated, and there is no guarantee for the result.
      @param tenseOfVerb the verb tense to inflect this OldFynotekWord for.
      @return this OldFynotekWord inflected for the specified verb tense.
      @see #match(FynotekParent)
@@ -59,7 +74,18 @@ public final class OldFynotekWord extends FynotekParent {
      */
     @Override
     public @NotNull OldFynotekWord verbTense(@NotNull Tense tenseOfVerb) {
-        return new OldFynotekWord(super.verbTense((tenseOfVerb == Tense.GNOMIC) ? Tense.HYP_GNOMIC : tenseOfVerb));
+        return new OldFynotekWord(ablaut((tenseOfVerb == Tense.GNOMIC ? Tense.HYP_GNOMIC : tenseOfVerb).getAblaut()), tenseOfVerb);
+    }
+
+    /**
+     {@inheritDoc}
+     * If the word to be matched with is a {@link FynotekWord} marked for a noun case, this word is returned with the FynotekWord's inflection, but with {@link Ablaut#DEFAULT} ablaut applied.
+     */
+    @Override
+    public @NotNull OldFynotekWord match(@NotNull FynotekParent word) {
+        if (isMarked()) previouslyMarkedWarning();
+        if (word.inflection == null || word.inflection instanceof FynotekWord.Case) return new OldFynotekWord(beginning, vowels, end, word.inflection);
+        return verbTense((Tense) word.inflection);
     }
 
     @Override
@@ -67,7 +93,7 @@ public final class OldFynotekWord extends FynotekParent {
         if (person == Person.P1) return this;
         String suffix = (person == Person.P2 ? "a" : "o");
         if (end.isEmpty()) suffix = "n" + suffix;
-        return new OldFynotekWord(this.toString() + suffix, ablaut);
+        return new OldFynotekWord(this.toString() + suffix, inflection);
     }
 
     /**

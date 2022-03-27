@@ -1,6 +1,8 @@
 package com.mathmaster13.fynotek;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.math.BigInteger;
 
 /**
@@ -9,12 +11,18 @@ import java.math.BigInteger;
  @since 1.0
  */
 public final class FynotekWord extends FynotekParent {
+    /**
+     * Represents if this FynotekWord is a proper noun or not.
+     * @see #ablaut(Ablaut)
+     * @see #properSuffix(Ablaut)
+     * @see #match(FynotekParent)
+     */
     public final boolean isProper;
 
     // Constants
-    /** The irregular word <i>folo</i>. */
+    /** The irregular word <i>folo</i>, in its completely unmarked (root) form. */
     @NotNull
-    public static final FynotekWord FOLO = new FynotekWord("fol", "o", "", Ablaut.O_NOUN, false);
+    public static final FynotekWord FOLO = new FynotekWord("fol", "o", "", null, false);
 
     private static final String[] digitList = {"", "ay", "fo", "us", "nos", "pur"};
 
@@ -58,41 +66,42 @@ public final class FynotekWord extends FynotekParent {
      @param isProper whether the word is a proper noun or not.
      */
     public FynotekWord(@NotNull String word, boolean isProper) {
-        this(word, Ablaut.NONE, isProper);
+        this(word, null, isProper);
     }
     /**
      Converts a String into a FynotekWord. The word is assumed not to be a proper noun. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
      @param word word to be converted to a FynotekWord.
      */
     public FynotekWord(@NotNull String word) {
-        this(word, Ablaut.NONE, false);
+        this(word, null, false);
     }
 
     // Private constructors
-    /** Does not do a folo check; this is the manual constructor */
-    private FynotekWord(@NotNull String a, @NotNull String b, @NotNull String c, @NotNull Ablaut ablaut, boolean isProper) {
-        super(a, b, c, ablaut);
+    private FynotekWord(@NotNull String a, @NotNull String b, @NotNull String c, @Nullable Inflection inflection, boolean isProper) {
+        super(a, b, c, inflection);
         this.isProper = isProper;
     }
-    private FynotekWord(@NotNull String word, @NotNull Ablaut ablaut, boolean isProper) {
-        super(word, (word.equals("folo") && !isProper) ? Ablaut.O_NOUN : ablaut);
+    private FynotekWord(@NotNull String[] word, @Nullable Inflection inflection, boolean isProper) {
+        super(word, inflection);
+        this.isProper = isProper;
+    }
+    private FynotekWord(@NotNull String word, @Nullable Inflection inflection, boolean isProper) {
+        super(word, inflection);
         this.isProper = isProper;
     }
     private FynotekWord(@NotNull FynotekParent word) {
         this(word, false);
     }
     private FynotekWord(@NotNull FynotekParent word, boolean isProper) {
-        super(word.beginning, word.vowels, word.end, (word.toString().equals("folo") && !isProper) ? Ablaut.O_NOUN : Ablaut.NONE);
+        super(word.beginning, word.vowels, word.end, null);
         this.isProper = isProper;
     }
 
 
     // Internal-use methods
     @Override
-    protected @NotNull FynotekWord ablaut(@NotNull Ablaut vowel) {
-        if (this.toString().equals("folo") && vowel == Ablaut.O_NOUN) return this;
-        if (vowel == Ablaut.NONE) return this;
-        if (vowels.isEmpty()) return new FynotekWord(beginning, vowels, end, ablaut, isProper);
+    protected @NotNull String[] ablaut(@NotNull Ablaut vowel) {
+        if (vowel == Ablaut.DEFAULT || vowels.isEmpty()) return new String[]{beginning, vowels, end};
         String newVowels = vowels;
         if (vowel == Ablaut.REDUPLICATION) {
             if (newVowels.length() == 1 || newVowels.charAt(0) != newVowels.charAt(1) ) {
@@ -113,20 +122,21 @@ public final class FynotekWord extends FynotekParent {
                 }
             }
         }
-        return new FynotekWord(beginning, newVowels, end, vowel, isProper);
+        return new String[]{beginning, newVowels, end};
     }
 
-    private @NotNull FynotekWord properSuffix(@NotNull Ablaut vowel) {
-        if (vowel == Ablaut.NONE) return this;
+    private @NotNull String[] properSuffix(@NotNull Ablaut vowel) {
+        if (vowel == Ablaut.DEFAULT) return new String[]{beginning, vowels, end};
         if (vowel == Ablaut.REDUPLICATION) {
             int vowelLength = vowels.length();
-            if (vowelLength == 0) return this;
+            if (vowelLength == 0) return new String[]{beginning, vowels, end};
             String vowelToReduplicate = (vowelLength == 1 ? vowels : Character.toString(vowels.charAt(vowelLength - 1)));
-            return this.suffix(vowelToReduplicate + vowelToReduplicate);
+            FynotekWord output = this.suffix(vowelToReduplicate + vowelToReduplicate);
+            return new String[]{output.beginning, output.vowels, output.end};
         } else {
             String suffix = Character.toString(vowel.asChar);
-            if (end.length() == 0 && vowels.length() >= 2) suffix = "n" + suffix;
-            return new FynotekWord(this.toString() + suffix, vowel, isProper);
+            boolean addN = (end.length() == 0 && vowels.length() >= 2);
+            return new String[]{addN ? beginning + vowels + "n" : beginning, addN ? suffix : vowels + suffix, end};
         }
     }
 
@@ -182,23 +192,36 @@ public final class FynotekWord extends FynotekParent {
 
 
     // Public methods
+    @Override
+    public @Nullable Ablaut getAblaut() {
+        if (this.looseEquals(FOLO) && inflection == Case.ACCUSATIVE) return Ablaut.DEFAULT;
+        return super.getAblaut();
+    }
+
     /**
      Returns this FynotekWord inflected for the noun case specified by <code>caseOfNoun</code>. Note that the word "folo" as a common noun cannot be marked for the nominative case, and doing so throws an <code>IllegalArgumentException</code>.
+     This function should be called before any suffix functions, not after.
+     If a word has previously been marked for case or tense, it usually should not be marked again.
+     If this function is called on a marked word, a warning will be generated, and there is no guarantee for the result.
      @param caseOfNoun the noun case to inflect this FynotekWord for.
      @return this FynotekWord inflected for the specified noun case.
      @see #match(FynotekParent)
      */
     public @NotNull FynotekWord nounCase(@NotNull Case caseOfNoun) throws IllegalArgumentException {
-        if (caseOfNoun == Case.NOMINATIVE) {
-            if (this.toString().equals("folo") && !isProper) throw new IllegalArgumentException("\"folo\" cannot be marked for the nominative case");
-            return this;
+        if (this.equals(FOLO)) {
+            if (caseOfNoun == Case.NOMINATIVE) throw new IllegalArgumentException("\"folo\" cannot be marked for the nominative case");
+            if (caseOfNoun == Case.ACCUSATIVE) return new FynotekWord("fol", "o", "", Case.ACCUSATIVE, false);
         }
+        if (isMarked()) previouslyMarkedWarning();
         // While there is an actual suffix function, I prefer to leave this simplified ome in for speed.
-        return (isProper ? this.properSuffix(caseOfNoun.ablaut) : this.ablaut(caseOfNoun.ablaut));
+        return new FynotekWord((isProper ? this.properSuffix(caseOfNoun.ablaut) : this.ablaut(caseOfNoun.ablaut)), caseOfNoun, isProper);
     }
 
     /**
      Returns this FynotekWord inflected for the verb tense (if this word is not a proper noun) or verb modifier form (if this word is a proper noun or the word <i>folo</i>) specified by <code>tenseOfVerb</code>.
+     This function should be called before any suffix functions, not after.
+     If a word has previously been marked for case or tense, it usually should not be marked again.
+     If this function is called on a marked word, a warning will be generated, and there is no guarantee for the result.
      @param tenseOfVerb the verb tense to inflect this FynotekWord for.
      @return this FynotekWord inflected for the specified verb tense.
      @see #match(FynotekParent)
@@ -206,8 +229,8 @@ public final class FynotekWord extends FynotekParent {
      */
     @Override
     public @NotNull FynotekWord verbTense(@NotNull Tense tenseOfVerb) {
-        if (!isProper) return new FynotekWord(super.verbTense(tenseOfVerb));
-        return properSuffix(tenseOfVerb.ablaut); // Verb modifier forms for proper nouns
+        if (isMarked()) previouslyMarkedWarning();
+        return new FynotekWord(isProper ? properSuffix(tenseOfVerb.getAblaut()) : ablaut(tenseOfVerb.getAblaut()), tenseOfVerb, isProper);
     }
 
     /**
@@ -234,7 +257,7 @@ public final class FynotekWord extends FynotekParent {
                 output += suffix;
             }
         }
-        return new FynotekWord(output, ablaut, isProper);
+        return new FynotekWord(output, inflection, isProper);
     }
 
     // The prefix function just calls the suffix function on the reverse of the input, then reverses it back.
@@ -250,21 +273,19 @@ public final class FynotekWord extends FynotekParent {
         FynotekWord reverseWord = new FynotekWord(temp.reverse().toString());
         temp = new StringBuilder(prefix);
         temp = new StringBuilder(reverseWord.suffix(temp.reverse().toString()).toString());
-        return new FynotekWord(temp.reverse().toString(), ablaut, isProper);
+        return new FynotekWord(temp.reverse().toString(), inflection, isProper);
     }
 
     /**
-     Returns this FynotekWord inflected for the same case or tense as <code>word</code>.
-     @param word the FynotekWord or OldFynotekWord to match this word's inflection with.
-     @return this FynotekWord inflected for the same case or tense as <code>word</code>.
+     {@inheritDoc}
      @see #nounCase(Case)
-     @see #verbTense(Tense)
      */
     @Override
     public @NotNull FynotekWord match(@NotNull FynotekParent word) {
-        Ablaut ablaut = word.ablaut;
-        if (word instanceof FynotekWord) return (isProper ? properSuffix(ablaut) : ablaut(ablaut));
-        return new FynotekWord(super.match(word));
+        if (isMarked()) previouslyMarkedWarning();
+        if (word.inflection == null) return this;
+        if (word.inflection instanceof Case caseOfNoun) return nounCase(caseOfNoun);
+        return verbTense((Tense) word.inflection);
     }
 
     @Override
@@ -310,11 +331,17 @@ public final class FynotekWord extends FynotekParent {
     /**
      * Represents the case of a Fynotek noun.
      * @see #nounCase(Case)
+     * @since 2.0
      */
-    public enum Case {
-        NOMINATIVE(Ablaut.NONE), ACCUSATIVE(Ablaut.O_NOUN), GENITIVE(Ablaut.I), DATIVE(Ablaut.A);
+    public enum Case implements Inflection {
+        NOMINATIVE(Ablaut.DEFAULT), ACCUSATIVE(Ablaut.O), GENITIVE(Ablaut.I), DATIVE(Ablaut.A);
 
         private final Ablaut ablaut;
+
+        @Override
+        public @NotNull Ablaut getAblaut() {
+            return ablaut;
+        }
 
         Case(Ablaut ablaut) {
             this.ablaut = ablaut;
