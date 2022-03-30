@@ -2,10 +2,11 @@ import java.util.Scanner;
 import java.util.HashMap;
 
 /**
- * A stripped-down version of the FynotekWord class that contains only methods needed to run ConjugationDemo.java (here called FynotekConjugator).
- * The version of ConjugationDemo here is old and only maintained for bugfixes.
+ * A stripped-down version of the FynotekWord class that contains only methods needed to run InflectionDemo.java (here called FynotekConjugator).
+ * The versions of InflectionDemo and FynotekWord here are old and only maintained for bugfixes.
  * Some methods are only partially implemented, because they do not need all of their functionality for this specific program.
  * If you'd like to examine the full FynotekWord library, please use the files on GitHub and not this one.
+ * The main purpose of this code is to be simple and compatible with Java 8.
 */
 public class FynotekConjugator {
     private static final Scanner input = new Scanner(System.in);
@@ -20,6 +21,7 @@ public class FynotekConjugator {
         System.out.println("Accusative:  " + word.nounCase('a'));
         System.out.println("Genitive:  " + word.nounCase('g'));
         System.out.println("Dative:  " + word.nounCase('d'));
+        System.out.println("Other:  " + word); // for consistency with newer versions of this program
         System.out.println();
 
         // Verb tenses or modifier forms, if the word is not a proper noun or "folo"

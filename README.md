@@ -10,7 +10,7 @@ See the [javadoc](https://mathmaster13.github.io/fynotek-java/javadoc/overview-t
 All binaries were compiled with Java 17, but compiling from Java 15 may be possible. However, only Java versions 17 and later are supported.
 Using any of this project with Kotlin is also supported.
 
-There is an older version of `ConjugationDemo` [here](https://mathmaster13.github.io/fynotek-java/conjugator/index.html) which is compiled with Java 8 and can probably be compiled to run on even earlier versions, but it does not recieve feature updates, only bugfixes.
+There is an older version of `InflectionDemo` [here](https://mathmaster13.github.io/fynotek-java/conjugator/index.html) which is compiled with Java 8 and can probably be compiled to run on even earlier versions, but it does not recieve feature updates, only bugfixes.
 
 ## Demos
 Demos can be found in the [demos](demos) folder. See [RUNNING.md](RUNNING.md) for info on how to run demos. The `fynotek` package itself is at [com/mathmaster13/fynotek](com/mathmaster13/fynotek).

@@ -3,7 +3,8 @@ import com.mathmaster13.fynotek.FynotekWord;
 import com.mathmaster13.fynotek.FynotekWord.Case;
 import com.mathmaster13.fynotek.FynotekParent.Tense;
 
-public class ConjugationDemo {
+// Formerly ConjugationDemo
+public class InflectionDemo {
     public static final Scanner input = new Scanner(System.in);
     public static void main(String[] args) {
         FynotekWord word = new FynotekWord(prompt("Enter a fynotek root:  "), getProper());
@@ -16,6 +17,7 @@ public class ConjugationDemo {
         System.out.println("Accusative:  " + word.nounCase(Case.ACCUSATIVE));
         System.out.println("Genitive:  " + word.nounCase(Case.GENITIVE));
         System.out.println("Dative:  " + word.nounCase(Case.DATIVE));
+        System.out.println("Other:  " + word.nounCase(Case.OTHER));
         System.out.println();
 
         // Verb tenses or modifier forms, if the word is not a proper noun or "folo"
