@@ -5,7 +5,7 @@ Download a jar file from the [releases](https://github.com/mathmaster13/fynotek-
 
 Run a demo (do not add the `.java` extension to the demo name):
 ```
-java -cp fynotek-<version>.jar <demo name>
+java -cp file-name.jar <demo name>
 ```
 
 ## Running from source
@@ -13,9 +13,7 @@ Clone the repo:
 ```
 git clone https://github.com/mathmaster13/fynotek-java.git
 ```
-Copy the `com` folder to `fynotek-java/demos`.
-
-Run the rest of the commands here in `fynotek-java/demos`.
+Copy all files in the `demos` folder to the source root.
 
 Compile the library:
 ```

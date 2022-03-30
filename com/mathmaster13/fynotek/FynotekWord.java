@@ -6,9 +6,9 @@ import org.jetbrains.annotations.Nullable;
 import java.math.BigInteger;
 
 /**
- A class for handling words in Fynotek, a conlang by mochaspen. All objects created by this class are immutable. Fynotek documentarion can be found <a href="https://aspenlangs.neocities.org/fyndoc.html">here</a>.
- @author mathmaster13
- @since 1.0
+ * A class for handling words in Fynotek, a conlang by mochaspen. All objects created by this class are immutable. Fynotek documentarion can be found <a href="https://aspenlangs.neocities.org/fyndoc.html">here</a>.
+ * @author mathmaster13
+ * @since 1.0
  */
 public final class FynotekWord extends FynotekParent {
     /**
@@ -52,8 +52,8 @@ public final class FynotekWord extends FynotekParent {
     }
 
     /**
-     The maximum integer supported by Fynotek's number system. You can compare if a number <code>x</code> is too large or small with <code>(x.abs().compareTo(MAX_MAGNITUDE) &gt; 0)</code>.
-     @see #number(BigInteger)
+     * The maximum integer supported by Fynotek's number system. You can compare if a number <code>x</code> is too large or small with <code>(x.abs().compareTo(MAX_MAGNITUDE) &gt; 0)</code>.
+     * @see #number(BigInteger)
      */
     @NotNull
     public static final BigInteger MAX_MAGNITUDE = new BigInteger(new byte[]{43, 86, -44, -81, -113, 121, 50, 39, -116, 121, 126, -67, 0, -1, -1, -1, -1, -1, -1, -1, -1});
@@ -64,27 +64,27 @@ public final class FynotekWord extends FynotekParent {
 
     // Public constructors
     /**
-     Converts a String and a boolean to a FynotekWord. The String contains the word itself, while the boolean represents whether the word is a proper noun: <code>true</code> if it is, and <code>false</code> if it is not. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
-     This constructor assumes that a word is in its root form, with no inflection.
-     @param word word to be converted to a FynotekWord.
-     @param isProper <code>true</code> if this word is a proper noun, or <code>false</code> if it is not.
+     * Converts a String and a boolean to a FynotekWord. The String contains the word itself, while the boolean represents whether the word is a proper noun: <code>true</code> if it is, and <code>false</code> if it is not. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
+     * This constructor assumes that a word is in its root form, with no inflection.
+     * @param word word to be converted to a FynotekWord.
+     * @param isProper <code>true</code> if this word is a proper noun, or <code>false</code> if it is not.
      */
     public FynotekWord(@NotNull String word, boolean isProper) {
         this(word, null, isProper);
     }
     /**
-     Converts a String to a FynotekWord. The word is assumed not to be a proper noun. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
-     This constructor assumes that a word is in its root form, with no inflection.
-     @param word word to be converted to a FynotekWord.
+     * Converts a String to a FynotekWord. The word is assumed not to be a proper noun. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
+     * This constructor assumes that a word is in its root form, with no inflection.
+     * @param word word to be converted to a FynotekWord.
      */
     public FynotekWord(@NotNull String word) {
         this(word, null, false);
     }
     /**
-     Converts a String to a FynotekWord, and marks the word as having the specified inflection.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>), and the word will always be converted to lowercase.
-     This constructor should be used with words known at compile time.
-     For example, the accusative form of the word "hyr" is "hor", and would be created with <code>new FynotekWord("hor", Case.ACCUSATIVE, false)</code>.
-     A root form (the abstract form of a word with no case or tense marking) is represented by a <code>null</code> inflection.
+     * Converts a String to a FynotekWord, and marks the word as having the specified inflection.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>), and the word will always be converted to lowercase.
+     * This constructor should be used with words known at compile time, or with words known to be marked for the present tense or the {@link Case#OTHER OTHER} case (since those forms and root forms are identical as strings).
+     * For example, the accusative form of the word "hyr" is "hor", and would be created with <code>new FynotekWord("hor", Case.ACCUSATIVE, false)</code>.
+     * A root form (the abstract form of a word with no case or tense marking) is represented by a <code>null</code> inflection.
      @param word word to be converted to a FynotekWord.
      @param inflection this word's inflection, or <code>null</code> if it does not have one.
      @param isProper <code>true</code> if this word is a proper noun, or <code>false</code> if it is not.
@@ -130,7 +130,7 @@ public final class FynotekWord extends FynotekParent {
             if (vowels.charAt(vowels.length() - 1) != vowel.asChar) {
                 newVowels = (vowels.length() == 1 ? Character.toString(vowel.asChar) : (Character.toString(vowels.charAt(0)) + vowel.asChar));
             } else {
-                newVowels += vowel.ablautPair;
+                newVowels += vowel.secondary;
                 if (newVowels.length() > 2) {
                     newVowels = newVowels.substring(newVowels.length()-2);
                 }
@@ -213,45 +213,52 @@ public final class FynotekWord extends FynotekParent {
     }
 
     /**
-     Returns this FynotekWord inflected for the noun case specified by <code>caseOfNoun</code>. Note that the word "folo" as a common noun cannot be marked for the nominative case, and doing so throws an <code>IllegalArgumentException</code>.
-     This function should be called before any suffix functions, not after.
-     If a word has previously been marked for case or tense, it usually should not be marked again.
-     If this function is called on a marked word, a warning will be generated, and there is no guarantee for the result.
-     @param caseOfNoun the noun case to inflect this FynotekWord for.
-     @return this FynotekWord inflected for the specified noun case.
-     @see #match(FynotekParent)
+     * Returns a copy of this FynotekWord inflected for the noun case specified by <code>caseOfNoun</code>. Note that the word "folo" as a common noun cannot be marked for the nominative case, and doing so throws an <code>IllegalArgumentException</code>.
+     * This method should be called before any suffix methods, not after.
+     *
+     * If a word has previously been marked for case or tense, it usually should not be marked again.
+     * If this method is called on a marked word, there is no guarantee for the result.
+     * Check for marking with {@link #isMarked()}.
+     * @param caseOfNoun the noun case to inflect this FynotekWord for.
+     * @return this FynotekWord inflected for the specified noun case.
+     * @see #match(FynotekParent)
+     * @see #isMarked()
      */
     public @NotNull FynotekWord nounCase(@NotNull Case caseOfNoun) throws IllegalArgumentException {
         if (this.equals(FOLO)) {
             if (caseOfNoun == Case.NOMINATIVE) throw new IllegalArgumentException("\"folo\" cannot be marked for the nominative case");
             if (caseOfNoun == Case.ACCUSATIVE) return new FynotekWord("fol", "o", "", Case.ACCUSATIVE, false);
         }
-        if (isMarked()) previouslyMarkedWarning();
         // While there is an actual suffix function, I prefer to leave this simplified ome in for speed.
         return new FynotekWord((isProper ? this.properSuffix(caseOfNoun.ablaut) : this.ablaut(caseOfNoun.ablaut)), caseOfNoun, isProper);
     }
 
     /**
-     Returns this FynotekWord inflected for the verb tense (if this word is not a proper noun) or verb modifier form (if this word is a proper noun or the word <i>folo</i>) specified by <code>tenseOfVerb</code>.
-     This function should be called before any suffix functions, not after.
-     If a word has previously been marked for case or tense, it usually should not be marked again.
-     If this function is called on a marked word, a warning will be generated, and there is no guarantee for the result.
-     @param tenseOfVerb the verb tense to inflect this FynotekWord for.
-     @return this FynotekWord inflected for the specified verb tense.
-     @see #match(FynotekParent)
-     @see FynotekParent#verbTense(Tense)
+     * Returns a copy of this FynotekWord inflected for the verb tense (if this word is not a proper noun) or verb modifier form (if this word is a proper noun or the word <i>folo</i>) specified by <code>tenseOfVerb</code>.
+     * This method should be called before any suffix methods, not after.
+     *
+     * If a word has previously been marked for case or tense, it usually should not be marked again.
+     * If this method is called on a marked word, there is no guarantee for the result.
+     * Check for marking with {@link #isMarked()}.
+     * @param tenseOfVerb the verb tense to inflect this FynotekWord for.
+     * @return this FynotekWord inflected for the specified verb tense.
+     * @see #match(FynotekParent)
+     * @see FynotekParent#verbTense(Tense)
      */
     @Override
     public @NotNull FynotekWord verbTense(@NotNull Tense tenseOfVerb) {
-        if (isMarked()) previouslyMarkedWarning();
         return new FynotekWord(isProper ? properSuffix(tenseOfVerb.getAblaut()) : ablaut(tenseOfVerb.getAblaut()), tenseOfVerb, isProper);
     }
 
     /**
-     Returns a FynotekWord with the specified suffix appended to the end of this word. If the suffix creates a phonotactically invalid sequence, <i>n</i> or <i>a</i> will be infixed as needed to make the resulting word phonotactically valid.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>suffix</code>).
-     @param suffix the suffix to be appended to the end of this FynotekWord.
-     @return a FynotekWord with the specified suffix appended to the end of it.
-     @see #prefix(String)
+     * Returns a new FynotekWord with the specified suffix appended to the end of this word.
+     * If the suffix creates a phonotactically invalid sequence, <i>n</i> or <i>a</i> will be infixed as needed to make the resulting word phonotactically valid.
+     * Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>suffix</code>).
+     *
+     * This method applies a suffix, so no inflections should be called on a word after this method is called on it.
+     * @param suffix the suffix to be appended to the end of this FynotekWord
+     * @return a FynotekWord with the specified suffix appended to the end of it.
+     * @see #prefix(String)
      */
     public @NotNull FynotekWord suffix(@NotNull String suffix) {
         if (suffix.isEmpty()) return this;
@@ -274,12 +281,12 @@ public final class FynotekWord extends FynotekParent {
         return new FynotekWord(output, inflection, isProper);
     }
 
-    // The prefix function just calls the suffix function on the reverse of the input, then reverses it back.
+    // The prefix function just calls the function method on the reverse of the input, then reverses it back.
     /**
-     Returns a FynotekWord with the specified prefix appended to the beginning of this word. If the prefix creates a phonotactically invalid sequence, <i>n</i> or <i>a</i> will be infixed as needed to make the resulting word phonotactically valid.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called in the <code>suffix</code> method).
-     @param prefix the prefix to be appended to the beginning of this FynotekWord.
-     @return a FynotekWord with the specified prefix appended to the beginning of it.
-     @see #suffix(String)
+     * Returns a new FynotekWord with the specified prefix appended to the beginning of this word. If the prefix creates a phonotactically invalid sequence, <i>n</i> or <i>a</i> will be infixed as needed to make the resulting word phonotactically valid.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called in the <code>suffix</code> method).
+     * @param prefix the prefix to be appended to the beginning of this FynotekWord.
+     * @return a FynotekWord with the specified prefix appended to the beginning of it.
+     * @see #suffix(String)
      */
     public @NotNull FynotekWord prefix(@NotNull String prefix) {
         if (prefix.isEmpty()) return this;
@@ -291,12 +298,11 @@ public final class FynotekWord extends FynotekParent {
     }
 
     /**
-     {@inheritDoc}
-     @see #nounCase(Case)
+     * {@inheritDoc}
+     * @see #nounCase(Case)
      */
     @Override
     public @NotNull FynotekWord match(@NotNull FynotekParent word) {
-        if (isMarked()) previouslyMarkedWarning();
         if (word.inflection == null) return this;
         if (word.inflection instanceof Case caseOfNoun) return nounCase(caseOfNoun);
         return verbTense((Tense) word.inflection);
@@ -311,11 +317,11 @@ public final class FynotekWord extends FynotekParent {
 
     // Static methods
     /**
-     Returns the Fynotek translation of the specified number. If the number's absolute value is greater than <code>MAX_MAGNITUDE</code>, an empty String is returned.
-     @param num the number to be translated.
-     @return the Fynotek translation of the specified number.
-     @throws IllegalArgumentException If the number provided is too large for the number system to handle.
-     @see #MAX_MAGNITUDE
+     * Returns the Fynotek translation of the specified number. If the number's absolute value is greater than <code>MAX_MAGNITUDE</code>, an empty String is returned.
+     * @param num the number to be translated.
+     * @return the Fynotek translation of the specified number.
+     * @throws IllegalArgumentException If the number provided is too large for the number system to handle.
+     * @see #MAX_MAGNITUDE
      */
     public static @NotNull String number(@NotNull BigInteger num) {
         if (num.abs().compareTo(MAX_MAGNITUDE) > 0) throw new IllegalArgumentException("Number is too large");
@@ -323,9 +329,9 @@ public final class FynotekWord extends FynotekParent {
     }
 
     /**
-     Returns the Fynotek translation of the specified number.
-     @param num the number to be translated.
-     @return the Fynotek translation of the specified number.
+     * Returns the Fynotek translation of the specified number.
+     * @param num the number to be translated.
+     * @return the Fynotek translation of the specified number.
      */
     public static @NotNull String number(long num) {
         return number(Long.toString(Math.abs(num), 6), (Math.signum(num) == -1));
@@ -333,9 +339,9 @@ public final class FynotekWord extends FynotekParent {
 
 
     /**
-     Returns whether the given sequence is phonotactically and orthographically valid in Fynotek. Capitalization is ignored (for example, <code>"A"</code> and <code>"a"</code> are treated the same way). Multiple words can be separated by whitespace, and this function will only return <code>true</code> if all words in <code>sequence</code> are valid.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>sequence</code>). A sequence containing punctuation marks, numbers, or other non-letter characters returns <code>false</code>, as well as an empty sequence or one containing only whitespace.
-     @param sequence the sequence to be checked for validity.
-     @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
+     * Returns whether the given sequence is phonotactically and orthographically valid in Fynotek. Capitalization is ignored (for example, <code>"A"</code> and <code>"a"</code> are treated the same way). Multiple words can be separated by whitespace, and this method will only return <code>true</code> if all words in <code>sequence</code> are valid.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>sequence</code>). A sequence containing punctuation marks, numbers, or other non-letter characters returns <code>false</code>, as well as an empty sequence or one containing only whitespace.
+     * @param sequence the sequence to be checked for validity.
+     * @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
      */
     public static boolean isValidSequence(@NotNull String sequence) {
         return FynotekParent.isValidSequence(sequence, "[aeiouyptkmnñrfshjwl\\s]", (byte) 3, false);
@@ -348,15 +354,36 @@ public final class FynotekWord extends FynotekParent {
      * @since 2.0
      */
     public enum Case implements Inflection {
-        NOMINATIVE(Ablaut.DEFAULT), ACCUSATIVE(Ablaut.O), GENITIVE(Ablaut.I), DATIVE(Ablaut.A);
+        /**
+         * Represents the nominative case, marked with {@link Ablaut#DEFAULT DEFAULT} ablaut.
+         * The word "folo" cannot be inflected as this case.
+         *
+         * @see #FOLO
+         */
+        NOMINATIVE(Ablaut.DEFAULT),
+        /** Represents the accusative case, usually marked with {@link Ablaut#O O} ablaut. */
+        ACCUSATIVE(Ablaut.O),
+        /** Represents the genitive case, marked with {@link Ablaut#I I} ablaut. */
+        GENITIVE(Ablaut.I),
+        /** Represents the dative case, marked with {@link Ablaut#A A} ablaut. */
+        DATIVE(Ablaut.A),
+        /**
+         * Represents any other case not given a constant here, such as prepositional cases.
+         * In essence, it is the "default" case, and as such is inflected using {@link Ablaut#DEFAULT DEFAULT} ablaut.
+         * Unlike the {@link #NOMINATIVE} case, "folo" can be inflected as this case.
+         *
+         * Note that this does <i>not</i> represent the root form of a word (the morpheme itself which is not inflected at all)—that is represented by a <code>null</code> inflection.
+         */
+        OTHER(Ablaut.DEFAULT);
 
         private final Ablaut ablaut;
 
         /**
-         * Gets the ablaut corresponding to this noun case.
-         * This method only gives the <i>typical</i> ablaut used, and does not account for irregular words. For that, use {@link FynotekWord#getAblaut()}.
-         * @return the ablaut corresponding to this noun case.
-         * @see FynotekWord#getAblaut()
+         * Returns the ablaut associated with this noun case.
+         * This method only gives the <i>typical</i> ablaut used (stored in a final field), and does not account for irregular words (such as "folo"). For that, use {@link FynotekParent#getAblaut()}.
+         * @return the ablaut associated with this noun case.
+         * @see FynotekParent#getAblaut()
+         * @see #FOLO
          */
         @Override
         public @NotNull Ablaut getAblaut() {

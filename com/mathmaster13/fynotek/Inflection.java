@@ -8,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public sealed interface Inflection permits FynotekWord.Case, FynotekParent.Tense {
     /**
-     * Returns the ablaut type associated with this Inflection.
+     * Returns the ablaut associated with this Inflection.
      * If you need to get the ablaut of a specific word, use {@link FynotekParent#getAblaut()} and <i>not</i> this function.
-     * @return the ablaut type associated with this Inflection.
+     * @return the ablaut associated with this Inflection.
      * @see FynotekParent#getAblaut()
      */
-    public @NotNull FynotekParent.Ablaut getAblaut();
+    @NotNull FynotekParent.Ablaut getAblaut();
 }
