@@ -8,7 +8,7 @@ See the [javadoc](https://mathmaster13.github.io/fynotek-java/javadoc/overview-t
 
 ## Compatibility
 All binaries were compiled with Java 17, but compiling from Java 15 may be possible. However, only Java versions 17 and later are supported.
-Using any of this project with Kotlin is also supported.
+Using any part of this project with Kotlin is also supported.
 
 There is an older version of `InflectionDemo` [here](https://mathmaster13.github.io/fynotek-java/conjugator/index.html) which is compiled with Java 8 and can probably be compiled to run on even earlier versions, but it does not recieve feature updates, only bugfixes.
 
