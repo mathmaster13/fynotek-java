@@ -3,6 +3,8 @@
 ## Running from `.jar` file
 Download a jar file from the [releases](https://github.com/mathmaster13/fynotek-java/releases/latest).
 
+If you are using version 2.0 or greater, the file name should contain `with-demos`.
+
 Run a demo (do not add the `.java` extension to the demo name):
 ```
 java -cp file-name.jar <demo name>
@@ -17,7 +19,7 @@ Copy all files in the `demos` folder to the source root.
 
 Compile the library:
 ```
-javac com/mathmaster13/fynotek/*
+javac com/mathmaster13/fynotek/*.java
 ```
 
 Compile and run a demo:
