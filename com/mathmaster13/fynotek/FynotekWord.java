@@ -225,7 +225,7 @@ public final class FynotekWord extends BaseFynotekWord {
      * @see #isMarked()
      */
     public @NotNull FynotekWord nounCase(@NotNull Case caseOfNoun) throws IllegalArgumentException {
-        if (this.equals(FOLO)) {
+        if (this.toString().equals("folo") && !isProper) {
             if (caseOfNoun == Case.NOMINATIVE) throw new IllegalArgumentException("\"folo\" cannot be marked for the nominative case");
             if (caseOfNoun == Case.ACCUSATIVE) return new FynotekWord("fol", "o", "", Case.ACCUSATIVE, false);
         }
