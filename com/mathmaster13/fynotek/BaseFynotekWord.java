@@ -15,23 +15,23 @@ import java.util.Objects;
  * @author mathmaster13
  * @since 1.0
  */
-public abstract sealed class FynotekParent permits FynotekWord, OldFynotekWord {
+public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord {
     /**
      * The part of a Fynotek word before its final vowel or diphthong.
-     * @see #FynotekParent(String)
+     * @see #BaseFynotekWord(String)
      */
     @NotNull
     public final String beginning;
     /**
      * A Fynotek word's final vowel or diphthong.
-     * @see #FynotekParent(String)
+     * @see #BaseFynotekWord(String)
      * @see #ablaut(Ablaut)
      */
     @NotNull
     public final String vowels;
     /**
      * The part of a Fynotek word after its final vowel or diphthong.
-     * @see #FynotekParent(String)
+     * @see #BaseFynotekWord(String)
      */
     @NotNull
     public final String end;
@@ -40,7 +40,7 @@ public abstract sealed class FynotekParent permits FynotekWord, OldFynotekWord {
      * A <code>null</code> value represents a word's root form.
      * @since 2.0
      * @see #isMarked()
-     * @see #match(FynotekParent)
+     * @see #match(BaseFynotekWord)
      * @see FynotekWord#nounCase(FynotekWord.Case)
      * @see #verbTense(Tense)
      */
@@ -75,7 +75,7 @@ public abstract sealed class FynotekParent permits FynotekWord, OldFynotekWord {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        FynotekParent that = (FynotekParent) o;
+        BaseFynotekWord that = (BaseFynotekWord) o;
 
         if (!beginning.equals(that.beginning)) return false;
         if (!vowels.equals(that.vowels)) return false;
@@ -95,24 +95,24 @@ public abstract sealed class FynotekParent permits FynotekWord, OldFynotekWord {
 
     // Public constructors
     /**
-     * Converts a String to a FynotekParent. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
+     * Converts a String to a BaseFynotekWord. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
      * This constructor assumes that a word is in its root form, with no inflection.
-     * @param word word to be converted to a FynotekParent.
+     * @param word word to be converted to a BaseFynotekWord.
      */
-    public FynotekParent(@NotNull String word) {
+    public BaseFynotekWord(@NotNull String word) {
         this(word, null);
     }
 
     /**
-     * Converts a String to a FynotekParent, and marks the word as having the specified inflection.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>), and the word will always be converted to lowercase.
+     * Converts a String to a BaseFynotekWord, and marks the word as having the specified inflection.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>), and the word will always be converted to lowercase.
      * This constructor should be used with words known at compile time, or with words known to be marked for the present tense (since the present-tense form and the root form are identical as strings).
      * A root form (the abstract form of a word with no case or tense marking) is represented by a <code>null</code> inflection.
-     * @param word word to be converted to a FynotekParent.
+     * @param word word to be converted to a BaseFynotekWord.
      * @param inflection this word's inflection, or <code>null</code> if it does not have one.
      * @see FynotekWord#FynotekWord(String, Inflection, boolean)
      * @see OldFynotekWord#OldFynotekWord(String, Inflection)
      */
-    public FynotekParent(@NotNull String word, @Nullable Inflection inflection) {
+    public BaseFynotekWord(@NotNull String word, @Nullable Inflection inflection) {
         word = word.trim().toLowerCase(); // TODO: Change implementation to preserve capitalization (maybe?)
         this.inflection = inflection;
         if (word.isEmpty()) { // If you want to re-add the null check, change the condition to (word == null || word.isEmpty())
@@ -148,7 +148,7 @@ public abstract sealed class FynotekParent permits FynotekWord, OldFynotekWord {
 
     // Private constructors
     /**
-     * Creates a FynotekParent and sets its parameters to those provided.
+     * Creates a BaseFynotekWord and sets its parameters to those provided.
      * @param beginning the part of a word before its final vowel or diphthong.
      * @param vowels a word's final vowel or diphthong.
      * @param end the part of a word after its final vowel or diphthong.
@@ -158,22 +158,22 @@ public abstract sealed class FynotekParent permits FynotekWord, OldFynotekWord {
      * @see #end
      * @see #inflection
      */
-    protected FynotekParent(@NotNull String beginning, @NotNull String vowels, @NotNull String end, @Nullable Inflection inflection) {
+    protected BaseFynotekWord(@NotNull String beginning, @NotNull String vowels, @NotNull String end, @Nullable Inflection inflection) {
         this.beginning = beginning;
         this.vowels = vowels;
         this.end = end;
         this.inflection = inflection;
     }
 
-    protected FynotekParent(@NotNull String[] word, @Nullable Inflection inflection) {
+    protected BaseFynotekWord(@NotNull String[] word, @Nullable Inflection inflection) {
         this(word[0], word[1], word[2], inflection);
     }
 
     /**
-     * Creates a new FynotekParent from an existing FynotekParent.
-     * @param word the word to be copied to the new FynotekParent.
+     * Creates a new BaseFynotekWord from an existing BaseFynotekWord.
+     * @param word the word to be copied to the new BaseFynotekWord.
      */
-    protected FynotekParent(@NotNull FynotekParent word) {
+    protected BaseFynotekWord(@NotNull BaseFynotekWord word) {
         beginning = word.beginning;
         vowels = word.vowels;
         end = word.end;
@@ -307,27 +307,27 @@ public abstract sealed class FynotekParent permits FynotekWord, OldFynotekWord {
      * If a word has previously been marked for case or tense, it usually should not be marked again.
      * If this function is called on a marked word, there is no guarantee for the result.
      * Check for marking with {@link #isMarked()}.
-     * @param tense the verb tense to inflect this FynotekParent for.
-     * @return this FynotekParent inflected for the specified verb tense.
-     * @see #match(FynotekParent)
+     * @param tense the verb tense to inflect this BaseFynotekWord for.
+     * @return this BaseFynotekWord inflected for the specified verb tense.
+     * @see #match(BaseFynotekWord)
      * @see #isMarked()
      */
-    public abstract @NotNull FynotekParent verbTense(@NotNull Tense tense);
+    public abstract @NotNull BaseFynotekWord verbTense(@NotNull Tense tense);
 
     /**
      * Returns a copy of this word inflected for the same case or tense as <code>word</code>.
      * This function should be called before any suffix functions, not after.
      * If a word has previously been marked for case or tense, it usually should not be marked again.
      * If this function is called on a marked word, a warning will be generated, and there is no guarantee for the result.
-     * @param word the FynotekParent to match this word's inflection with.
+     * @param word the BaseFynotekWord to match this word's inflection with.
      * @return this word inflected for the same case or tense as <code>word</code>.
      * @see #verbTense(Tense)
      */
-    public abstract @NotNull FynotekParent match(@NotNull FynotekParent word);
+    public abstract @NotNull BaseFynotekWord match(@NotNull BaseFynotekWord word);
 
     /**
-     * Returns whether this FynotekParent is marked or not. Specifically, returns <code>(markVowel != '\u0000')</code>. <b>Be careful:</b> this means that non-hypothetical present-tense verbs will return <code>false</code>, and in <code>FynotekWord</code> specifically nominative-case nouns will also return <code>false</code>, and "folo" in the accusative case (if "folo" is not a proper noun) will return <code>true</code>.
-     * @return <code>true</code> if this FynotekParent has been marked by ablaut or a proper noun suffix, and <code>false</code> if it has not been.
+     * Returns whether this BaseFynotekWord is marked or not. Specifically, returns <code>(markVowel != '\u0000')</code>. <b>Be careful:</b> this means that non-hypothetical present-tense verbs will return <code>false</code>, and in <code>FynotekWord</code> specifically nominative-case nouns will also return <code>false</code>, and "folo" in the accusative case (if "folo" is not a proper noun) will return <code>true</code>.
+     * @return <code>true</code> if this BaseFynotekWord has been marked by ablaut or a proper noun suffix, and <code>false</code> if it has not been.
      * @see #inflection
      */
     public final boolean isMarked() {
@@ -342,7 +342,7 @@ public abstract sealed class FynotekParent permits FynotekWord, OldFynotekWord {
      * @return this word with a suffix added to mark the first, second, or third person.
      * @see #verbTense(Tense)
      */
-    public @NotNull abstract FynotekParent personSuffix(@NotNull Person person);
+    public @NotNull abstract BaseFynotekWord personSuffix(@NotNull Person person);
 
     /**
      * Represents Fynotek ablaut. If a field is not applicable to a particular form of ablaut, a null character (<code>\u0000</code>) is used.
@@ -435,11 +435,11 @@ public abstract sealed class FynotekParent permits FynotekWord, OldFynotekWord {
 
         /**
          * Returns the ablaut associated with this verb tense.
-         * This method only gives the <i>typical</i> ablaut used (stored in a final field), and does not account for irregular words. For that, use {@link FynotekParent#getAblaut()}.
+         * This method only gives the <i>typical</i> ablaut used (stored in a final field), and does not account for irregular words. For that, use {@link BaseFynotekWord#getAblaut()}.
          *
          * The ablaut returned by this method is biased towards modern Fynotek, so {@link #GNOMIC} returns {@link Ablaut#Y} and <i>not</i> {@link Ablaut#REDUPLICATION}.
          * @return the ablaut associated with this noun case.
-         * @see FynotekParent#getAblaut()
+         * @see BaseFynotekWord#getAblaut()
          */
         @Override
         public @NotNull Ablaut getAblaut() {

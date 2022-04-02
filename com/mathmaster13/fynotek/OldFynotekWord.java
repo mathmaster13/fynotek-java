@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
  * @author mathmaster13
  * @since 1.0
  */
-public final class OldFynotekWord extends FynotekParent {
+public final class OldFynotekWord extends BaseFynotekWord {
     // Public constructors
     /**
      * Converts a String to an OldFynotekWord. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
@@ -39,7 +39,7 @@ public final class OldFynotekWord extends FynotekParent {
     private OldFynotekWord(@NotNull String[] word, @NotNull Inflection inflection) {
         super(word, inflection);
     }
-    private OldFynotekWord(@NotNull FynotekParent word) {
+    private OldFynotekWord(@NotNull BaseFynotekWord word) {
         super(word);
     }
 
@@ -65,7 +65,7 @@ public final class OldFynotekWord extends FynotekParent {
     // Public methods
     /**
      * {@inheritDoc}
-     * If this word was inflected with a noun case through the {@link #match(FynotekParent)} method, {@link Ablaut#DEFAULT} is returned.
+     * If this word was inflected with a noun case through the {@link #match(BaseFynotekWord)} method, {@link Ablaut#DEFAULT} is returned.
      */
     @Override
     public @Nullable Ablaut getAblaut() {
@@ -91,7 +91,7 @@ public final class OldFynotekWord extends FynotekParent {
      * If the word to be matched with is a {@link FynotekWord} marked for a noun case, this word is returned with the FynotekWord's inflection, but with {@link Ablaut#DEFAULT} ablaut applied.
      */
     @Override
-    public @NotNull OldFynotekWord match(@NotNull FynotekParent word) {
+    public @NotNull OldFynotekWord match(@NotNull BaseFynotekWord word) {
         if (word.inflection == null || word.inflection instanceof FynotekWord.Case) return new OldFynotekWord(beginning, vowels, end, word.inflection);
         return verbTense((Tense) word.inflection);
     }
@@ -110,6 +110,6 @@ public final class OldFynotekWord extends FynotekParent {
      * @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
      */
     public static boolean isValidSequence(@NotNull String sequence) {
-        return FynotekParent.isValidSequence(sequence, "[aeiouyptkmnñrfshjw'\\s]", (byte) 2, true);
+        return BaseFynotekWord.isValidSequence(sequence, "[aeiouyptkmnñrfshjw'\\s]", (byte) 2, true);
     }
 }

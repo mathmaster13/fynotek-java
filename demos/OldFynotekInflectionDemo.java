@@ -1,26 +1,27 @@
 import java.util.Scanner;
 
-import com.mathmaster13.fynotek.FynotekParent;
+import com.mathmaster13.fynotek.BaseFynotekWord;
 import com.mathmaster13.fynotek.OldFynotekWord;
 
+// Formerly OldFynotekConjugationDemo
 public class OldFynotekInflectionDemo {
     static Scanner input = new Scanner(System.in);
     public static void main(String[] args) {
         OldFynotekWord word = new OldFynotekWord(prompt("Enter an old fynotek root:  "));
         System.out.println();
         System.out.println("Non-Hypothetical Tenses:");
-        System.out.println("Present:  " + word.verbTense(FynotekParent.Tense.PRESENT));
-        System.out.println("Past:  " + word.verbTense(FynotekParent.Tense.PAST));
-        System.out.println("Future:  " + word.verbTense(FynotekParent.Tense.FUTURE));
+        System.out.println("Present:  " + word.verbTense(BaseFynotekWord.Tense.PRESENT));
+        System.out.println("Past:  " + word.verbTense(BaseFynotekWord.Tense.PAST));
+        System.out.println("Future:  " + word.verbTense(BaseFynotekWord.Tense.FUTURE));
         System.out.println();
 
         System.out.println("Hypothetical Tenses:");
-        System.out.println("Present:  " + word.verbTense(FynotekParent.Tense.HYP_PRESENT));
-        System.out.println("Past:  " + word.verbTense(FynotekParent.Tense.HYP_PAST));
-        System.out.println("Future:  " + word.verbTense(FynotekParent.Tense.HYP_FUTURE));
+        System.out.println("Present:  " + word.verbTense(BaseFynotekWord.Tense.HYP_PRESENT));
+        System.out.println("Past:  " + word.verbTense(BaseFynotekWord.Tense.HYP_PAST));
+        System.out.println("Future:  " + word.verbTense(BaseFynotekWord.Tense.HYP_FUTURE));
         System.out.println();
 
-        System.out.println("Gnomic Tense:  " + word.verbTense(FynotekParent.Tense.GNOMIC));
+        System.out.println("Gnomic Tense:  " + word.verbTense(BaseFynotekWord.Tense.GNOMIC));
         System.out.println();
     }
 

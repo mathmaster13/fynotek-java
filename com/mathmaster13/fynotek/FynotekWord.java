@@ -10,12 +10,12 @@ import java.math.BigInteger;
  * @author mathmaster13
  * @since 1.0
  */
-public final class FynotekWord extends FynotekParent {
+public final class FynotekWord extends BaseFynotekWord {
     /**
      * Represents if this FynotekWord is a proper noun or not.
      * @see #ablaut(Ablaut)
      * @see #properSuffix(Ablaut)
-     * @see #match(FynotekParent)
+     * @see #match(BaseFynotekWord)
      */
     public final boolean isProper;
 
@@ -103,10 +103,10 @@ public final class FynotekWord extends FynotekParent {
         super(word, inflection);
         this.isProper = isProper;
     }
-    private FynotekWord(@NotNull FynotekParent word) {
+    private FynotekWord(@NotNull BaseFynotekWord word) {
         this(word, false);
     }
-    private FynotekWord(@NotNull FynotekParent word, boolean isProper) {
+    private FynotekWord(@NotNull BaseFynotekWord word, boolean isProper) {
         super(word.beginning, word.vowels, word.end, null);
         this.isProper = isProper;
     }
@@ -221,7 +221,7 @@ public final class FynotekWord extends FynotekParent {
      * Check for marking with {@link #isMarked()}.
      * @param caseOfNoun the noun case to inflect this FynotekWord for.
      * @return this FynotekWord inflected for the specified noun case.
-     * @see #match(FynotekParent)
+     * @see #match(BaseFynotekWord)
      * @see #isMarked()
      */
     public @NotNull FynotekWord nounCase(@NotNull Case caseOfNoun) throws IllegalArgumentException {
@@ -242,8 +242,8 @@ public final class FynotekWord extends FynotekParent {
      * Check for marking with {@link #isMarked()}.
      * @param tenseOfVerb the verb tense to inflect this FynotekWord for.
      * @return this FynotekWord inflected for the specified verb tense.
-     * @see #match(FynotekParent)
-     * @see FynotekParent#verbTense(Tense)
+     * @see #match(BaseFynotekWord)
+     * @see BaseFynotekWord#verbTense(Tense)
      */
     @Override
     public @NotNull FynotekWord verbTense(@NotNull Tense tenseOfVerb) {
@@ -302,7 +302,7 @@ public final class FynotekWord extends FynotekParent {
      * @see #nounCase(Case)
      */
     @Override
-    public @NotNull FynotekWord match(@NotNull FynotekParent word) {
+    public @NotNull FynotekWord match(@NotNull BaseFynotekWord word) {
         if (word.inflection == null) return this;
         if (word.inflection instanceof Case caseOfNoun) return nounCase(caseOfNoun);
         return verbTense((Tense) word.inflection);
@@ -344,7 +344,7 @@ public final class FynotekWord extends FynotekParent {
      * @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
      */
     public static boolean isValidSequence(@NotNull String sequence) {
-        return FynotekParent.isValidSequence(sequence, "[aeiouyptkmnñrfshjwl\\s]", (byte) 3, false);
+        return BaseFynotekWord.isValidSequence(sequence, "[aeiouyptkmnñrfshjwl\\s]", (byte) 3, false);
     }
 
 
@@ -380,9 +380,9 @@ public final class FynotekWord extends FynotekParent {
 
         /**
          * Returns the ablaut associated with this noun case.
-         * This method only gives the <i>typical</i> ablaut used (stored in a final field), and does not account for irregular words (such as "folo"). For that, use {@link FynotekParent#getAblaut()}.
+         * This method only gives the <i>typical</i> ablaut used (stored in a final field), and does not account for irregular words (such as "folo"). For that, use {@link BaseFynotekWord#getAblaut()}.
          * @return the ablaut associated with this noun case.
-         * @see FynotekParent#getAblaut()
+         * @see BaseFynotekWord#getAblaut()
          * @see #FOLO
          */
         @Override

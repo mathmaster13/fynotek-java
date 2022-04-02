@@ -1,7 +1,7 @@
 import java.util.Scanner;
 import com.mathmaster13.fynotek.FynotekWord;
 import com.mathmaster13.fynotek.FynotekWord.Case;
-import com.mathmaster13.fynotek.FynotekParent.Tense;
+import com.mathmaster13.fynotek.BaseFynotekWord.Tense;
 
 // Formerly ConjugationDemo
 public class InflectionDemo {
