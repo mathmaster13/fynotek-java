@@ -38,7 +38,10 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
     /**
      * Represents the case or tense that this word is marked with.
      * A <code>null</code> value represents a word's root form.
+     *
+     * Note that a root form is <i>not</i> the same as a word marked for the present tense—see {@link Inflection} for details.
      * @since 2.0
+     * @see Inflection
      * @see #isMarked()
      * @see #match(BaseFynotekWord)
      * @see FynotekWord#nounCase(FynotekWord.Case)
