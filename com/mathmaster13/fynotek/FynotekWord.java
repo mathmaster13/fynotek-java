@@ -13,7 +13,7 @@ import java.math.BigInteger;
 public final class FynotekWord extends BaseFynotekWord {
     /**
      * Represents if this FynotekWord is a proper noun or not.
-     * @see #ablaut(Ablaut)
+     * @see #_ablaut(Ablaut)
      * @see #properSuffix(Ablaut)
      * @see #match(BaseFynotekWord)
      */
@@ -114,10 +114,10 @@ public final class FynotekWord extends BaseFynotekWord {
 
     // Internal-use methods
     @Override
-    protected @NotNull String[] ablaut(@NotNull Ablaut vowel) {
-        if (vowel == Ablaut.DEFAULT || vowels.isEmpty()) return new String[]{beginning, vowels, end};
+    protected @NotNull String[] _ablaut(@NotNull Ablaut ablaut) {
+        if (ablaut == Ablaut.DEFAULT || vowels.isEmpty()) return new String[]{beginning, vowels, end};
         String newVowels = vowels;
-        if (vowel == Ablaut.REDUPLICATION) {
+        if (ablaut == Ablaut.REDUPLICATION) {
             if (newVowels.length() == 1 || newVowels.charAt(0) != newVowels.charAt(1) ) {
                 newVowels += newVowels.substring(newVowels.length() - 1);
                 if (newVowels.length() > 2) {
@@ -127,10 +127,10 @@ public final class FynotekWord extends BaseFynotekWord {
                 newVowels = newVowels.substring(0, 1);
             }
         } else {
-            if (vowels.charAt(vowels.length() - 1) != vowel.asChar) {
-                newVowels = (vowels.length() == 1 ? Character.toString(vowel.asChar) : (Character.toString(vowels.charAt(0)) + vowel.asChar));
+            if (vowels.charAt(vowels.length() - 1) != ablaut.asChar) {
+                newVowels = (vowels.length() == 1 ? Character.toString(ablaut.asChar) : (Character.toString(vowels.charAt(0)) + ablaut.asChar));
             } else {
-                newVowels += vowel.secondary;
+                newVowels += ablaut.secondary;
                 if (newVowels.length() > 2) {
                     newVowels = newVowels.substring(newVowels.length()-2);
                 }
@@ -206,6 +206,20 @@ public final class FynotekWord extends BaseFynotekWord {
 
 
     // Public methods
+    /**
+     * Returns a copy of this FynotekWord marked for the specified ablaut. For proper nouns, a suffix is applied instead.
+     * If this function is used on a word, it is assumed that the word has been marked for case or tense,
+     * but the case or tense is unknown.
+     * @param ablaut the ablaut to mark this word as.
+     * @return a copy of this FynotekWord marked for the specified ablaut.
+     * @see Ablaut
+     * // TODO since
+     */
+    @Override
+    public @NotNull FynotekWord ablaut(@NotNull Ablaut ablaut) {
+        return new FynotekWord(isProper ? properSuffix(ablaut) : _ablaut(ablaut), ablaut, isProper);
+    }
+
     @Override
     public @Nullable Ablaut getAblaut() {
         if (this.toString().equals("folo") && inflection == Case.ACCUSATIVE) return Ablaut.DEFAULT;
@@ -230,7 +244,7 @@ public final class FynotekWord extends BaseFynotekWord {
             if (caseOfNoun == Case.ACCUSATIVE) return new FynotekWord("fol", "o", "", Case.ACCUSATIVE, false);
         }
         // While there is an actual suffix function, I prefer to leave this simplified ome in for speed.
-        return new FynotekWord((isProper ? this.properSuffix(caseOfNoun.ablaut) : this.ablaut(caseOfNoun.ablaut)), caseOfNoun, isProper);
+        return new FynotekWord((isProper ? this.properSuffix(caseOfNoun.ablaut) : this._ablaut(caseOfNoun.ablaut)), caseOfNoun, isProper);
     }
 
     /**
@@ -247,7 +261,7 @@ public final class FynotekWord extends BaseFynotekWord {
      */
     @Override
     public @NotNull FynotekWord verbTense(@NotNull Tense tenseOfVerb) {
-        return new FynotekWord(isProper ? properSuffix(tenseOfVerb.getAblaut()) : ablaut(tenseOfVerb.getAblaut()), tenseOfVerb, isProper);
+        return new FynotekWord(isProper ? properSuffix(tenseOfVerb.getAblaut()) : _ablaut(tenseOfVerb.getAblaut()), tenseOfVerb, isProper);
     }
 
     /**
@@ -305,7 +319,8 @@ public final class FynotekWord extends BaseFynotekWord {
     public @NotNull FynotekWord match(@NotNull BaseFynotekWord word) {
         if (word.inflection == null) return this;
         if (word.inflection instanceof Case caseOfNoun) return nounCase(caseOfNoun);
-        return verbTense((Tense) word.inflection);
+        if (word.inflection instanceof Tense tenseOfVerb) return verbTense(tenseOfVerb);
+        return ablaut((Ablaut) word.inflection);
     }
 
     @Override

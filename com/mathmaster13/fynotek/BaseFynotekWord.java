@@ -25,7 +25,7 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
     /**
      * A Fynotek word's final vowel or diphthong.
      * @see #BaseFynotekWord(String)
-     * @see #ablaut(Ablaut)
+     * @see #_ablaut(Ablaut)
      */
     @NotNull
     public final String vowels;
@@ -98,7 +98,9 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
 
     // Public constructors
     /**
-     * Converts a String to a BaseFynotekWord. Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>).
+     * Converts a String to a BaseFynotekWord.
+     * Leading and trailing whitespace is ignored (the {@link String#trim()} method is called on <code>word</code>),
+     * and the word will always be converted to lowercase.
      * This constructor assumes that a word is in its root form, with no inflection.
      * @param word word to be converted to a BaseFynotekWord.
      */
@@ -107,7 +109,9 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
     }
 
     /**
-     * Converts a String to a BaseFynotekWord, and marks the word as having the specified inflection.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>word</code>), and the word will always be converted to lowercase.
+     * Converts a String to a BaseFynotekWord, and marks the word as having the specified inflection.
+     * Leading and trailing whitespace is ignored (the {@link String#trim()} method is called on <code>word</code>),
+     * and the word will always be converted to lowercase.
      * This constructor should be used with words known at compile time, or with words known to be marked for the present tense (since the present-tense form and the root form are identical as strings).
      * A root form (the abstract form of a word with no case or tense marking) is represented by a <code>null</code> inflection.
      * @param word word to be converted to a BaseFynotekWord.
@@ -116,37 +120,11 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
      * @see OldFynotekWord#OldFynotekWord(String, Inflection)
      */
     public BaseFynotekWord(@NotNull String word, @Nullable Inflection inflection) {
-        word = word.trim().toLowerCase(); // TODO: Change implementation to preserve capitalization (maybe?)
         this.inflection = inflection;
-        if (word.isEmpty()) { // If you want to re-add the null check, change the condition to (word == null || word.isEmpty())
-            beginning = vowels = end = "";
-        } else if (word.length() == 1) {
-            if (isVowel(word.charAt(0))) {
-                vowels = word;
-                beginning = end = "";
-            } else {
-                end = word;
-                beginning = vowels = "";
-            }
-        } else {
-            int vowelIndex = 0;
-            int vowelLength = 0;
-            for (int i = word.length() - 1; i >= 0; i--) {
-                if (isVowel(word.charAt(i))) {
-                    if (i > 0 && isVowel(word.charAt(i - 1))) {
-                        vowelIndex = i - 1;
-                        vowelLength = 2;
-                    } else {
-                        vowelIndex = i;
-                        vowelLength = 1;
-                    }
-                    break;
-                }
-            }
-            beginning = word.substring(0, vowelIndex);
-            vowels = word.substring(vowelIndex, vowelIndex + vowelLength);
-            end = word.substring(vowelIndex + vowelLength);
-        }
+        String[] wordAsArray = separateVowels(word);
+        beginning = wordAsArray[0];
+        vowels = wordAsArray[1];
+        end = wordAsArray[2];
     }
 
     // Private constructors
@@ -186,12 +164,12 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
 
     // Internal-use methods
     /**
-     * Marks this word with the specified ablaut.
-     * @param vowel the ablaut to mark the word with.
+     * Marks this word with the specified ablaut. Used internally.
+     * @param ablaut the ablaut to mark the word with.
      * @return this word marked with the specified ablaut.
      * @see #inflection
      */
-    protected abstract @NotNull String[] ablaut(@NotNull Ablaut vowel);
+    protected abstract @NotNull String[] _ablaut(@NotNull Ablaut ablaut);
 
     /**
      * Checks if a given character is a vowel. Specifically,returns <code>true</code> if and only if the given character is <code>'a'</code>, <code>'e'</code>, <code>'i'</code>, <code>'o'</code>, <code>'u'</code>, or <code>'y'</code>.
@@ -291,6 +269,60 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
     }
 
     // Public methods
+    /**
+     * Returns a copy of this BaseFynotekWord marked for the specified ablaut.
+     * If this function is used on a word, it is assumed that the word has been marked for case or tense,
+     * but the case or tense is unknown.
+     * @param ablaut the ablaut to mark this word as.
+     * @return a copy of this FynotekWord marked for the specified ablaut.
+     * @see Ablaut
+     * // TODO since
+     */
+    public abstract @NotNull BaseFynotekWord ablaut(@NotNull Ablaut ablaut);
+
+    /**
+     * Returns an array of 3 Strings: the first containing the part of <code>word</code> before its final vowel
+     * or diphthong, the second containing its final vowel or diphthong, and the third containing the part
+     * after its final vowel or diphthong.
+     * Leading and trailing whitespace is ignored (the {@link String#trim()} method is called on <code>word</code>),
+     * and the word will always be converted to lowercase.
+     * If a word has no vowels (as defined by {@link #isVowel(char)}), the word is placed as the third string.
+     * @param word the word to be parsed for final vowels
+     * @return an array containing <code>word</code> separated by its final vowel or diphthong.
+     * // TODO add @since when this gets released
+     */
+    public static String[] separateVowels(String word) {
+        word = word.trim().toLowerCase(); // TODO: Change implementation to preserve capitalization (maybe?)
+        if (word.isEmpty()) { // If you want to re-add the null check, change the condition to (word == null || word.isEmpty())
+            return new String[] {"", "", ""};
+        } else if (word.length() == 1) {
+            if (isVowel(word.charAt(0))) {
+                return new String[] {"", word, ""};
+            } else {
+                return new String[] {"", "", word};
+            }
+        } else {
+            int vowelIndex = 0;
+            int vowelLength = 0;
+            for (int i = word.length() - 1; i >= 0; i--) {
+                if (isVowel(word.charAt(i))) {
+                    if (i > 0 && isVowel(word.charAt(i - 1))) {
+                        vowelIndex = i - 1;
+                        vowelLength = 2;
+                    } else {
+                        vowelIndex = i;
+                        vowelLength = 1;
+                    }
+                    break;
+                }
+            }
+            return new String[] {
+                word.substring(0, vowelIndex),
+                word.substring(vowelIndex, vowelIndex + vowelLength),
+                word.substring(vowelIndex + vowelLength)
+            };
+        }
+    }
 
     /**
      * Returns the {@link Ablaut} that this word is marked with, or <code>null</code> if it is completely unmarked (a root form).
@@ -349,9 +381,11 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
 
     /**
      * Represents Fynotek ablaut. If a field is not applicable to a particular form of ablaut, a null character (<code>\u0000</code>) is used.
+     * When used as an {@link Inflection}, non-null instances of this enum represent words that have been inflected,
+     * but it is unknown what they have been inflected for (only their ablaut is known).
      * @since 2.0
      */
-    public enum Ablaut {
+    public enum Ablaut implements Inflection {
         /**
          * Represents a word that has been inflected for a case or tense, but the inflection is an "implied" form of a word.
          * Nominative-case nouns and present-tense verbs fall into this category.
@@ -390,6 +424,16 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
          * The character stored in this field is biased towards modern Fynotek, so {@link #E} has <code>'a'</code> in this field and <i>not</i> <code>'i'</code>.
          */
         public final char secondary;
+
+        /**
+         * This method is solely to provide compatibility with the {@link Inflection} interface.
+         * @return this
+         * TODO @since
+         */
+        @Override
+        public @NotNull Ablaut getAblaut() {
+            return this;
+        }
 
         Ablaut(char asChar, char secondary) {
             this.asChar = asChar;

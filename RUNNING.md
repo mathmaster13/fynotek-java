@@ -5,7 +5,7 @@ Download a jar file from the [releases](https://github.com/mathmaster13/fynotek-
 
 If you are using version 2.0 or greater, the file name should contain `with-demos`.
 
-Run a demo (do not add the `.java` extension to the demo name):
+Run a demo (do not add the `.java` or `.kt` extension to the demo name):
 ```
 java -cp file-name.jar <demo name>
 ```

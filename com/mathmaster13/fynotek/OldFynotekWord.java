@@ -46,16 +46,17 @@ public final class OldFynotekWord extends BaseFynotekWord {
 
     // Internal-use methods
     @Override
-    protected @NotNull String[] ablaut(@NotNull Ablaut vowel) {
-        if (vowel == Ablaut.DEFAULT || vowels.isEmpty()) return new String[]{beginning, vowels, end};
-        if (vowel == Ablaut.REDUPLICATION) {
+    protected @NotNull String[] _ablaut(@NotNull Ablaut ablaut) {
+        if (ablaut == Ablaut.Y) throw new IllegalArgumentException("Y ablaut is undefined in Old Fynotek");
+        if (ablaut == Ablaut.DEFAULT || vowels.isEmpty()) return new String[]{beginning, vowels, end};
+        if (ablaut == Ablaut.REDUPLICATION) {
             int vowelLength = vowels.length();
             String vowelToReduplicate = (vowelLength == 1 ? vowels : Character.toString(vowels.charAt(vowelLength - 1)));
             return new String[]{beginning + vowelToReduplicate + "'", vowelToReduplicate, end};
         } else {
-            String ablautAsString = Character.toString(vowel.asChar);
+            String ablautAsString = Character.toString(ablaut.asChar);
             String newVowels = (vowels.equals(ablautAsString) ?
-                    (vowel == Ablaut.E ? "i" : Character.toString(vowel.secondary)) // There is a slight difference between old and modern ablaut pairs. Since Old Fynotek isn't used much, this bodged implementation will do.
+                    (ablaut == Ablaut.E ? "i" : Character.toString(ablaut.secondary)) // There is a slight difference between old and modern ablaut pairs. Since Old Fynotek isn't used much, this bodged implementation will do.
                     : ablautAsString);
             return new String[]{beginning, newVowels, end};
         }
@@ -63,6 +64,23 @@ public final class OldFynotekWord extends BaseFynotekWord {
 
 
     // Public methods
+    /**
+     * Returns a copy of this OldFynotekWord marked for the specified ablaut.
+     * If {@link com.mathmaster13.fynotek.BaseFynotekWord.Ablaut#Y Ablaut.Y} is entered as the ablaut to mark the word as,
+     * an {@code IllegalArgumentException} will be thrown, since there is no defined Y ablaut in Old Fynotek.
+     * If this function is used on a word, it is assumed that the word has been marked for case or tense,
+     * but the case or tense is unknown.
+     * Since Old Fynotek has no case-marking, this function's only use is when doing interoperation with modern Fynotek words.
+     * @param ablaut the ablaut to mark this word as.
+     * @return a copy of this OldFynotekWord marked for the specified ablaut.
+     * @see Ablaut
+     * // TODO since
+     */
+    @Override
+    public @NotNull OldFynotekWord ablaut(@NotNull Ablaut ablaut) throws IllegalArgumentException {
+        return new OldFynotekWord(_ablaut(ablaut), ablaut);
+    }
+
     /**
      * {@inheritDoc}
      * If this word was inflected with a noun case through the {@link #match(BaseFynotekWord)} method, {@link Ablaut#DEFAULT} is returned.
@@ -83,7 +101,7 @@ public final class OldFynotekWord extends BaseFynotekWord {
      */
     @Override
     public @NotNull OldFynotekWord verbTense(@NotNull Tense tenseOfVerb) {
-        return new OldFynotekWord(ablaut((tenseOfVerb == Tense.GNOMIC ? Tense.HYP_GNOMIC : tenseOfVerb).getAblaut()), tenseOfVerb);
+        return new OldFynotekWord(_ablaut((tenseOfVerb == Tense.GNOMIC ? Tense.HYP_GNOMIC : tenseOfVerb).getAblaut()), tenseOfVerb);
     }
 
     /**
@@ -93,7 +111,8 @@ public final class OldFynotekWord extends BaseFynotekWord {
     @Override
     public @NotNull OldFynotekWord match(@NotNull BaseFynotekWord word) {
         if (word.inflection == null || word.inflection instanceof FynotekWord.Case) return new OldFynotekWord(beginning, vowels, end, word.inflection);
-        return verbTense((Tense) word.inflection);
+        if (word.inflection instanceof Tense tenseOfVerb) return verbTense(tenseOfVerb);
+        return ablaut((Ablaut) word.inflection);
     }
 
     @Override
