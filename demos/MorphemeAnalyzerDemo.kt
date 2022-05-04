@@ -98,7 +98,7 @@ private fun singleRootAblautAnalysis(word: String): List<Analysis> {
 
 /** A single-root analysis that accounts for suffixes, but not prefixes. */
 private fun singleRootAnalysis(word: String, isVerb: Boolean?): List<Analysis> {
-    val output singleRootAblautAnalysis(word).toMutableList() // Check if any analysis works with no suffix
+    val output = singleRootAblautAnalysis(word).toMutableList() // Check if any analysis works with no suffix
     for (suffix in getValidSuffixes(isVerb)) {
         if (!word.contains(Regex("$suffix$"))) continue
         var potentialRoot = word.substring(0, word.length - suffix.length)
@@ -187,7 +187,7 @@ private fun fullAnalysisNoPrefix(word: String, isVerb: Boolean?): List<Analysis>
         // Note: Fynotek shouldn't have any one-letter content roots, but if it does, add (potentialRoot.length <= 1) to the below condition.
         if (!potentialRoot.contains(Regex("[an]$"))) continue
         potentialRoot = potentialRoot.substring(0, potentialRoot.length - 1)
-        if (isValidSequence(potentialRoot + suffix)) continue // If filler letters aren't necessary, they won't be used.
+        if (isValidSequence(potentialRoot + potentialModifier)) continue // If filler letters aren't necessary, they won't be used.
         for (rootAnalysis in singleRootAnalysis(potentialRoot, isVerb))
             for (modifierAnalysis in attachedModifierAnalysis(potentialModifier, isVerb)) {
                 val combinedAnalysis = rootAnalysis + modifierAnalysis
