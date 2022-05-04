@@ -46,7 +46,22 @@ val standaloneWords = hashSetOf(
     "yf"
 )
 val contentWords = hashSetOf("pynsi", "ay", "fmutue", "samlaa", "kisak", "mees") // TODO fill this (derogatory)
-val posessorSuffixes = hashSetOf("") // TODO fill this (derogatory)
+val possessorSuffixes = hashSetOf(
+    "akiy",
+    "ami",
+    "asi",
+    "ejiy",
+    "ejimi",
+    "imi",
+    "oli",
+    "ui",
+    "uin",
+    "umii",
+    "umiy",
+    "unin",
+    "yrami",
+    "yri"
+)
 
 fun main() {
     val word = prompt("Enter a fynotek word (NOT a proper noun) to be analyzed:  ").lowercase()
@@ -140,29 +155,46 @@ private fun attachedModifierAnalysis(word: String, isVerb: Boolean?): List<Analy
     // TODO reminder to handle numbers (sigh)
     val output = mutableListOf<Analysis>()
     // Check for single content word analyses
-    if (contentWords.contains(word)) output.append(Analysis(word))
+    if (contentWords.contains(word)) output.add(Analysis(word))
     // If the word is a verb, posessor suffixes don't apply!
     if (isVerb == true) return output
     
     // Very similar to singleRootAnalysis. TODO perhaps make these use one function?
-    for (suffix in posessorSuffixes) {
+    for (suffix in possessorSuffixes) {
         if (!word.contains(Regex("$suffix$"))) continue
         var potentialRoot = word.substring(0, word.length - suffix.length)
         // Check if any analysis works assuming no filler letters
-        if (contentWords.contains(potentialRoot)) output.add(Analysis("$potentialRoot + ${posessorSuffixToAnalysis(suffix)}", false))
+        if (contentWords.contains(potentialRoot)) output.add(Analysis("$potentialRoot + ${possessorSuffixToAnalysis(suffix)}", false))
 
         // Check if filler letters are valid
         // Note: Fynotek shouldn't have any one-letter content roots, but if it does, add (potentialRoot.length <= 1) to the below condition.
         if (!potentialRoot.contains(Regex("[an]$"))) continue
         potentialRoot = potentialRoot.substring(0, potentialRoot.length - 1)
         if (isValidSequence(potentialRoot + suffix)) continue // If filler letters aren't necessary, they won't be used.
-        if (contentWords.contains(potentialRoot)) output.add(Analysis("$potentialRoot + ${posessorSuffixToAnalysis(suffix)}", false))
+        if (contentWords.contains(potentialRoot)) output.add(Analysis("$potentialRoot + ${possessorSuffixToAnalysis(suffix)}", false))
     }
     return output
 }
 
-fun posessorSuffixToAnalysis(suffix: String) {
+fun possessorSuffixToAnalysis(suffix: String): String {
     // TODO implement this, probably with a when statement
+    return "possessive form of " + when (suffix) {
+        "akiy" -> "ñaki"
+        "ami" -> "yumiame"
+        "asi" -> "saraso"
+        "ejiy" -> "eji"
+        "ejimi" -> "ejime"
+        "imi" -> "ñakime"
+        "oli" -> "folo"
+        "ui" -> "tua"
+        "uin" -> "juon"
+        "umii" -> "yumia"
+        "umiy" -> "yumi"
+        "unin" -> "junon"
+        "yrami" -> "yrame"
+        "yri" -> "yra"
+        else -> throw AssertionError("A posessor suffix was probably left out of the list. Please report an issue on GitHub with the word that you entered and this error message.")
+    }
 }
 
 /**
@@ -172,10 +204,10 @@ fun posessorSuffixToAnalysis(suffix: String) {
 private fun fullAnalysisNoPrefix(word: String, isVerb: Boolean?): List<Analysis> {
     // TODO untested
     val output = singleRootAnalysis(word, isVerb).toMutableList() // Try to analyze the word as one word
-    for (i in 1..(word.length - 1)) {
+    for (i in 1 until word.length) {
         // Very similar to singleRootAnalysis. TODO perhaps make these use one function?
         var potentialRoot = word.substring(0, i)
-        var potentialModifier = word.substring(i, word.length)
+        val potentialModifier = word.substring(i, word.length)
         // Check if any analysis works assuming no filler letters
         for (rootAnalysis in singleRootAnalysis(potentialRoot, isVerb))
             for (modifierAnalysis in attachedModifierAnalysis(potentialModifier, isVerb)) {
@@ -203,7 +235,7 @@ fun analyze(word: String): List<Analysis> {
     if (!word.contains(Regex("^[aoi]"))) return output
     val isVerb = (word[0] == 'i')
     // Similar to singleRootAnalysis, but probably not enough to make it use one function.
-    val potentialWord = word.substring(1, word.length)
+    var potentialWord = word.substring(1, word.length)
     // Check if any analysis works assuming no filler letters
     output.addAll(fullAnalysisNoPrefix(potentialWord, isVerb))
 
