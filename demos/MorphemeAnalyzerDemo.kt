@@ -102,7 +102,7 @@ private fun singleRootAnalysis(word: String, isVerb: Boolean?): List<Analysis> {
     for (suffix in getValidSuffixes(isVerb)) {
         if (!word.contains(Regex("$suffix$"))) continue
         var potentialRoot = word.substring(0, word.length - suffix.length)
-         // Check if any analysis works assuming no filler letters
+        // Check if any analysis works assuming no filler letters
         singleRootAblautAnalysis(potentialRoot).forEach { output.add(Analysis("$it + ${suffixToString(suffix)}", suffixToBoolean(suffix))) }
 
         // Check if filler letters are valid
@@ -148,7 +148,7 @@ private fun attachedModifierAnalysis(word: String, isVerb: Boolean?): List<Analy
     for (suffix in posessorSuffixes) {
         if (!word.contains(Regex("$suffix$"))) continue
         var potentialRoot = word.substring(0, word.length - suffix.length)
-         // Check if any analysis works assuming no filler letters
+        // Check if any analysis works assuming no filler letters
         if (contentWords.contains(potentialRoot)) output.add(Analysis("$potentialRoot + ${posessorSuffixToAnalysis(suffix)}", false))
 
         // Check if filler letters are valid
@@ -170,7 +170,31 @@ fun posessorSuffixToAnalysis(suffix: String) {
  * If isVerb is null, we don't know the part of speech of the word.
  */
 private fun fullAnalysisNoPrefix(word: String, isVerb: Boolean?): List<Analysis> {
-    singleRootAnalysis(word, isVerb).forEach { println(it) } // Try to analyze the word as one word
+    // TODO untested
+    val output = mutableListOf(singleRootAnalysis(word, isVerb)) // Try to analyze the word as one word
+    for (i in 1..(word.length - 1)) {
+        // Very similar to singleRootAnalysis. TODO perhaps make these use one function?
+        var potentialRoot = word.substring(0, i)
+        var potentialModifier = word.substring(i, word.length)
+        // Check if any analysis works assuming no filler letters
+        for (rootAnalysis in singleRootAnalysis(potentialRoot, isVerb))
+            for (modifierAnalysis in attachedModifierAnalysis(potentialModifier, isVerb)) {
+                val combinedAnalysis = rootAnalysis + modifierAnalysis
+                if (combinedAnalysis != null) output.add(combinedAnalysis)
+            }
+
+        // Check if filler letters are valid
+        // Note: Fynotek shouldn't have any one-letter content roots, but if it does, add (potentialRoot.length <= 1) to the below condition.
+        if (!potentialRoot.contains(Regex("[an]$"))) continue
+        potentialRoot = potentialRoot.substring(0, potentialRoot.length - 1)
+        if (isValidSequence(potentialRoot + suffix)) continue // If filler letters aren't necessary, they won't be used.
+        for (rootAnalysis in singleRootAnalysis(potentialRoot, isVerb))
+            for (modifierAnalysis in attachedModifierAnalysis(potentialModifier, isVerb)) {
+                val combinedAnalysis = rootAnalysis + modifierAnalysis
+                if (combinedAnalysis != null) output.add(combinedAnalysis)
+            }
+    }
+    return output
 }
 
 private class Analysis(@JvmField val text: String, @JvmField val isVerb: Boolean? = null) {
