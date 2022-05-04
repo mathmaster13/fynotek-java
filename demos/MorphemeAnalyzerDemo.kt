@@ -59,9 +59,10 @@ fun main() {
         return
     }
 
-
-
-
+    // TODO untested code alert
+    val analysisList = analyze(word)
+    analysisList.forEach { println(it) }
+    if (analysisList.isEmpty()) println("No valid analyses can be found. This may be because you have entered a proper noun (which is not supported), or becauseyou have entered morphemes that cannot coexist in the same word.\nIf this is truly a valid Fynotek word, there may be an error in the code or the dictionary it uses, and you should report an issue on GitHub at https://github.com/mathmaster13/fynotek-java/.")
 }
 
 // Convenience functions
@@ -97,8 +98,7 @@ private fun singleRootAblautAnalysis(word: String): List<Analysis> {
 
 /** A single-root analysis that accounts for suffixes, but not prefixes. */
 private fun singleRootAnalysis(word: String, isVerb: Boolean?): List<Analysis> {
-    val output = mutableListOf<Analysis>()
-    output.addAll(singleRootAblautAnalysis(word)) // Check if any analysis works with no suffix
+    val output singleRootAblautAnalysis(word).toMutableList() // Check if any analysis works with no suffix
     for (suffix in getValidSuffixes(isVerb)) {
         if (!word.contains(Regex("$suffix$"))) continue
         var potentialRoot = word.substring(0, word.length - suffix.length)
@@ -171,7 +171,7 @@ fun posessorSuffixToAnalysis(suffix: String) {
  */
 private fun fullAnalysisNoPrefix(word: String, isVerb: Boolean?): List<Analysis> {
     // TODO untested
-    val output = mutableListOf(singleRootAnalysis(word, isVerb)) // Try to analyze the word as one word
+    val output = singleRootAnalysis(word, isVerb).toMutableList() // Try to analyze the word as one word
     for (i in 1..(word.length - 1)) {
         // Very similar to singleRootAnalysis. TODO perhaps make these use one function?
         var potentialRoot = word.substring(0, i)
@@ -197,7 +197,26 @@ private fun fullAnalysisNoPrefix(word: String, isVerb: Boolean?): List<Analysis>
     return output
 }
 
-private class Analysis(@JvmField val text: String, @JvmField val isVerb: Boolean? = null) {
+fun analyze(word: String): List<Analysis> {
+    // TODO untested
+    val output = fullAnalysisNoPrefix(word, null).toMutableList() // check for analyses without any prefix
+    if (!word.contains(Regex("^[aoi]"))) return output
+    val isVerb = (word[0] == 'i')
+    // Similar to singleRootAnalysis, but probably not enough to make it use one function.
+    val potentialWord = word.substring(1, word.length)
+    // Check if any analysis works assuming no filler letters
+    output.addAll(fullAnalysisNoPrefix(potentialWord, isVerb))
+
+    // Check if filler letters are present
+    // Note: Fynotek shouldn't have any one-letter content roots, but if it does, add (potentialWord.length <= 1) to the below condition.
+    if (!potentialWord.contains(Regex("^[an]"))) return output
+    potentialWord = potentialWord.substring(1, potentialWord.length)
+    if (isValidSequence(word[0] + potentialWord)) return output // If filler letters aren't necessary, they won't be used.
+    output.addAll(fullAnalysisNoPrefix(potentialWord, isVerb))
+    return output
+}
+
+class Analysis(@JvmField val text: String, @JvmField val isVerb: Boolean? = null) {
     operator fun plus(other: Analysis): Analysis? {
         if (this.isVerb != null && other.isVerb != null && this.isVerb != other.isVerb) return null
         return Analysis("$this + $other")
