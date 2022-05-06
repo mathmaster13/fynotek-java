@@ -1,13 +1,13 @@
 @file:JvmName("MorphemeAnalyzerDemo")
 
 // TODO thinky thonk. should you make some of these functions part of the main API?
-// TODO numbers and ñojera (derogatory)
-// TODO to verb or not to verb
+// TODO numbers (derogatory)
 
 import com.mathmaster13.fynotek.BaseFynotekWord.Ablaut
 import com.mathmaster13.fynotek.FynotekWord
 import com.mathmaster13.fynotek.FynotekWord.separateVowels
 import com.mathmaster13.fynotek.FynotekWord.isValidSequence
+import Analysis.PartOfSpeech
 
 /** A list of all Fynotek words that cannot be inflected. */
 val standaloneWords = hashSetOf(
@@ -87,11 +87,12 @@ fun main() {
         return
     }
 
-    // TODO untested code alert
     // Analyze
     val analysisList = analyze(word)
     analysisList.forEach { println(it) }
-    if (analysisList.isEmpty()) println("No valid analyses can be found. This may be because you have entered a proper noun (which is not supported), or because you have entered morphemes that cannot coexist in the same word.\nIf this is truly a valid Fynotek word, there may be an error in the code or the dictionary it uses, and you should report an issue on GitHub at https://github.com/mathmaster13/fynotek-java/.")
+    if (analysisList.isEmpty()) println("""No valid analyses can be found. This may be because you have entered a proper noun (which is not supported), or because you have entered morphemes that cannot coexist in the same word.
+        |This usually occurs when you try to apply a possessor suffix to a verb, apply "ak" to a verb or ordinal number, or apply ablaut other than A, I, or O ablaut to a noun.
+        |If this is truly a valid Fynotek word, there may be an error in the code or the dictionary it uses, and you should report an issue on GitHub at https://github.com/mathmaster13/fynotek-java/.""".trimMargin())
 }
 
 /**
@@ -130,59 +131,67 @@ private fun checkForAblaut(dictWord: String, separatedWord: Array<String>): List
     for (i in separatedWord[1].indices) {
         if (reduplicated && i >= 1) break
         val ablautToCheck = Ablaut.valueOf(separatedWord[1][i].uppercase())
-        if (rootWord.ablaut(ablautToCheck).toString() == word) output.add(Analysis(arrayOf(dictWord, "$ablautToCheck ablaut")))
+        if (rootWord.ablaut(ablautToCheck).toString() == word) {
+            val isVerbOrModifierOnly = when (ablautToCheck) {
+                Ablaut.O, Ablaut.I, Ablaut.A -> (ablautToCheck == Ablaut.O && dictWord == "folo") // It's only verb-or-modifier-only if it's "folou"
+                Ablaut.E,  Ablaut.U, Ablaut.Y -> true
+                else -> throw AssertionError("The only way this could have happened is if reduplication or default ablaut got in here, and I don't know how it could have done that. Please report an issue on GitHub with the word that you entered and this error message.")
+            }
+            output.add(Analysis(arrayOf(dictWord, "$ablautToCheck ablaut"), if (isVerbOrModifierOnly) PartOfSpeech.VERB_OR_MODIFIER else PartOfSpeech.ALL))
+        }
     }
     if (separatedWord[1].length == 1 || reduplicated) {
         // Check for reduplication ablaut
-        if (rootWord.ablaut(Ablaut.REDUPLICATION).toString() == word) output.add(Analysis(arrayOf(dictWord, "reduplication ablaut")))
+        if (rootWord.ablaut(Ablaut.REDUPLICATION).toString() == word) output.add(Analysis(arrayOf(dictWord, "reduplication ablaut"), PartOfSpeech.VERB_OR_MODIFIER))
     }
     return output
 }
 
 /** A single-root analysis that accounts for suffixes, but not prefixes. */
-private fun singleRootAnalysis(word: String, isVerb: Boolean?): List<Analysis> {
+private fun singleRootAnalysis(word: String, possiblePartsOfSpeech: HashSet<PartOfSpeech> = PartOfSpeech.ALL): List<Analysis> {
     val output = singleRootAblautAnalysis(word).toMutableList() // Check if any analysis works with no suffix
     // deal with numbers here
 
-    for (suffix in getValidSuffixes(isVerb)) {
+    for (suffix in getValidSuffixes(possiblePartsOfSpeech)) {
         if (!word.contains(Regex("$suffix$"))) continue
         var potentialRoot = word.substring(0, word.length - suffix.length)
         // Check if any analysis works assuming no filler letters
-        singleRootAblautAnalysis(potentialRoot).forEach { output.add((it + Analysis(arrayOf(suffixToString(suffix)), suffixToBoolean(suffix)))!!) }
+        singleRootAblautAnalysis(potentialRoot).forEach { output.add((it + Analysis(suffixToString(suffix), suffixToPartsOfSpeech(suffix)))!!) }
 
         // Check if filler letters are valid
         // Note: Fynotek shouldn't have any one-letter content roots, but if it does, add (potentialRoot.length <= 1) to the below condition.
         if (!potentialRoot.contains(Regex("[an]$"))) continue
         potentialRoot = potentialRoot.substring(0, potentialRoot.length - 1)
         if (isValidSequence(potentialRoot + suffix)) continue // If filler letters aren't necessary, they won't be used.
-        singleRootAblautAnalysis(potentialRoot).forEach { output.add((it + Analysis(arrayOf(suffixToString(suffix)), suffixToBoolean(suffix)))!!) }
+        singleRootAblautAnalysis(potentialRoot).forEach { output.add((it + Analysis(suffixToString(suffix), suffixToPartsOfSpeech(suffix)))!!) }
     }
     // TODO nanpa (ike)
     return output
 }
 
-private fun getValidSuffixes(isVerb: Boolean?): Array<String> {
-    if (isVerb == true) return arrayOf("ñy", "ñya", "ñyo")
-    if (isVerb == false) return arrayOf("ak", "akñy", "ñy")
-    return arrayOf("ak", "akñy", "ñy", "ñya", "ñyo")
+private fun getValidSuffixes(possiblePartsOfSpeech: HashSet<PartOfSpeech>): Array<String> {
+    val output = mutableListOf("ñy")
+    if (possiblePartsOfSpeech.contains(PartOfSpeech.VERB)) output.addAll(arrayOf("ñya", "ñyo"))
+    if (possiblePartsOfSpeech.contains(PartOfSpeech.NOUN) || possiblePartsOfSpeech.contains(PartOfSpeech.MODIFIER)) output.addAll(arrayOf("ak", "akñy"))
+    return output.toTypedArray()
 }
 
-private fun suffixToBoolean(suffix: String): Boolean? = when {
-    suffix.contains(Regex("^ak")) -> false
-    suffix.contains(Regex("[ao]$")) -> true
-    else -> null
+private fun suffixToPartsOfSpeech(suffix: String): HashSet<PartOfSpeech> = when {
+    suffix.contains(Regex("^ak")) -> PartOfSpeech.NOUN_OR_VERB
+    suffix.contains(Regex("[ao]$")) -> PartOfSpeech.VERB_OR_MODIFIER
+    else -> PartOfSpeech.ALL
 }
 
 private fun suffixToString(suffix: String) = when (suffix) {
-    "akñy" -> "ak + ñy"
-    "ñya" -> "ñy + a"
-    "ñyo" -> "ñy + o"
-    else -> suffix
+    "akñy" -> arrayOf("ak", "ñy")
+    "ñya" -> arrayOf("ñy", "a")
+    "ñyo" -> arrayOf("ñy", "o")
+    "ak", "ñy" -> arrayOf(suffix)
+    else -> throw AssertionError("A basic suffix may have been left out of the list. Please report an issue on GitHub with the word that you entered and this error message.")
 }
 
-private fun attachedModifierAnalysis(word: String, isVerb: Boolean?): List<Analysis> {
+private fun attachedModifierAnalysis(word: String, possiblePartsOfSpeech: HashSet<PartOfSpeech> = PartOfSpeech.ALL): List<Analysis> {
     // TODO check if ambiguity makes returning a list necessary, or if i can just return one analysis
-    // TODO this code is untested
     // TODO reminder to handle numbers (sigh)
     val output = mutableListOf<Analysis>()
     // Check for single content word analyses
@@ -192,27 +201,27 @@ private fun attachedModifierAnalysis(word: String, isVerb: Boolean?): List<Analy
         output.add(Analysis("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")"))
 
     // If the word is a verb, posessor suffixes don't apply!
-    if (isVerb == true) return output
+    if (possiblePartsOfSpeech == PartOfSpeech.VERB.asHashSet) return output
     
     // Very similar to singleRootAnalysis. TODO perhaps make these use one function?
     for (suffix in possessorSuffixes) {
         if (!word.contains(Regex("$suffix$"))) continue
         var potentialRoot = word.substring(0, word.length - suffix.length)
         // Check if any analysis works assuming no filler letters
-        if (contentWords.contains(potentialRoot)) output.add(Analysis(arrayOf(potentialRoot, possessorSuffixToAnalysis(suffix)), false))
+        if (contentWords.contains(potentialRoot)) output.add(Analysis(arrayOf(potentialRoot, possessorSuffixToAnalysis(suffix)), PartOfSpeech.NOUN_OR_VERB))
         // ñojera (if there is more than one jera)
         if (potentialRoot.matches(Regex("^ñojera(jera)+$")))
-            output.add(Analysis(arrayOf("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")", possessorSuffixToAnalysis(suffix)), false))
+            output.add(Analysis(arrayOf("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")", possessorSuffixToAnalysis(suffix)), PartOfSpeech.NOUN_OR_VERB))
 
         // Check if filler letters are valid
         // Note: Fynotek shouldn't have any one-letter content roots, but if it does, add (potentialRoot.length <= 1) to the below condition.
         if (!potentialRoot.contains(Regex("[an]$"))) continue
         potentialRoot = potentialRoot.substring(0, potentialRoot.length - 1)
         if (isValidSequence(potentialRoot + suffix)) continue // If filler letters aren't necessary, they won't be used.
-        if (contentWords.contains(potentialRoot)) output.add(Analysis(arrayOf(potentialRoot, possessorSuffixToAnalysis(suffix)), false))
+        if (contentWords.contains(potentialRoot)) output.add(Analysis(arrayOf(potentialRoot, possessorSuffixToAnalysis(suffix)), PartOfSpeech.NOUN_OR_VERB))
         // ñojera (if there is more than one jera)
         if (potentialRoot.matches(Regex("^ñojera(jera)+$")))
-            output.add(Analysis(arrayOf("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")", possessorSuffixToAnalysis(suffix)), false))
+            output.add(Analysis(arrayOf("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")", possessorSuffixToAnalysis(suffix)), PartOfSpeech.NOUN_OR_VERB))
     }
     return output
 }
@@ -241,16 +250,15 @@ fun possessorSuffixToAnalysis(suffix: String): String {
  * Everything but the prefix.
  * If isVerb is null, we don't know the part of speech of the word.
  */
-private fun fullAnalysisNoPrefix(word: String, isVerb: Boolean?): List<Analysis> {
-    // TODO untested
-    val output = singleRootAnalysis(word, isVerb).toMutableList() // Try to analyze the word as one word
+private fun fullAnalysisNoPrefix(word: String, possiblePartsOfSpeech: HashSet<PartOfSpeech> = PartOfSpeech.ALL): List<Analysis> {
+    val output = singleRootAnalysis(word, possiblePartsOfSpeech).toMutableList() // Try to analyze the word as one word
     for (i in 1 until word.length) {
         // Very similar to singleRootAnalysis. TODO perhaps make these use one function?
         var potentialRoot = word.substring(0, i)
         val potentialModifier = word.substring(i, word.length)
         // Check if any analysis works assuming no filler letters
-        for (rootAnalysis in singleRootAnalysis(potentialRoot, isVerb))
-            for (modifierAnalysis in attachedModifierAnalysis(potentialModifier, isVerb)) {
+        for (rootAnalysis in singleRootAnalysis(potentialRoot, possiblePartsOfSpeech))
+            for (modifierAnalysis in attachedModifierAnalysis(potentialModifier, possiblePartsOfSpeech)) {
                 val combinedAnalysis = rootAnalysis + modifierAnalysis
                 if (combinedAnalysis != null) output.add(combinedAnalysis)
             }
@@ -260,8 +268,8 @@ private fun fullAnalysisNoPrefix(word: String, isVerb: Boolean?): List<Analysis>
         if (!potentialRoot.contains(Regex("[an]$"))) continue
         potentialRoot = potentialRoot.substring(0, potentialRoot.length - 1)
         if (isValidSequence(potentialRoot + potentialModifier)) continue // If filler letters aren't necessary, they won't be used.
-        for (rootAnalysis in singleRootAnalysis(potentialRoot, isVerb))
-            for (modifierAnalysis in attachedModifierAnalysis(potentialModifier, isVerb)) {
+        for (rootAnalysis in singleRootAnalysis(potentialRoot, possiblePartsOfSpeech))
+            for (modifierAnalysis in attachedModifierAnalysis(potentialModifier, possiblePartsOfSpeech)) {
                 val combinedAnalysis = rootAnalysis + modifierAnalysis
                 if (combinedAnalysis != null) output.add(combinedAnalysis)
             }
@@ -271,41 +279,72 @@ private fun fullAnalysisNoPrefix(word: String, isVerb: Boolean?): List<Analysis>
 
 fun analyze(word: String): List<Analysis> {
     // TODO perhaps move everything from main() into here so that this can be run standalone?
-    val output = fullAnalysisNoPrefix(word, null).toMutableList() // check for analyses without any prefix
+    val output = fullAnalysisNoPrefix(word).toMutableList() // check for analyses without any prefix
     if (!word.contains(Regex("^[aoi]"))) return output
 
     val prefix = word[0].toString()
-    val isVerb = (word[0] == 'i')
+    val partOfSpeech = PartOfSpeech.get(word[0])
     // Similar to singleRootAnalysis, but probably not enough to make it use one function.
     var potentialWord = word.substring(1, word.length)
     // Check if any analysis works assuming no filler letters
-    fullAnalysisNoPrefix(potentialWord, isVerb).forEach { output.add((Analysis(prefix, isVerb) + it)!!) }
-    // If an NPE happens up there, we have a problem.
+    fullAnalysisNoPrefix(potentialWord, partOfSpeech.asHashSet).forEach {
+        val combinedAnalysis = Analysis(prefix, partOfSpeech) + it
+        if (combinedAnalysis != null) output.add(combinedAnalysis)
+    }
 
     // Check if filler letters are present
     // Note: Fynotek shouldn't have any one-letter content roots, but if it does, add (potentialWord.length <= 1) to the below condition.
     if (!potentialWord.contains(Regex("^[an]"))) return output
     potentialWord = potentialWord.substring(1, potentialWord.length)
     if (isValidSequence(word[0] + potentialWord)) return output // If filler letters aren't necessary, they won't be used.
-    fullAnalysisNoPrefix(potentialWord, isVerb).forEach { output.add((Analysis(prefix, isVerb) + it)!!) }
-    // If an NPE happens up there, we have a problem.
+    fullAnalysisNoPrefix(potentialWord, partOfSpeech.asHashSet).forEach {
+        val combinedAnalysis = Analysis(prefix, partOfSpeech) + it
+        if (combinedAnalysis != null) output.add(combinedAnalysis)
+    }
     return output
 }
 
 // TODO ordinals are modifier-only, so we need something more than a boolean
 // isVerb refers to the *root* word's part of speech, not the modifier's.
-class Analysis(@JvmField val text: Array<String>, @JvmField val isVerb: Boolean? = null) {
-    constructor(text: String, isVerb: Boolean? = null) : this(arrayOf(text), isVerb)
+// TODO perhaps allow text to contain strings and/or arrays, for stuff like ñojera or rea
+class Analysis(@JvmField val text: Array<String>, @JvmField val possiblePartsOfSpeech: HashSet<PartOfSpeech> = PartOfSpeech.ALL) {
+    init {
+        if (possiblePartsOfSpeech.isEmpty()) throw IllegalArgumentException("Part of speech array cannot be empty")
+    }
+    constructor(text: String, possiblePartsOfSpeech: HashSet<PartOfSpeech> = PartOfSpeech.ALL) : this(arrayOf(text), possiblePartsOfSpeech)
+//    constructor(text: Array<String>, partOfSpeech: PartOfSpeech) : this(text, partOfSpeech.asHashSet)
+    constructor(text: String, partOfSpeech: PartOfSpeech) : this(arrayOf(text), partOfSpeech.asHashSet)
+
     operator fun plus(other: Analysis): Analysis? {
-        if (this.isVerb != null && other.isVerb != null && this.isVerb != other.isVerb) return null
-        return Analysis(text + other.text, isVerb)
+        // set intersect but better
+        val combinedPartsOfSpeech = HashSet(possiblePartsOfSpeech)
+        combinedPartsOfSpeech.retainAll(other.possiblePartsOfSpeech)
+
+        if (combinedPartsOfSpeech.isEmpty()) return null
+        return Analysis(text + other.text, combinedPartsOfSpeech)
     }
     override fun toString(): String {
         if (text.isEmpty()) return ""
         var output = text[0]
-        for (i in 1 until text.size) {
-            output += " + " + text[i]
-        }
+        for (i in 1 until text.size) output += " + " + text[i]
         return output
+    }
+
+    // There are other parts of speech, but this class only deals with these three.
+    // Other parts of speech will only be added if the usage of this class expands.
+    enum class PartOfSpeech {
+        NOUN, VERB, MODIFIER;
+        @JvmField val asHashSet = hashSetOf(this)
+        companion object { // companion objects /neg
+            @JvmField val ALL = values().toHashSet()
+            @JvmField val NOUN_OR_VERB = hashSetOf(NOUN, VERB)
+            @JvmField val VERB_OR_MODIFIER = hashSetOf(VERB, MODIFIER)
+            @JvmStatic fun get(prefix: Char) = when (prefix) {
+                'a' -> NOUN
+                'i' -> VERB
+                'o' -> MODIFIER
+                else -> throw IllegalArgumentException("prefix must be 'a', 'i', or 'o'")
+            }
+        }
     }
 }
