@@ -19,7 +19,7 @@ public sealed interface SpecificInflection extends Inflection permits BaseFynote
      */
     @NotNull SpecificInflection[] values = getValues();
     private static SpecificInflection[] getValues() {
-        ArrayList<SpecificInflection> temp = (ArrayList<SpecificInflection>) Arrays.asList((SpecificInflection[]) BaseFynotekWord.Tense.values());
+        ArrayList<SpecificInflection> temp = new ArrayList<>(Arrays.asList((SpecificInflection[]) BaseFynotekWord.Tense.values()));
         temp.addAll(Arrays.asList((SpecificInflection[]) FynotekWord.Case.values()));
         return temp.toArray(new SpecificInflection[0]);
     }

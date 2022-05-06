@@ -22,7 +22,7 @@ public sealed interface Inflection permits SpecificInflection, BaseFynotekWord.A
      */
     @NotNull Inflection[] values = getValues();
     private static Inflection[] getValues() {
-        ArrayList<Inflection> temp = (ArrayList<Inflection>) Arrays.asList((Inflection[]) SpecificInflection.values);
+        ArrayList<Inflection> temp = new ArrayList<>(Arrays.asList((Inflection[]) SpecificInflection.values));
         temp.addAll(Arrays.asList((Inflection[]) BaseFynotekWord.Ablaut.values()));
         return temp.toArray(new Inflection[0]);
     }
