@@ -304,7 +304,9 @@ public final class FynotekWord extends BaseFynotekWord {
 
     // The prefix function just calls the function method on the reverse of the input, then reverses it back.
     /**
-     * Returns a new FynotekWord with the specified prefix appended to the beginning of this word. If the prefix creates a phonotactically invalid sequence, <i>n</i> or <i>a</i> will be infixed as needed to make the resulting word phonotactically valid.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called in the <code>suffix</code> method).
+     * Returns a new FynotekWord with the specified prefix appended to the beginning of this word.
+     * If the prefix creates a phonotactically invalid sequence, <i>n</i> or <i>a</i> will be infixed as needed to make the resulting word phonotactically valid.
+     * Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>prefix</code>).
      * @param prefix the prefix to be appended to the beginning of this FynotekWord.
      * @return a FynotekWord with the specified prefix appended to the beginning of it.
      * @see #suffix(String)
@@ -367,7 +369,15 @@ public final class FynotekWord extends BaseFynotekWord {
 
 
     /**
-     * Returns whether the given sequence is phonotactically and orthographically valid in Fynotek. Capitalization is ignored (for example, <code>"A"</code> and <code>"a"</code> are treated the same way). Multiple words can be separated by whitespace, and this method will only return <code>true</code> if all words in <code>sequence</code> are valid.  Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>sequence</code>). A sequence containing punctuation marks, numbers, or other non-letter characters returns <code>false</code>, as well as an empty sequence or one containing only whitespace.
+     * Returns whether the given sequence is phonotactically and orthographically valid in Fynotek.
+     * Capitalization is ignored (for example, <code>"A"</code> and <code>"a"</code> are treated the same way).
+     * Multiple words can be separated by whitespace, and this method will only return <code>true</code> if all words in <code>sequence</code> are valid.
+     * Leading and trailing whitespace is ignored (the <code>String.trim()</code> method is called on <code>sequence</code>).
+     * A sequence containing punctuation marks, numbers, or other non-letter characters returns <code>false</code>,
+     * as well as an empty sequence or one containing only whitespace.
+     *
+     * Note that despite that "annnnn" (with any number of Ns) is used in Fynotek, it is not considered a valid sequence because it breaks phonotactics
+     * (so only "an" and "ann" are valid sequences when used with this function).
      * @param sequence the sequence to be checked for validity.
      * @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
      */

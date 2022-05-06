@@ -5,7 +5,7 @@ import com.mathmaster13.fynotek.FynotekWord.Case;
 public class AblautMatchDemo {
     public static final Scanner input = new Scanner(System.in);
     public static void main(String[] args) {
-        System.out.println("This is a demo for the new FynotekWord class.\nYou will be prompted for a noun and a case to conjugate it to, two suffixes for the noun, and a detached non-proper root as a modifier for the noun.");
+        System.out.println("This is a demo for the FynotekWord class.\nYou will be prompted for a noun and a case to conjugate it to, two suffixes for the noun, and a detached non-proper root as a modifier for the noun.");
         FynotekWord word = new FynotekWord(prompt("Enter a fynotek noun:  "), getProper());
         Case nounCase = getCase(word);
         String suffix1 = prompt("Enter the first suffix:  ");
