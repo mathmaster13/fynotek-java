@@ -20,6 +20,7 @@ Demos can be found in the [demos](demos) folder. See [RUNNING.md](RUNNING.md) fo
 - Apply prefixes and suffixes to words
 - Match the marking of one word to another
 - Convert a number to the Fynotek number system
+- Check if a word is phonotactically valid in Fynotek
 
 ## Known Bugs
 None yet. Report any if you find them!
