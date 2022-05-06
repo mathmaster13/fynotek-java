@@ -210,9 +210,16 @@ public final class FynotekWord extends BaseFynotekWord {
      * Returns a copy of this FynotekWord marked for the specified ablaut. For proper nouns, a suffix is applied instead.
      * If this function is used on a word, it is assumed that the word has been marked for case or tense,
      * but the case or tense is unknown.
+     * This function should be called before any suffix functions, not after.
+     *
+     * If a word has previously been inflected, it usually should not be inflected again.
+     * If this function is called on a marked word, there is no guarantee for the result.
+     * Check for marking with {@link #isMarked()}.
      * @param ablaut the ablaut to mark this word as.
      * @return a copy of this FynotekWord marked for the specified ablaut.
      * @see Ablaut
+     * @see #match(BaseFynotekWord)
+     * @see #isMarked()
      * // TODO since
      */
     @Override
@@ -311,6 +318,12 @@ public final class FynotekWord extends BaseFynotekWord {
         return new FynotekWord(temp.reverse().toString(), inflection, isProper);
     }
 
+    @Override
+    public @NotNull FynotekWord inflect(@Nullable Inflection inflection) {
+        if (inflection instanceof Case caseOfNoun) return nounCase(caseOfNoun);
+        return (FynotekWord) super.inflect(inflection);
+    }
+
     /**
      * {@inheritDoc}
      * @see #nounCase(Case)
@@ -368,7 +381,7 @@ public final class FynotekWord extends BaseFynotekWord {
      * @see #nounCase(Case)
      * @since 2.0
      */
-    public enum Case implements Inflection {
+    public enum Case implements SpecificInflection {
         /**
          * Represents the nominative case, marked with {@link Ablaut#DEFAULT DEFAULT} ablaut.
          * The word "folo" cannot be inflected as this case.

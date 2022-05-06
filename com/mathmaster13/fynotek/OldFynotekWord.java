@@ -71,9 +71,16 @@ public final class OldFynotekWord extends BaseFynotekWord {
      * If this function is used on a word, it is assumed that the word has been marked for case or tense,
      * but the case or tense is unknown.
      * Since Old Fynotek has no case-marking, this function's only use is when doing interoperation with modern Fynotek words.
+     * This function should be called before any suffix functions, not after.
+     *
+     * If a word has previously been inflected, it usually should not be inflected again.
+     * If this function is called on a marked word, there is no guarantee for the result.
+     * Check for marking with {@link #isMarked()}.
      * @param ablaut the ablaut to mark this word as.
      * @return a copy of this OldFynotekWord marked for the specified ablaut.
      * @see Ablaut
+     * @see #match(BaseFynotekWord)
+     * @see #isMarked()
      * // TODO since
      */
     @Override
@@ -102,6 +109,16 @@ public final class OldFynotekWord extends BaseFynotekWord {
     @Override
     public @NotNull OldFynotekWord verbTense(@NotNull Tense tenseOfVerb) {
         return new OldFynotekWord(_ablaut((tenseOfVerb == Tense.GNOMIC ? Tense.HYP_GNOMIC : tenseOfVerb).getAblaut()), tenseOfVerb);
+    }
+
+    /**
+     * {@inheritDoc}
+     * If {@code inflection} is an instance of {@link FynotekWord.Case}, the result is returned with the supplied noun case as its inflection, but with {@link Ablaut#DEFAULT} ablaut applied.
+     * // TODO since
+     */
+    @Override
+    public @NotNull OldFynotekWord inflect(@Nullable Inflection inflection) {
+        return (OldFynotekWord) super.inflect(inflection);
     }
 
     /**

@@ -273,9 +273,16 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
      * Returns a copy of this BaseFynotekWord marked for the specified ablaut.
      * If this function is used on a word, it is assumed that the word has been marked for case or tense,
      * but the case or tense is unknown.
+     * This function should be called before any suffix functions, not after.
+     *
+     * If a word has previously been inflected, it usually should not be inflected again.
+     * If this function is called on a marked word, there is no guarantee for the result.
+     * Check for marking with {@link #isMarked()}.
      * @param ablaut the ablaut to mark this word as.
-     * @return a copy of this FynotekWord marked for the specified ablaut.
+     * @return a copy of this BaseFynotekWord marked for the specified ablaut.
      * @see Ablaut
+     * @see #match(BaseFynotekWord)
+     * @see #isMarked()
      * // TODO since
      */
     public abstract @NotNull BaseFynotekWord ablaut(@NotNull Ablaut ablaut);
@@ -350,15 +357,37 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
     public abstract @NotNull BaseFynotekWord verbTense(@NotNull Tense tense);
 
     /**
+     * Returns a copy of this word inflected for the inflection specified by <code>inflection</code>.
+     * This function should be called before any suffix functions, not after.
+     *
+     * If a word has previously been inflected, it usually should not be inflected again.
+     * If this function is called on a marked word, there is no guarantee for the result.
+     * Check for marking with {@link #isMarked()}.
+     * @param inflection the inflection to inflect this BaseFynotekWord for.
+     * @return this BaseFynotekWord inflected for the specified inflection.
+     * @see #match(BaseFynotekWord)
+     * @see #isMarked()
+     * // TODO since
+     */
+    public @NotNull BaseFynotekWord inflect(@Nullable Inflection inflection) {
+        if (inflection instanceof Tense tenseOfVerb) return verbTense(tenseOfVerb);
+        if (inflection instanceof Ablaut ablaut) return ablaut(ablaut);
+        return this;
+    }
+
+    /**
      * Returns a copy of this word inflected for the same case or tense as <code>word</code>.
+     * This function calls {@code inflect(word.inflection)}.
      * This function should be called before any suffix functions, not after.
      * If a word has previously been marked for case or tense, it usually should not be marked again.
-     * If this function is called on a marked word, a warning will be generated, and there is no guarantee for the result.
+     * If this function is called on a marked word, there is no guarantee for the result.
      * @param word the BaseFynotekWord to match this word's inflection with.
      * @return this word inflected for the same case or tense as <code>word</code>.
      * @see #verbTense(Tense)
      */
-    public abstract @NotNull BaseFynotekWord match(@NotNull BaseFynotekWord word);
+    public @NotNull BaseFynotekWord match(@NotNull BaseFynotekWord word) {
+        return inflect(word.inflection);
+    }
 
     /**
      * Returns whether this BaseFynotekWord is marked or not. Specifically, returns <code>inflection != null</code>.
@@ -445,7 +474,7 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
      * Represents the tense of a Fynotek verb. Tenses prefixed with <code>HYP_</code> are hypothetical tenses.
      * @since 2.0
      */
-    public enum Tense implements Inflection {
+    public enum Tense implements SpecificInflection {
         /**
          * Represents the present tense, marked with {@link Ablaut#DEFAULT DEFAULT} ablaut.
          *
