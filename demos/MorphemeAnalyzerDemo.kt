@@ -1,7 +1,6 @@
 @file:JvmName("MorphemeAnalyzerDemo")
 
 // TODO thinky thonk. should you make some of these functions part of the main API?
-// TODO numbers (derogatory)
 
 import com.mathmaster13.fynotek.BaseFynotekWord.Ablaut
 import com.mathmaster13.fynotek.FynotekWord
@@ -62,7 +61,9 @@ val possessorSuffixes = hashSetOf(
     "yrami",
     "yri"
 )
-val numberSuffixes = hashSetOf("po", "pura", "poña", "sola", "manta", "tauwa")
+
+val numberRoots = arrayOf("fui", "ay", "fo", "us", "nos", "pur")
+val numberSuffixes = arrayOf("po", "pura", "poña", "sola", "manta", "tauwa")
 
 fun main() {
     println("This tool will parse a Fynotek word into individual morphemes. You can then look each morpheme up in a morpheme dictionary, such as https://mathmaster13.github.io/fynotek/dict/.")
@@ -98,11 +99,11 @@ fun main() {
 /**
  * Assuming that a word is a single word with no affixes (but it can have ablaut), give the possible dictionary matches.
  */
-private fun singleRootAblautAnalysis(word: String): List<Analysis> {
-    if (contentWords.contains(word)) return listOf(Analysis(arrayOf(word)))
+private fun singleRootAblautAnalysis(word: String): MutableList<Analysis> {
+    if (contentWords.contains(word)) return mutableListOf(Analysis(word))
     // ñojera (if there is more than one jera)
     if (word.matches(Regex("^ñojera(jera)+$")))
-        return listOf(Analysis("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")"))
+        return mutableListOf(Analysis("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")"))
 
     val separatedWord = separateVowels(word)
     val pattern = Regex("^" + separatedWord[0] + "[aeiouy]{1,2}" + separatedWord[2] + "$")
@@ -121,7 +122,7 @@ private fun singleRootAblautAnalysis(word: String): List<Analysis> {
 }
 
 // dictWord is from the dictionary; separatedWord is the word you're testing
-private fun checkForAblaut(dictWord: String, separatedWord: Array<String>): List<Analysis> {
+private fun checkForAblaut(dictWord: String, separatedWord: Array<String>): MutableList<Analysis> {
     val output = mutableListOf<Analysis>()
     val word = separatedWord[0] + separatedWord[1] + separatedWord[2]
 
@@ -147,16 +148,93 @@ private fun checkForAblaut(dictWord: String, separatedWord: Array<String>): List
     return output
 }
 
+private fun numericAnalysis(word: String, isAttachedModifier: Boolean): MutableList<Analysis> {
+    // TODO date/time words
+    val output = numericAblautAnalysis(word, !isAttachedModifier)
+    // TODO this is similar to singleRootAnalysis. maybe make this its own function?
+    // make an array of all the date and time suffixes if needed
+    for (suffix in (if (isAttachedModifier) arrayOf("yla", "ylarea", "rea") else arrayOf("rea"))) {
+        if (!word.contains(Regex("$suffix$"))) continue
+        var potentialRoot = word.substring(0, word.length - suffix.length)
+        // Check if any analysis works assuming no filler letters
+        numericAblautAnalysis(potentialRoot, !isAttachedModifier).forEach { output.add((it + Analysis(if (suffix == "ylarea") arrayOf("yla", "rea") else arrayOf(suffix), /* TODO fill in this part of speech */))!!) }
+
+        // Check if filler letters are valid
+        // Note: Fynotek shouldn't have any one-letter content roots, but if it does, add (potentialRoot.length <= 1) to the below condition.
+        if (!potentialRoot.contains(Regex("[an]$"))) continue
+        potentialRoot = potentialRoot.substring(0, potentialRoot.length - 1)
+        if (isValidSequence(potentialRoot + suffix)) continue // If filler letters aren't necessary, they won't be used.
+        numericAblautAnalysis(potentialRoot, !isAttachedModifier).forEach { output.add((it + Analysis(if (suffix == "ylarea") arrayOf("yla", "rea") else arrayOf(suffix), /* TODO fill in this part of speech */))!!) }
+    }
+    return output
+}
+
+private fun numericAblautAnalysis(word: String, checkForAblaut: Boolean): MutableList<Analysis> {
+    if (word.length < 2) return mutableListOf() // if it's less than 2, it's not a number!
+    if (numberRoots.contains(word)) return mutableListOf(Analysis(word))
+
+    val output = mutableListOf<Analysis>()
+    val separatedWord = separateVowels(word)
+
+    // ablaut only
+    if (checkForAblaut)
+        for (number in numberRoots) output.addAll(checkForAblaut(number, separatedWord))
+
+    if (output.isNotEmpty() && output[0][0] == "fui") return output
+
+    // ablaut + suffix
+    // find the root number! cannot be "fui".
+    // TODO this assumes that only one root number is possible. verify this!
+    val rootAnalyses = mutableListOf<Analysis>()
+    var rootLength = 0
+    findRoot@for (i in 1 until numberRoots.size) {
+        val potentialNumber = numberRoots[i]
+        // no ablaut
+        if (word.length >= potentialNumber.length && word.substring(0, potentialNumber.length) == potentialNumber) {
+            rootLength = potentialNumber.length
+            break
+        }
+
+        // yes ablaut
+        // Test for a valid root. This will either be the same length or 1 more than the length of the root, so check both!
+        if (checkForAblaut)
+            for (j in potentialNumber.length..kotlin.math.min(word.length, potentialNumber.length + 1))
+                if (rootAnalyses.addAll(checkForAblaut(potentialNumber, separateVowels(word.substring(0, j))))) {
+                    rootLength = j
+                    break@findRoot
+                }
+    }
+    if (rootLength == 0) return mutableListOf() // if nothing shows up here, it's not a number! this is also the same as if (rootAnalyses.isNotEmpty()).
+
+    println("DEBUG: rootAnalyses: $rootAnalyses") // FIXME debug; remove this later
+
+    // Thankfully, number suffixes shouldn't need filler letters!
+    var lengthToCut = rootLength
+    val suffixes = mutableListOf<String>()
+    for (potentialSuffix in numberSuffixes) {
+        val cutSuffix = word.substring(lengthToCut)
+        if (!cutSuffix.contains(Regex(if (cutSuffix == "po") "^po(?!ña)" else "^suffix"))) continue
+        lengthToCut += potentialSuffix.length
+        suffixes.add(potentialSuffix)
+    }
+    if (lengthToCut == word.length) // If there are additional letters after the suffix, we have a problem.
+        rootAnalyses.forEach { output.add((it + Analysis(suffixes.toTypedArray()))!!) } // NPE = very bad
+    println(output)
+    return output
+}
+
 /** A single-root analysis that accounts for suffixes, but not prefixes. */
-private fun singleRootAnalysis(word: String, possiblePartsOfSpeech: HashSet<PartOfSpeech> = PartOfSpeech.ALL): List<Analysis> {
-    val output = singleRootAblautAnalysis(word).toMutableList() // Check if any analysis works with no suffix
-    // deal with numbers here
+private fun singleRootAnalysis(word: String, possiblePartsOfSpeech: HashSet<PartOfSpeech> = PartOfSpeech.ALL): MutableList<Analysis> {
+    val output = singleRootAblautAnalysis(word) // Check if any analysis works with no suffix
+    // nanpa (ike a)
+    output.addAll(numericAnalysis(word, false))
 
     for (suffix in getValidSuffixes(possiblePartsOfSpeech)) {
         if (!word.contains(Regex("$suffix$"))) continue
         var potentialRoot = word.substring(0, word.length - suffix.length)
         // Check if any analysis works assuming no filler letters
         singleRootAblautAnalysis(potentialRoot).forEach { output.add((it + Analysis(suffixToString(suffix), suffixToPartsOfSpeech(suffix)))!!) }
+        numericAnalysis(potentialRoot, false).forEach { output.add((it + Analysis(suffixToString(suffix), suffixToPartsOfSpeech(suffix)))!!) }
 
         // Check if filler letters are valid
         // Note: Fynotek shouldn't have any one-letter content roots, but if it does, add (potentialRoot.length <= 1) to the below condition.
@@ -164,8 +242,10 @@ private fun singleRootAnalysis(word: String, possiblePartsOfSpeech: HashSet<Part
         potentialRoot = potentialRoot.substring(0, potentialRoot.length - 1)
         if (isValidSequence(potentialRoot + suffix)) continue // If filler letters aren't necessary, they won't be used.
         singleRootAblautAnalysis(potentialRoot).forEach { output.add((it + Analysis(suffixToString(suffix), suffixToPartsOfSpeech(suffix)))!!) }
+        numericAnalysis(potentialRoot, false).forEach { output.add((it + Analysis(suffixToString(suffix), suffixToPartsOfSpeech(suffix)))!!) }
     }
-    // TODO nanpa (ike)
+    // ak and rea cannot go together! TODO see if this is true; it may not be anymore!
+//    output.forEach { if (it.text.contains("ak") && it.text.contains("rea")) output.remove(it) }
     return output
 }
 
@@ -190,7 +270,7 @@ private fun suffixToString(suffix: String) = when (suffix) {
     else -> throw AssertionError("A basic suffix may have been left out of the list. Please report an issue on GitHub with the word that you entered and this error message.")
 }
 
-private fun attachedModifierAnalysis(word: String, possiblePartsOfSpeech: HashSet<PartOfSpeech> = PartOfSpeech.ALL): List<Analysis> {
+private fun attachedModifierAnalysis(word: String, possiblePartsOfSpeech: HashSet<PartOfSpeech> = PartOfSpeech.ALL): MutableList<Analysis> {
     // TODO check if ambiguity makes returning a list necessary, or if i can just return one analysis
     // TODO reminder to handle numbers (sigh)
     val output = mutableListOf<Analysis>()
@@ -199,6 +279,8 @@ private fun attachedModifierAnalysis(word: String, possiblePartsOfSpeech: HashSe
     // ñojera (if there is more than one jera)
     if (word.matches(Regex("^ñojera(jera)+$")))
         output.add(Analysis("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")"))
+    // nanpa (ike a)
+    output.addAll(numericAnalysis(word, true))
 
     // If the word is a verb, posessor suffixes don't apply!
     if (possiblePartsOfSpeech == PartOfSpeech.VERB.asHashSet) return output
@@ -212,6 +294,12 @@ private fun attachedModifierAnalysis(word: String, possiblePartsOfSpeech: HashSe
         // ñojera (if there is more than one jera)
         if (potentialRoot.matches(Regex("^ñojera(jera)+$")))
             output.add(Analysis(arrayOf("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")", possessorSuffixToAnalysis(suffix)), PartOfSpeech.NOUN_OR_VERB))
+        // nanpa (ike a)
+        numericAnalysis(potentialRoot, true).forEach {
+            // TODO see if the null check is necessary
+            val combinedAnalysis = it + Analysis(possessorSuffixToAnalysis(suffix), PartOfSpeech.NOUN_OR_VERB)
+            if (combinedAnalysis != null) output.add(combinedAnalysis)
+        }
 
         // Check if filler letters are valid
         // Note: Fynotek shouldn't have any one-letter content roots, but if it does, add (potentialRoot.length <= 1) to the below condition.
@@ -222,6 +310,12 @@ private fun attachedModifierAnalysis(word: String, possiblePartsOfSpeech: HashSe
         // ñojera (if there is more than one jera)
         if (potentialRoot.matches(Regex("^ñojera(jera)+$")))
             output.add(Analysis(arrayOf("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")", possessorSuffixToAnalysis(suffix)), PartOfSpeech.NOUN_OR_VERB))
+        // nanpa (ike a)
+        numericAnalysis(potentialRoot, true).forEach {
+            // TODO see if the null check is necessary
+            val combinedAnalysis = it + Analysis(possessorSuffixToAnalysis(suffix), PartOfSpeech.NOUN_OR_VERB)
+            if (combinedAnalysis != null) output.add(combinedAnalysis)
+        }
     }
     return output
 }
@@ -250,8 +344,8 @@ fun possessorSuffixToAnalysis(suffix: String): String {
  * Everything but the prefix.
  * If isVerb is null, we don't know the part of speech of the word.
  */
-private fun fullAnalysisNoPrefix(word: String, possiblePartsOfSpeech: HashSet<PartOfSpeech> = PartOfSpeech.ALL): List<Analysis> {
-    val output = singleRootAnalysis(word, possiblePartsOfSpeech).toMutableList() // Try to analyze the word as one word
+private fun fullAnalysisNoPrefix(word: String, possiblePartsOfSpeech: HashSet<PartOfSpeech> = PartOfSpeech.ALL): MutableList<Analysis> {
+    val output = singleRootAnalysis(word, possiblePartsOfSpeech) // Try to analyze the word as one word
     for (i in 1 until word.length) {
         // Very similar to singleRootAnalysis. TODO perhaps make these use one function?
         var potentialRoot = word.substring(0, i)
@@ -279,8 +373,10 @@ private fun fullAnalysisNoPrefix(word: String, possiblePartsOfSpeech: HashSet<Pa
 
 fun analyze(word: String): List<Analysis> {
     // TODO perhaps move everything from main() into here so that this can be run standalone?
-    val output = fullAnalysisNoPrefix(word).toMutableList() // check for analyses without any prefix
+    val output = fullAnalysisNoPrefix(word) // check for analyses without any prefix
     if (!word.contains(Regex("^[aoi]"))) return output
+
+    println("prefix being evaluated")
 
     val prefix = word[0].toString()
     val partOfSpeech = PartOfSpeech.get(word[0])
@@ -323,6 +419,7 @@ class Analysis(@JvmField val text: Array<String>, @JvmField val possiblePartsOfS
         if (combinedPartsOfSpeech.isEmpty()) return null
         return Analysis(text + other.text, combinedPartsOfSpeech)
     }
+    operator fun get(index: Int) = text[index]
     override fun toString(): String {
         if (text.isEmpty()) return ""
         var output = text[0]

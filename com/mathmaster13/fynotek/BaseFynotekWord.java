@@ -298,7 +298,7 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
      * @return an array containing <code>word</code> separated by its final vowel or diphthong.
      * // TODO add @since when this gets released
      */
-    public static String[] separateVowels(String word) {
+    public static @NotNull String[] separateVowels(@NotNull String word) {
         word = word.trim().toLowerCase(); // TODO: Change implementation to preserve capitalization (maybe?)
         if (word.isEmpty()) { // If you want to re-add the null check, change the condition to (word == null || word.isEmpty())
             return new String[] {"", "", ""};
