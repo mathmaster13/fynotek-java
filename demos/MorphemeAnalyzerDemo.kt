@@ -633,6 +633,9 @@ private fun attachedModifierAnalysis(word: String, possiblePartsOfSpeech: HashSe
 
     // If the word is a verb, posessor suffixes don't apply!
     if (possiblePartsOfSpeech == PartOfSpeech.VERB.asHashSet) return output
+
+    // Check for solely a possessor suffix
+    if (possessorSuffixes.contains(word)) output.add(Analysis("possessive form of \"${pronouns[possessorSuffixes.indexOf(word)]}\"", PartOfSpeech.NOUN_OR_MODIFIER))
     
     // Very similar to singleRootAnalysis. TODO perhaps make these use one function?
     for (i in possessorSuffixes.indices) {
@@ -640,14 +643,14 @@ private fun attachedModifierAnalysis(word: String, possiblePartsOfSpeech: HashSe
         if (!word.contains(Regex("$suffix$"))) continue
         var potentialRoot = word.substring(0, word.length - suffix.length)
         // Check if any analysis works assuming no filler letters
-        if (contentWords.contains(potentialRoot)) output.add(Analysis(arrayOf(potentialRoot, pronouns[i]), PartOfSpeech.NOUN_OR_MODIFIER))
+        if (contentWords.contains(potentialRoot)) output.add(Analysis(arrayOf(potentialRoot, "possessive form of \"${pronouns[i]}\""), PartOfSpeech.NOUN_OR_MODIFIER))
         // ñojera (if there is more than one jera)
         if (potentialRoot.matches(Regex("^ñojera(jera)+$")))
-            output.add(Analysis(arrayOf("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")", pronouns[i]), PartOfSpeech.NOUN_OR_MODIFIER))
+            output.add(Analysis(arrayOf("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")", "possessive form of \"${pronouns[i]}\""), PartOfSpeech.NOUN_OR_MODIFIER))
         // nanpa (ike a)
         numericAnalysis(potentialRoot, true).forEach {
             // TODO see if the null check is necessary
-            val combinedAnalysis = it + Analysis(pronouns[i], PartOfSpeech.NOUN_OR_MODIFIER)
+            val combinedAnalysis = it + Analysis("possessive form of \"${pronouns[i]}\"", PartOfSpeech.NOUN_OR_MODIFIER)
             if (combinedAnalysis != null) output.add(combinedAnalysis)
         }
 
@@ -656,14 +659,14 @@ private fun attachedModifierAnalysis(word: String, possiblePartsOfSpeech: HashSe
         if (!potentialRoot.contains(Regex("[an]$"))) continue
         potentialRoot = potentialRoot.substring(0, potentialRoot.length - 1)
         if (isValidSequence(potentialRoot + suffix)) continue // If filler letters aren't necessary, they won't be used.
-        if (contentWords.contains(potentialRoot)) output.add(Analysis(arrayOf(potentialRoot, pronouns[i]), PartOfSpeech.NOUN_OR_MODIFIER))
+        if (contentWords.contains(potentialRoot)) output.add(Analysis(arrayOf(potentialRoot, "possessive form of \"${pronouns[i]}\""), PartOfSpeech.NOUN_OR_MODIFIER))
         // ñojera (if there is more than one jera)
         if (potentialRoot.matches(Regex("^ñojera(jera)+$")))
-            output.add(Analysis(arrayOf("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")", pronouns[i]), PartOfSpeech.NOUN_OR_MODIFIER))
+            output.add(Analysis(arrayOf("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")", "possessive form of \"${pronouns[i]}\""), PartOfSpeech.NOUN_OR_MODIFIER))
         // nanpa (ike a)
         numericAnalysis(potentialRoot, true).forEach {
             // TODO see if the null check is necessary
-            val combinedAnalysis = it + Analysis(pronouns[i], PartOfSpeech.NOUN_OR_MODIFIER)
+            val combinedAnalysis = it + Analysis("possessive form of \"${pronouns[i]}\"", PartOfSpeech.NOUN_OR_MODIFIER)
             if (combinedAnalysis != null) output.add(combinedAnalysis)
         }
     }

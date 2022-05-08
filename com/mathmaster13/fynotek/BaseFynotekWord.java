@@ -456,7 +456,8 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
 
         /**
          * This method is solely to provide compatibility with the {@link Inflection} interface.
-         * @return this
+         * It simply returns {@code this}.
+         * @return {@code this}
          * @since 3.0
          */
         @Override
