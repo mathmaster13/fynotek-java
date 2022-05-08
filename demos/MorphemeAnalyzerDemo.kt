@@ -22,6 +22,7 @@ val standaloneWords = hashSetOf(
     "stañy",
     "stañyyla",
     "stañyula",
+    "ñy",
     "ak",
     "i",
     "ik",
