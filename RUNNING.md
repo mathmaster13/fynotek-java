@@ -15,7 +15,7 @@ Clone the repo:
 ```
 git clone https://github.com/mathmaster13/fynotek-java.git
 ```
-Copy all files in the `demos` folder to the source root.
+Copy all files in the `src/demos` folder to the root of the `src` folder.
 
 Compile the library:
 ```
