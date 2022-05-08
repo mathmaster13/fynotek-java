@@ -283,7 +283,7 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
      * @see Ablaut
      * @see #match(BaseFynotekWord)
      * @see #isMarked()
-     * // TODO since
+     * @since 3.0
      */
     public abstract @NotNull BaseFynotekWord ablaut(@NotNull Ablaut ablaut);
 
@@ -296,7 +296,7 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
      * If a word has no vowels (as defined by {@link #isVowel(char)}), the word is placed as the third string.
      * @param word the word to be parsed for final vowels
      * @return an array containing <code>word</code> separated by its final vowel or diphthong.
-     * // TODO add @since when this gets released
+     * @since 3.0
      */
     public static @NotNull String[] separateVowels(@NotNull String word) {
         word = word.trim().toLowerCase(); // TODO: Change implementation to preserve capitalization (maybe?)
@@ -367,7 +367,7 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
      * @return this BaseFynotekWord inflected for the specified inflection.
      * @see #match(BaseFynotekWord)
      * @see #isMarked()
-     * // TODO since
+     * @since 3.0
      */
     public @NotNull BaseFynotekWord inflect(@Nullable Inflection inflection) {
         if (inflection instanceof Tense tenseOfVerb) return verbTense(tenseOfVerb);
@@ -457,7 +457,7 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
         /**
          * This method is solely to provide compatibility with the {@link Inflection} interface.
          * @return this
-         * TODO @since
+         * @since 3.0
          */
         @Override
         public @NotNull Ablaut getAblaut() {

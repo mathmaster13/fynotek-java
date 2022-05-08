@@ -220,7 +220,7 @@ public final class FynotekWord extends BaseFynotekWord {
      * @see Ablaut
      * @see #match(BaseFynotekWord)
      * @see #isMarked()
-     * // TODO since
+     * @since 3.0
      */
     @Override
     public @NotNull FynotekWord ablaut(@NotNull Ablaut ablaut) {

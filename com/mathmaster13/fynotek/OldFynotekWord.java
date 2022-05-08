@@ -81,7 +81,7 @@ public final class OldFynotekWord extends BaseFynotekWord {
      * @see Ablaut
      * @see #match(BaseFynotekWord)
      * @see #isMarked()
-     * // TODO since
+     * @since 3.0
      */
     @Override
     public @NotNull OldFynotekWord ablaut(@NotNull Ablaut ablaut) throws IllegalArgumentException {
@@ -91,6 +91,7 @@ public final class OldFynotekWord extends BaseFynotekWord {
     /**
      * {@inheritDoc}
      * If this word was inflected with a noun case through the {@link #match(BaseFynotekWord)} method, {@link Ablaut#DEFAULT} is returned.
+     * @since 2.0
      */
     @Override
     public @Nullable Ablaut getAblaut() {
@@ -114,7 +115,7 @@ public final class OldFynotekWord extends BaseFynotekWord {
     /**
      * {@inheritDoc}
      * If {@code inflection} is an instance of {@link FynotekWord.Case}, the result is returned with the supplied noun case as its inflection, but with {@link Ablaut#DEFAULT} ablaut applied.
-     * // TODO since
+     * @since 3.0
      */
     @Override
     public @NotNull OldFynotekWord inflect(@Nullable Inflection inflection) {

@@ -7,6 +7,7 @@ import com.mathmaster13.fynotek.FynotekWord
 import com.mathmaster13.fynotek.FynotekWord.separateVowels
 import com.mathmaster13.fynotek.FynotekWord.isValidSequence
 import Analysis.PartOfSpeech
+import kotlin.math.pow
 
 /** A list of all Fynotek words that cannot be inflected. */
 val standaloneWords = hashSetOf(
@@ -42,25 +43,308 @@ val standaloneWords = hashSetOf(
     "sy",
     "yf"
 )
-/** A list of all content words, excluding numbers. */
-val contentWords = hashSetOf("pynsi", "ay", "fmutue", "samlaa", "kisak", "mees", "ofu", "pyn", "siofu", "jera", "ñojera") // TODO fill this (derogatory)
 
-val possessorSuffixes = hashSetOf(
-    "akiy",
+val pronouns = arrayOf(
+    "yumi",
+    "yumia",
+    "yumiame",
+    "ñaki",
+    "ñakime",
+    "eji",
+    "ejime",
+    "yra",
+    "yrame",
+    "tua",
+    "folo",
+    "juon",
+    "junon"
+)
+
+val possessorSuffixes = arrayOf(
+    "umiy",
+    "umii",
     "ami",
-    "asi",
+    "akiy",
+    "imi",
     "ejiy",
     "ejimi",
-    "imi",
-    "oli",
-    "ui",
-    "uin",
-    "umii",
-    "umiy",
-    "unin",
+    "yri",
     "yrami",
-    "yri"
+    "ui",
+    "oli",
+    "uin",
+    "unin"
 )
+
+/** A list of all content words, excluding numbers. */
+val contentWords = (hashSetOf(
+    "aakem",
+    "ah",
+    "ahur",
+    "ampu",
+    "asai",
+    "askan",
+    "aso",
+    "asoraimtau",
+    "asotau",
+    "atorejen",
+    "atoren",
+    "atymei",
+    "awre",
+    "awt",
+    "awtakut",
+    "awterfays",
+    "awterfayskut",
+    "awterkut",
+    "awterp",
+    "awtfays",
+    "awtñy",
+    "awtunso",
+    "ayhusi",
+    "easlo",
+    "eiska",
+    "eiskor",
+    "eispo",
+    "ejen",
+    "ejtau",
+    "ejunso",
+    "emi",
+    "erp",
+    "etwe",
+    "ewje",
+    "ewnik",
+    "famo",
+    "fayh",
+    "fays",
+    "femro",
+    "feñiasa",
+    "feñipur",
+    "feñisamlaa",
+    "feñu",
+    "feom",
+    "fimatu",
+    "fjar",
+    "fjow",
+    "fmutue",
+    "fohusi",
+    "fota",
+    "fotampu",
+    "fotwoetas",
+    "foun",
+    "fowi",
+    "frie",
+    "friwoetas",
+    "ftylna",
+    "fuh",
+    "fupa",
+    "hao",
+    "haria",
+    "hepwik",
+    "hije",
+    "hijkla",
+    "hiks",
+    "himta",
+    "hituña",
+    "hjapa",
+    "hjeu",
+    "horse",
+    "huansa",
+    "huasern",
+    "husi",
+    "hyr",
+    "iasa",
+    "ifiti",
+    "iimmmii",
+    "ikmeo",
+    "ikna",
+    "ilyn",
+    "inhy",
+    "iso",
+    "iuñe",
+    "iuñereun",
+    "jalkeiska",
+    "jalki",
+    "jaoma",
+    "jawe",
+    "jaymka",
+    "jaynasotau",
+    "jaytau",
+    "jeaj",
+    "jem",
+    "jera",
+    "jerahao",
+    "jetal",
+    "jiwo",
+    "jukse",
+    "junon",
+    "juon",
+    "kaf",
+    "kafikna",
+    "kafskan",
+    "kaftau",
+    "kaftofa",
+    "kaftofiuñe",
+    "kaftofoñek",
+    "kaha",
+    "kemnu",
+    "kiakfutejen",
+    "kiakfutiuñe",
+    "kiakfutreun",
+    "kiakfutu",
+    "kiakfutyla",
+    "kimou",
+    "kimpe",
+    "kisak",
+    "kito",
+    "kjam",
+    "kjekos",
+    "kmafi",
+    "knei",
+    "kohol",
+    "koli",
+    "kou",
+    "kui",
+    "kunin",
+    "kusum",
+    "kut",
+    "kynsi",
+    "lituwle",
+    "luel",
+    "makio",
+    "mamyo",
+    "masno",
+    "mawak",
+    "mees",
+    "meome",
+    "mikip",
+    "mjef",
+    "mjulis",
+    "mjuw",
+    "mumfih",
+    "mumiu",
+    "muosai",
+    "muyfa",
+    "ñaasi",
+    "najar",
+    "nakuu",
+    "ñawa",
+    "nawpo",
+    "nawtau",
+    "ñeñe",
+    "nesmo",
+    "ninpa",
+    "noaksyo",
+    "nohu",
+    "ñojera",
+    "ñokaf",
+    "nomyt",
+    "noshusi",
+    "ñot",
+    "nowto",
+    "ñuhju",
+    "ñuk",
+    "nyom",
+    "ñytejen",
+    "nytsa",
+    "ñytuh",
+    "oansi",
+    "ofu",
+    "omoa",
+    "omplan",
+    "oñek",
+    "oñekatau",
+    "oñeotnat",
+    "onstana",
+    "ookwy",
+    "ootnat",
+    "otme",
+    "pamlas",
+    "pasni",
+    "pelwo",
+    "peoka",
+    "perlii",
+    "pert",
+    "piu",
+    "plymei",
+    "prios",
+    "psoi",
+    "puljae",
+    "pyhan",
+    "pykwu",
+    "pyn",
+    "pynsi",
+    "pyum",
+    "raim",
+    "raimtau",
+    "ralmo",
+    "ralmtau",
+    "ratas",
+    "repsumu",
+    "reun",
+    "ria",
+    "rikoa",
+    "rjahe",
+    "rjuh",
+    "rouju",
+    "ru",
+    "safel",
+    "salkina",
+    "samlaa",
+    "seeha",
+    "sefo",
+    "senkek",
+    "sfoufa",
+    "sihne",
+    "sihneawt",
+    "siofu",
+    "skafas",
+    "smei",
+    "soatar",
+    "sojeon",
+    "suarn",
+    "susni",
+    "swie",
+    "tau",
+    "teipiw",
+    "tek",
+    "teplii",
+    "tfaa",
+    "tfemka",
+    "tia",
+    "tiisupa",
+    "timohsa",
+    "tinpo",
+    "tlyo",
+    "toaju",
+    "tofa",
+    "tsala",
+    "tukaño",
+    "tunu",
+    "twauke",
+    "tyñk",
+    "ukea",
+    "ukhin",
+    "ula",
+    "ulpia",
+    "unso",
+    "ushusi",
+    "uwsafur",
+    "uykan",
+    "weifsa",
+    "wiamta",
+    "wipy",
+    "woetas",
+    "wyike",
+    "yahan",
+    "yla",
+    "yñwy",
+    "yren",
+    "ywaaso",
+    "ywakui",
+    "ywaomplan",
+    "ywar",
+    "ywasefo"
+) + pronouns).toHashSet()
 
 val numberRoots = arrayOf("fui", "ay", "fo", "us", "nos", "pur")
 val numberSuffixes = arrayOf("po", "pura", "poña", "sola", "manta", "tauwa")
@@ -84,7 +368,18 @@ fun main() {
         return
     }
     if (standaloneWords.contains(word)) {
-        println(word)
+        println(when (word) {
+            "stayla" -> "sta + yla"
+            "staula" -> "sta + ula"
+            "stañy" -> "sta + ñy"
+            "stañyyla" -> "sta + ñy + yla"
+            "stañyula" -> "sta + ñy + ula"
+            "niyla" -> "ni + yla"
+            "niula" -> "ni + ula"
+            "oht" -> "ohto"
+            "ñet" -> "ñeta"
+            else -> word
+        })
         return
     }
 
@@ -92,7 +387,12 @@ fun main() {
     val analysisList = analyze(word)
     analysisList.forEach { println(it) }
     if (analysisList.isEmpty()) println("""No valid analyses can be found. This may be because you have entered a proper noun (which is not supported), or because you have entered morphemes that cannot coexist in the same word.
-        |This usually occurs when you try to apply a possessor suffix to a verb, apply "ak" to a verb or ordinal number, or apply ablaut other than A, I, or O ablaut to a noun.
+        |Some common occurrences of this are when you try to:
+        | - apply a possessor suffix to a verb
+        | - apply "ak" to a verb, a pronoun, or a word with a number modifier less than equal to 1
+        | - omit "ak" on a word with a number modifier greater than 1 (except for pronouns)
+        | - apply ablaut other than A, I, or O ablaut to a noun
+        | - mark a number that is larger than a temporal field's range as that temporal field
         |If this is truly a valid Fynotek word, there may be an error in the code or the dictionary it uses, and you should report an issue on GitHub at https://github.com/mathmaster13/fynotek-java/.""".trimMargin())
 }
 
@@ -153,20 +453,66 @@ private fun numericAnalysis(word: String, isAttachedModifier: Boolean): MutableL
     val output = numericAblautAnalysis(word, !isAttachedModifier)
     // TODO this is similar to singleRootAnalysis. maybe make this its own function?
     // make an array of all the date and time suffixes if needed
-    for (suffix in (if (isAttachedModifier) arrayOf("yla", "ylarea", "rea") else arrayOf("rea"))) {
+    for (suffix in (if (isAttachedModifier) arrayOf("yla", "ylarea", "rea") else arrayOf("rea", "tfaa", "ejen", "jeaj", "ñytuh", "ñytejen"))) {
         if (!word.contains(Regex("$suffix$"))) continue
         var potentialRoot = word.substring(0, word.length - suffix.length)
         // Check if any analysis works assuming no filler letters
-        numericAblautAnalysis(potentialRoot, !isAttachedModifier).forEach { output.add((it + Analysis(if (suffix == "ylarea") arrayOf("yla", "rea") else arrayOf(suffix), /* TODO fill in this part of speech */))!!) }
+        numericAblautAnalysis(potentialRoot, !isAttachedModifier).forEach {
+            val potentialAnalysis = (it + Analysis(if (suffix == "ylarea") arrayOf("yla", "rea") else arrayOf(suffix), if (isAttachedModifier) PartOfSpeech.NOUN_OR_MODIFIER else PartOfSpeech.ALL))!!
+            when (suffix) {
+                "jeaj", "ñytuh", "ñytejen" -> if (rootAnalysisToInt(it) > limitOf(suffix)) return@forEach
+            }
+            output.add(potentialAnalysis)
+        }
 
         // Check if filler letters are valid
         // Note: Fynotek shouldn't have any one-letter content roots, but if it does, add (potentialRoot.length <= 1) to the below condition.
         if (!potentialRoot.contains(Regex("[an]$"))) continue
         potentialRoot = potentialRoot.substring(0, potentialRoot.length - 1)
         if (isValidSequence(potentialRoot + suffix)) continue // If filler letters aren't necessary, they won't be used.
-        numericAblautAnalysis(potentialRoot, !isAttachedModifier).forEach { output.add((it + Analysis(if (suffix == "ylarea") arrayOf("yla", "rea") else arrayOf(suffix), /* TODO fill in this part of speech */))!!) }
+        numericAblautAnalysis(potentialRoot, !isAttachedModifier).forEach {
+            val potentialAnalysis = (it + Analysis(if (suffix == "ylarea") arrayOf("yla", "rea") else arrayOf(suffix), if (isAttachedModifier) PartOfSpeech.NOUN_OR_MODIFIER else PartOfSpeech.ALL))!!
+            when (suffix) {
+                "jeaj", "ñytuh", "ñytejen" -> if (rootAnalysisToInt(it) > limitOf(suffix)) return@forEach
+            }
+            output.add(potentialAnalysis)
+        }
     }
     return output
+}
+
+// Despite not needing this to check if a number is out of range, it may be useful later.
+private fun rootAnalysisToInt(analysis: Analysis): Int {
+    var numberRoot: String? = null
+    for (i in numberRoots)
+        if (analysis.text.contains(i)) {
+            numberRoot = i
+            break
+        }
+    val base = when (numberRoot) {
+        null -> throw IllegalArgumentException("Not a number")
+        "fui" -> return 0
+        else -> run {
+            val index = numberRoots.indexOf(numberRoot)
+            if (index == -1)
+                throw AssertionError("numberRoot is somehow something that isn't a number.\nnumberRoot: $numberRoot")
+            else index
+        }
+    }
+    val exponent = run {
+        var power = 0
+        for (i in numberSuffixes.indices)
+            if (analysis.text.contains(numberSuffixes[i])) power += 2.0.pow(i).toInt()
+        power
+    }
+    return base * 6.0.pow(exponent).toInt()
+}
+
+private fun limitOf(suffix: String) = when (suffix) {
+    "jeaj" -> 8
+    "ñytuh" -> 5
+    "ñytejen" -> 12
+    else -> throw IllegalArgumentException("A suffix was called that does not have a limit. suffix: $suffix")
 }
 
 private fun numericAblautAnalysis(word: String, checkForAblaut: Boolean): MutableList<Analysis> {
@@ -180,7 +526,9 @@ private fun numericAblautAnalysis(word: String, checkForAblaut: Boolean): Mutabl
     if (checkForAblaut)
         for (number in numberRoots) output.addAll(checkForAblaut(number, separatedWord))
 
-    if (output.isNotEmpty() && output[0][0] == "fui") return output
+    // If a word has no suffixes, it should not be possible to analyze it with a suffix.
+    // TODO check this
+    if (output.isNotEmpty()) return output
 
     // ablaut + suffix
     // find the root number! cannot be "fui".
@@ -191,6 +539,7 @@ private fun numericAblautAnalysis(word: String, checkForAblaut: Boolean): Mutabl
         val potentialNumber = numberRoots[i]
         // no ablaut
         if (word.length >= potentialNumber.length && word.substring(0, potentialNumber.length) == potentialNumber) {
+            rootAnalyses.add(Analysis(potentialNumber))
             rootLength = potentialNumber.length
             break
         }
@@ -206,20 +555,17 @@ private fun numericAblautAnalysis(word: String, checkForAblaut: Boolean): Mutabl
     }
     if (rootLength == 0) return mutableListOf() // if nothing shows up here, it's not a number! this is also the same as if (rootAnalyses.isNotEmpty()).
 
-    println("DEBUG: rootAnalyses: $rootAnalyses") // FIXME debug; remove this later
-
     // Thankfully, number suffixes shouldn't need filler letters!
     var lengthToCut = rootLength
     val suffixes = mutableListOf<String>()
     for (potentialSuffix in numberSuffixes) {
         val cutSuffix = word.substring(lengthToCut)
-        if (!cutSuffix.contains(Regex(if (cutSuffix == "po") "^po(?!ña)" else "^suffix"))) continue
+        if (!cutSuffix.contains(Regex(if (potentialSuffix == "po") "^po(?!ña)" else "^$potentialSuffix"))) continue
         lengthToCut += potentialSuffix.length
         suffixes.add(potentialSuffix)
     }
     if (lengthToCut == word.length) // If there are additional letters after the suffix, we have a problem.
         rootAnalyses.forEach { output.add((it + Analysis(suffixes.toTypedArray()))!!) } // NPE = very bad
-    println(output)
     return output
 }
 
@@ -244,20 +590,24 @@ private fun singleRootAnalysis(word: String, possiblePartsOfSpeech: HashSet<Part
         singleRootAblautAnalysis(potentialRoot).forEach { output.add((it + Analysis(suffixToString(suffix), suffixToPartsOfSpeech(suffix)))!!) }
         numericAnalysis(potentialRoot, false).forEach { output.add((it + Analysis(suffixToString(suffix), suffixToPartsOfSpeech(suffix)))!!) }
     }
-    // ak and rea cannot go together! TODO see if this is true; it may not be anymore!
-//    output.forEach { if (it.text.contains("ak") && it.text.contains("rea")) output.remove(it) }
-    return output
+    // ak cannot be used on pronouns!
+    val outputCopy = output.toMutableList()
+    for (analysis in output)
+        if (analysis.text.contains("ak"))
+            for (pronoun in pronouns)
+                if (analysis.text.contains(pronoun)) outputCopy.remove(analysis)
+    return outputCopy
 }
 
 private fun getValidSuffixes(possiblePartsOfSpeech: HashSet<PartOfSpeech>): Array<String> {
     val output = mutableListOf("ñy")
-    if (possiblePartsOfSpeech.contains(PartOfSpeech.VERB)) output.addAll(arrayOf("ñya", "ñyo"))
+    if (possiblePartsOfSpeech.contains(PartOfSpeech.VERB)) output.addAll(arrayOf("a", "o", "ñya", "ñyo"))
     if (possiblePartsOfSpeech.contains(PartOfSpeech.NOUN) || possiblePartsOfSpeech.contains(PartOfSpeech.MODIFIER)) output.addAll(arrayOf("ak", "akñy"))
     return output.toTypedArray()
 }
 
 private fun suffixToPartsOfSpeech(suffix: String): HashSet<PartOfSpeech> = when {
-    suffix.contains(Regex("^ak")) -> PartOfSpeech.NOUN_OR_VERB
+    suffix.contains(Regex("^ak")) -> PartOfSpeech.NOUN_OR_MODIFIER
     suffix.contains(Regex("[ao]$")) -> PartOfSpeech.VERB_OR_MODIFIER
     else -> PartOfSpeech.ALL
 }
@@ -266,13 +616,12 @@ private fun suffixToString(suffix: String) = when (suffix) {
     "akñy" -> arrayOf("ak", "ñy")
     "ñya" -> arrayOf("ñy", "a")
     "ñyo" -> arrayOf("ñy", "o")
-    "ak", "ñy" -> arrayOf(suffix)
+    "ak", "ñy", "a", "o" -> arrayOf(suffix)
     else -> throw AssertionError("A basic suffix may have been left out of the list. Please report an issue on GitHub with the word that you entered and this error message.")
 }
 
 private fun attachedModifierAnalysis(word: String, possiblePartsOfSpeech: HashSet<PartOfSpeech> = PartOfSpeech.ALL): MutableList<Analysis> {
     // TODO check if ambiguity makes returning a list necessary, or if i can just return one analysis
-    // TODO reminder to handle numbers (sigh)
     val output = mutableListOf<Analysis>()
     // Check for single content word analyses
     if (contentWords.contains(word)) output.add(Analysis(word))
@@ -286,18 +635,19 @@ private fun attachedModifierAnalysis(word: String, possiblePartsOfSpeech: HashSe
     if (possiblePartsOfSpeech == PartOfSpeech.VERB.asHashSet) return output
     
     // Very similar to singleRootAnalysis. TODO perhaps make these use one function?
-    for (suffix in possessorSuffixes) {
+    for (i in possessorSuffixes.indices) {
+        val suffix = possessorSuffixes[i]
         if (!word.contains(Regex("$suffix$"))) continue
         var potentialRoot = word.substring(0, word.length - suffix.length)
         // Check if any analysis works assuming no filler letters
-        if (contentWords.contains(potentialRoot)) output.add(Analysis(arrayOf(potentialRoot, possessorSuffixToAnalysis(suffix)), PartOfSpeech.NOUN_OR_VERB))
+        if (contentWords.contains(potentialRoot)) output.add(Analysis(arrayOf(potentialRoot, pronouns[i]), PartOfSpeech.NOUN_OR_MODIFIER))
         // ñojera (if there is more than one jera)
         if (potentialRoot.matches(Regex("^ñojera(jera)+$")))
-            output.add(Analysis(arrayOf("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")", possessorSuffixToAnalysis(suffix)), PartOfSpeech.NOUN_OR_VERB))
+            output.add(Analysis(arrayOf("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")", pronouns[i]), PartOfSpeech.NOUN_OR_MODIFIER))
         // nanpa (ike a)
         numericAnalysis(potentialRoot, true).forEach {
             // TODO see if the null check is necessary
-            val combinedAnalysis = it + Analysis(possessorSuffixToAnalysis(suffix), PartOfSpeech.NOUN_OR_VERB)
+            val combinedAnalysis = it + Analysis(pronouns[i], PartOfSpeech.NOUN_OR_MODIFIER)
             if (combinedAnalysis != null) output.add(combinedAnalysis)
         }
 
@@ -306,38 +656,18 @@ private fun attachedModifierAnalysis(word: String, possiblePartsOfSpeech: HashSe
         if (!potentialRoot.contains(Regex("[an]$"))) continue
         potentialRoot = potentialRoot.substring(0, potentialRoot.length - 1)
         if (isValidSequence(potentialRoot + suffix)) continue // If filler letters aren't necessary, they won't be used.
-        if (contentWords.contains(potentialRoot)) output.add(Analysis(arrayOf(potentialRoot, possessorSuffixToAnalysis(suffix)), PartOfSpeech.NOUN_OR_VERB))
+        if (contentWords.contains(potentialRoot)) output.add(Analysis(arrayOf(potentialRoot, pronouns[i]), PartOfSpeech.NOUN_OR_MODIFIER))
         // ñojera (if there is more than one jera)
         if (potentialRoot.matches(Regex("^ñojera(jera)+$")))
-            output.add(Analysis(arrayOf("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")", possessorSuffixToAnalysis(suffix)), PartOfSpeech.NOUN_OR_VERB))
+            output.add(Analysis(arrayOf("(ñojera" + " + jera".repeat((word.length - 6) / 4) + ")", pronouns[i]), PartOfSpeech.NOUN_OR_MODIFIER))
         // nanpa (ike a)
         numericAnalysis(potentialRoot, true).forEach {
             // TODO see if the null check is necessary
-            val combinedAnalysis = it + Analysis(possessorSuffixToAnalysis(suffix), PartOfSpeech.NOUN_OR_VERB)
+            val combinedAnalysis = it + Analysis(pronouns[i], PartOfSpeech.NOUN_OR_MODIFIER)
             if (combinedAnalysis != null) output.add(combinedAnalysis)
         }
     }
     return output
-}
-
-fun possessorSuffixToAnalysis(suffix: String): String {
-    return "possessive form of " + when (suffix) {
-        "akiy" -> "ñaki"
-        "ami" -> "yumiame"
-        "asi" -> "saraso"
-        "ejiy" -> "eji"
-        "ejimi" -> "ejime"
-        "imi" -> "ñakime"
-        "oli" -> "folo"
-        "ui" -> "tua"
-        "uin" -> "juon"
-        "umii" -> "yumia"
-        "umiy" -> "yumi"
-        "unin" -> "junon"
-        "yrami" -> "yrame"
-        "yri" -> "yra"
-        else -> throw AssertionError("A posessor suffix was probably left out of the list. Please report an issue on GitHub with the word that you entered and this error message.")
-    }
 }
 
 /**
@@ -346,13 +676,25 @@ fun possessorSuffixToAnalysis(suffix: String): String {
  */
 private fun fullAnalysisNoPrefix(word: String, possiblePartsOfSpeech: HashSet<PartOfSpeech> = PartOfSpeech.ALL): MutableList<Analysis> {
     val output = singleRootAnalysis(word, possiblePartsOfSpeech) // Try to analyze the word as one word
+
     for (i in 1 until word.length) {
         // Very similar to singleRootAnalysis. TODO perhaps make these use one function?
         var potentialRoot = word.substring(0, i)
         val potentialModifier = word.substring(i, word.length)
         // Check if any analysis works assuming no filler letters
+        // TODO this gets copy/pasted. make this one function?
         for (rootAnalysis in singleRootAnalysis(potentialRoot, possiblePartsOfSpeech))
             for (modifierAnalysis in attachedModifierAnalysis(potentialModifier, possiblePartsOfSpeech)) {
+                // TODO check the assumption that a word root is always first in a root analysis
+                val hasNumber = numberRoots.contains(modifierAnalysis.text[0])
+                // check for "ak" or lack thereof
+                if (hasNumber
+                    // "ak" check is not necessary for pronouns, ordinals, or dates/times
+                    && !pronouns.contains(rootAnalysis.text[0])
+                    && !modifierAnalysis.text.contains("rea")) {
+                    val isPlural = !(modifierAnalysis.text.contains("yla") || rootAnalysisToInt(modifierAnalysis) <= 1)
+                    if (isPlural != rootAnalysis.text.contains("ak")) continue
+                }
                 val combinedAnalysis = rootAnalysis + modifierAnalysis
                 if (combinedAnalysis != null) output.add(combinedAnalysis)
             }
@@ -362,8 +704,19 @@ private fun fullAnalysisNoPrefix(word: String, possiblePartsOfSpeech: HashSet<Pa
         if (!potentialRoot.contains(Regex("[an]$"))) continue
         potentialRoot = potentialRoot.substring(0, potentialRoot.length - 1)
         if (isValidSequence(potentialRoot + potentialModifier)) continue // If filler letters aren't necessary, they won't be used.
+        // TODO this gets copy/pasted. make this one function?
         for (rootAnalysis in singleRootAnalysis(potentialRoot, possiblePartsOfSpeech))
             for (modifierAnalysis in attachedModifierAnalysis(potentialModifier, possiblePartsOfSpeech)) {
+                // TODO check the assumption that a word root is always first in a root analysis
+                val hasNumber = numberRoots.contains(modifierAnalysis.text[0])
+                // check for "ak" or lack thereof
+                if (hasNumber
+                    // "ak" check is not necessary for pronouns, ordinals, or dates/times
+                    && !pronouns.contains(rootAnalysis.text[0])
+                    && !modifierAnalysis.text.contains("rea")) {
+                    val isPlural = !(modifierAnalysis.text.contains("yla") || rootAnalysisToInt(modifierAnalysis) <= 1)
+                    if (isPlural != rootAnalysis.text.contains("ak")) continue
+                }
                 val combinedAnalysis = rootAnalysis + modifierAnalysis
                 if (combinedAnalysis != null) output.add(combinedAnalysis)
             }
@@ -375,8 +728,6 @@ fun analyze(word: String): List<Analysis> {
     // TODO perhaps move everything from main() into here so that this can be run standalone?
     val output = fullAnalysisNoPrefix(word) // check for analyses without any prefix
     if (!word.contains(Regex("^[aoi]"))) return output
-
-    println("prefix being evaluated")
 
     val prefix = word[0].toString()
     val partOfSpeech = PartOfSpeech.get(word[0])
@@ -400,7 +751,6 @@ fun analyze(word: String): List<Analysis> {
     return output
 }
 
-// TODO ordinals are modifier-only, so we need something more than a boolean
 // isVerb refers to the *root* word's part of speech, not the modifier's.
 // TODO perhaps allow text to contain strings and/or arrays, for stuff like ñojera or rea
 class Analysis(@JvmField val text: Array<String>, @JvmField val possiblePartsOfSpeech: HashSet<PartOfSpeech> = PartOfSpeech.ALL) {
@@ -434,7 +784,7 @@ class Analysis(@JvmField val text: Array<String>, @JvmField val possiblePartsOfS
         @JvmField val asHashSet = hashSetOf(this)
         companion object { // companion objects /neg
             @JvmField val ALL = values().toHashSet()
-            @JvmField val NOUN_OR_VERB = hashSetOf(NOUN, VERB)
+            @JvmField val NOUN_OR_MODIFIER = hashSetOf(NOUN, MODIFIER)
             @JvmField val VERB_OR_MODIFIER = hashSetOf(VERB, MODIFIER)
             @JvmStatic fun get(prefix: Char) = when (prefix) {
                 'a' -> NOUN

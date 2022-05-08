@@ -11,14 +11,17 @@ import java.util.Arrays;
  * or a <i>specific</i> inflection type, which is a specific case or tense, such as the genitive case.
  * Specific inflection types have their own subinterface, {@link SpecificInflection}.
  *
- * Prior to version __, {@code Inflection} represented what is now known as {@link SpecificInflection},
- * TODO since
+ * A {@code null} inflection represents a word's root form—the form of a word with no inflection.
+ * Note that this is not the same as a word being marked for the present tense, nominative case, or default ablaut—those forms <i>are</i> inflections!
+ *
+ * Prior to version 3.0, {@code Inflection} represented what is now known as {@link SpecificInflection},
+ * @since 3.0
  */
 public sealed interface Inflection permits SpecificInflection, BaseFynotekWord.Ablaut {
     /**
      * An array containing all constants that extend this interface.
      * Contains all values from {@link SpecificInflection#values} {@link BaseFynotekWord.Ablaut#values()}.
-     * TODO since
+     * @since 3.0
      */
     @NotNull Inflection[] values = getValues();
     private static Inflection[] getValues() {
