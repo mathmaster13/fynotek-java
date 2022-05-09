@@ -10,7 +10,7 @@ import Analysis.PartOfSpeech
 import kotlin.math.pow
 
 /** A list of all Fynotek words that cannot be inflected. */
-val standaloneWords = hashSetOf(
+@JvmField val standaloneWords = hashSetOf(
     "an",
     "ñet",
     "ñeta",
@@ -42,10 +42,14 @@ val standaloneWords = hashSetOf(
     "poriu",
     "rek",
     "sy",
-    "yf"
+    "yf",
+    "ew",
+    "fao",
+    "ewew",
+    "faofao"
 )
 
-val pronouns = arrayOf(
+@JvmField val pronouns = arrayOf(
     "yumi",
     "yumia",
     "yumiame",
@@ -58,7 +62,8 @@ val pronouns = arrayOf(
     "tua",
     "folo",
     "juon",
-    "junon"
+    "junon",
+    "saraso"
 )
 
 val possessorSuffixes = arrayOf(
@@ -74,11 +79,12 @@ val possessorSuffixes = arrayOf(
     "ui",
     "oli",
     "uin",
-    "unin"
+    "unin",
+    "asi"
 )
 
 /** A list of all content words, excluding numbers. */
-val contentWords = (hashSetOf(
+@JvmField val contentWords = (hashSetOf(
     "aakem",
     "ah",
     "ahur",
@@ -347,8 +353,8 @@ val contentWords = (hashSetOf(
     "ywasefo"
 ) + pronouns).toHashSet()
 
-val numberRoots = arrayOf("fui", "ay", "fo", "us", "nos", "pur")
-val numberSuffixes = arrayOf("po", "pura", "poña", "sola", "manta", "tauwa")
+@JvmField val numberRoots = arrayOf("fui", "ay", "fo", "us", "nos", "pur")
+@JvmField val numberSuffixes = arrayOf("po", "pura", "poña", "sola", "manta", "tauwa")
 
 fun main() {
     println("This tool will parse a Fynotek word into individual morphemes. You can then look each morpheme up in a morpheme dictionary, such as https://mathmaster13.github.io/fynotek/dict/.")
@@ -368,8 +374,11 @@ fun main() {
         println("This is not a valid Fynotek word. Please try again.")
         return
     }
-    if (standaloneWords.contains(word)) {
-        println(when (word) {
+
+    val output = mutableListOf<String>()
+
+    if (standaloneWords.contains(word))
+        output.add(when (word) {
             "stayla" -> "sta + yla"
             "staula" -> "sta + ula"
             "stañy" -> "sta + ñy"
@@ -379,20 +388,21 @@ fun main() {
             "niula" -> "ni + ula"
             "oht" -> "ohto"
             "ñet" -> "ñeta"
+            "ewew" -> "ew + ew"
+            "faofao" -> "fao + fao"
             else -> word
         })
-        return
-    }
 
     // Analyze
-    val analysisList = analyze(word)
-    analysisList.forEach { println(it) }
-    if (analysisList.isEmpty()) println("""No valid analyses can be found. This may be because you have entered a proper noun (which is not supported), or because you have entered morphemes that cannot coexist in the same word.
+    analyze(word).forEach { output.add(it.toString()) }
+    output.forEach { println(it) }
+    if (output.isEmpty()) println("""No valid analyses can be found. This may be because you have entered a proper noun (which is not supported), or because you have entered morphemes that cannot coexist in the same word.
         |Some common occurrences of this are when you try to:
         | - apply a possessor suffix to a verb
         | - apply "ak" to a verb, a pronoun, or a word with a number modifier less than equal to 1
         | - omit "ak" on a word with a number modifier greater than 1 (except for pronouns)
         | - apply ablaut other than A, I, or O ablaut to a noun
+        | - mark a pronoun for the genitive case
         | - mark a number that is larger than a temporal field's range as that temporal field
         |If this is truly a valid Fynotek word, there may be an error in the code or the dictionary it uses, and you should report an issue on GitHub at https://github.com/mathmaster13/fynotek-java/.""".trimMargin())
 }
@@ -435,7 +445,9 @@ private fun checkForAblaut(dictWord: String, separatedWord: Array<String>): Muta
         val ablautToCheck = Ablaut.valueOf(separatedWord[1][i].uppercase())
         if (rootWord.ablaut(ablautToCheck).toString() == word) {
             val isVerbOrModifierOnly = when (ablautToCheck) {
-                Ablaut.O, Ablaut.I, Ablaut.A -> (ablautToCheck == Ablaut.O && dictWord == "folo") // It's only verb-or-modifier-only if it's "folou"
+                Ablaut.O, Ablaut.I, Ablaut.A -> ((ablautToCheck == Ablaut.O && dictWord == "folo")
+                        || (ablautToCheck == Ablaut.I && pronouns.contains(dictWord)))
+                // It's only verb-or-modifier-only if it's "folou", or a pronoun with I ablaut
                 Ablaut.E,  Ablaut.U, Ablaut.Y -> true
                 else -> throw AssertionError("The only way this could have happened is if reduplication or default ablaut got in here, and I don't know how it could have done that. Please report an issue on GitHub with the word that you entered and this error message.")
             }
