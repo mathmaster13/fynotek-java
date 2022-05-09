@@ -375,6 +375,12 @@ fun main() {
         return
     }
 
+    // kaha (with more than one "ha")
+    if (word.matches(Regex("^kaha(ha)+$"))) {
+        println("kaha")
+        return
+    }
+
     val output = mutableListOf<String>()
 
     if (standaloneWords.contains(word))
