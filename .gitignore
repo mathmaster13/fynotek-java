@@ -1,4 +1,5 @@
 *.class
 .replit
 Test.java
+Test.kt
 error.txt
