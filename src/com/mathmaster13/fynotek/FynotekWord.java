@@ -381,10 +381,32 @@ public final class FynotekWord extends BaseFynotekWord {
      * @param sequence the sequence to be checked for validity.
      * @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
      */
+    // This function is a copy of `isValidSequence(String, Regex)` from the aspenlangs package,
+    // in order to avoid this project having Kotlin dependencies.
     public static boolean isValidSequence(@NotNull String sequence) {
-        return BaseFynotekWord.isValidSequence(sequence, "[aeiouyptkmnñrfshjwl\\s]", (byte) 3, false);
+        sequence = sequence.trim().toLowerCase();
+        if (isBlank(sequence)) return false;
+
+        // Handle a multiple-word sequence
+        final String[] wordArray = sequence.split("\\s+");
+        if (wordArray.length == 0) return false;
+
+        final String consonants = "([ptk](?![ptk])|[mnñrfshjwl])";
+        for (String word : wordArray)
+            if (!word.matches(consonants + "{0,2}[aeiouy]{1,2}(" + consonants + "{1,3}[aeiouy]{1,2})*" + consonants + "{0,2}"))
+                return false;
+        return true;
     }
 
+    // Use the Kotlin definition of isBlank for consistency
+    private static boolean isBlank(String s) {
+        if (s.length() == 0) return true;
+        for (int i = 0; i < s.length(); i++) {
+            char charToCheck = s.charAt(i);
+            if (!(Character.isWhitespace(charToCheck) || Character.isSpaceChar(charToCheck))) return false;
+        }
+        return true;
+    }
 
     /**
      * Represents the case of a Fynotek noun.
