@@ -1,4 +1,4 @@
-package com.mathmaster13.fynotek;
+package io.github.mathmaster13.aspenlangs.fynotek;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

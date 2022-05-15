@@ -2,10 +2,10 @@
 
 // TODO thinky thonk. should you make some of these functions part of the main API?
 
-import com.mathmaster13.fynotek.BaseFynotekWord.Ablaut
-import com.mathmaster13.fynotek.FynotekWord
-import com.mathmaster13.fynotek.FynotekWord.separateVowels
-import com.mathmaster13.fynotek.FynotekWord.isValidSequence
+import io.github.mathmaster13.aspenlangs.fynotek.BaseFynotekWord.Ablaut
+import io.github.mathmaster13.aspenlangs.fynotek.FynotekWord
+import io.github.mathmaster13.aspenlangs.fynotek.FynotekWord.separateVowels
+import io.github.mathmaster13.aspenlangs.fynotek.FynotekWord.isValidSequence
 import Analysis.PartOfSpeech
 import kotlin.math.pow
 

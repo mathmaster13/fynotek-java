@@ -1,5 +1,5 @@
 import java.util.Scanner;
-import com.mathmaster13.fynotek.FynotekWord;
+import io.github.mathmaster13.aspenlangs.fynotek.FynotekWord;
 
 public class SequenceValidityCheckDemo {
     public static final Scanner input = new Scanner(System.in);

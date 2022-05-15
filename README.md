@@ -13,7 +13,7 @@ Using any part of this project with Kotlin is also supported, and Kotlin files i
 There is an older version of `InflectionDemo` [here](https://mathmaster13.github.io/fynotek-java/conjugator/index.html) which is compiled with Java 8 and can probably be compiled to run on even earlier versions, but it does not recieve feature updates, only bugfixes.
 
 ## Demos
-Demos can be found in the [src/demos](src/demos) folder. See [RUNNING.md](RUNNING.md) for info on how to run demos. The `fynotek` package itself is at [src/com/mathmaster13/fynotek](src/com/mathmaster13/fynotek).
+Demos can be found in the [src/demos](src/demos) folder. See [RUNNING.md](RUNNING.md) for info on how to run demos. The `fynotek` package itself is at [src/io/github/mathmaster13/aspenlangs/fynotek](src/io/github/mathmaster13/aspenlangs/fynotek).
 
 ## Current Features
 - Mark noun case/verb tense

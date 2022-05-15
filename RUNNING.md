@@ -19,7 +19,7 @@ Copy all files in the `src/demos` folder to the root of the `src` folder.
 
 Compile the library:
 ```
-javac com/mathmaster13/fynotek/*.java
+javac io/github/mathmaster13/aspenlangs/fynotek/*.java
 ```
 
 Compile and run a demo:

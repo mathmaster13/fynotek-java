@@ -1,4 +1,4 @@
-package com.mathmaster13.fynotek;
+package io.github.mathmaster13.aspenlangs.fynotek;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,7 +66,7 @@ public final class OldFynotekWord extends BaseFynotekWord {
     // Public methods
     /**
      * Returns a copy of this OldFynotekWord marked for the specified ablaut.
-     * If {@link com.mathmaster13.fynotek.BaseFynotekWord.Ablaut#Y Ablaut.Y} is entered as the ablaut to mark the word as,
+     * If {@link Ablaut#Y Ablaut.Y} is entered as the ablaut to mark the word as,
      * an {@code IllegalArgumentException} will be thrown, since there is no defined Y ablaut in Old Fynotek.
      * If this function is used on a word, it is assumed that the word has been marked for case or tense,
      * but the case or tense is unknown.

@@ -5,4 +5,4 @@
  * @author mathmaster13
  * @version 3.0
 */
-package com.mathmaster13.fynotek;
+package io.github.mathmaster13.aspenlangs.fynotek;

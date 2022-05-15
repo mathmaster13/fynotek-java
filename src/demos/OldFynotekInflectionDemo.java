@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
-import com.mathmaster13.fynotek.BaseFynotekWord;
-import com.mathmaster13.fynotek.OldFynotekWord;
+import io.github.mathmaster13.aspenlangs.fynotek.BaseFynotekWord;
+import io.github.mathmaster13.aspenlangs.fynotek.OldFynotekWord;
 
 // Formerly OldFynotekConjugationDemo
 public class OldFynotekInflectionDemo {

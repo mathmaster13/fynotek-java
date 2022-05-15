@@ -7,7 +7,7 @@ toki Pinote (Fynotek) li toki pali pi soweli Mokapen. ilo ni li ken pali nimi lo
 o lukin e [lipu ni](https://mathmaster13.github.io/fynotek/javadoc/overview-tree.html).
 
 ## lipu lili kepeken toki ilo
-lipu lili li lon poki [src/demos](src/demos). sina ken kama sona e ken pi ilo ni kepeken ona. (poki `fynotek` pi toki ilo li lon [src/com/mathmaster13/fynotek](src/com/mathmaster13/fynotek).)
+lipu lili li lon poki [src/demos](src/demos). sina ken kama sona e ken pi ilo ni kepeken ona. (poki `fynotek` pi toki ilo li lon [src/io/github/mathmaster13/aspenlangs/fynotek](src/io/github/mathmaster13/aspenlangs/fynotek).)
 
 ## ken pi ilo ni
 - ante e nimi kepeken pali ona
