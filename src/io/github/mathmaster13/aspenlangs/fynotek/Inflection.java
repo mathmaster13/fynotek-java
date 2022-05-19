@@ -1,7 +1,5 @@
 package io.github.mathmaster13.aspenlangs.fynotek;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -23,7 +21,7 @@ public sealed interface Inflection permits SpecificInflection, BaseFynotekWord.A
      * Contains all values from {@link SpecificInflection#values} {@link BaseFynotekWord.Ablaut#values()}.
      * @since 3.0
      */
-    @NotNull Inflection[] values = getValues();
+    Inflection[] values = getValues();
     private static Inflection[] getValues() {
         ArrayList<Inflection> temp = new ArrayList<>(Arrays.asList((Inflection[]) SpecificInflection.values));
         temp.addAll(Arrays.asList((Inflection[]) BaseFynotekWord.Ablaut.values()));
@@ -36,5 +34,5 @@ public sealed interface Inflection permits SpecificInflection, BaseFynotekWord.A
      * @return the ablaut associated with this Inflection.
      * @see BaseFynotekWord#getAblaut()
      */
-    @NotNull BaseFynotekWord.Ablaut getAblaut();
+    BaseFynotekWord.Ablaut getAblaut();
 }

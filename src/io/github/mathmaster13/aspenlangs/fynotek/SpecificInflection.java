@@ -1,7 +1,5 @@
 package io.github.mathmaster13.aspenlangs.fynotek;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -17,7 +15,7 @@ public sealed interface SpecificInflection extends Inflection permits BaseFynote
      * Contains all values from {@link BaseFynotekWord.Tense#values()}, and {@link FynotekWord.Case#values()}.
      * @since 3.0
      */
-    @NotNull SpecificInflection[] values = getValues();
+    SpecificInflection[] values = getValues();
     private static SpecificInflection[] getValues() {
         ArrayList<SpecificInflection> temp = new ArrayList<>(Arrays.asList((SpecificInflection[]) BaseFynotekWord.Tense.values()));
         temp.addAll(Arrays.asList((SpecificInflection[]) FynotekWord.Case.values()));

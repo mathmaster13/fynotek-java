@@ -1,6 +1,5 @@
 package io.github.mathmaster13.aspenlangs.fynotek;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * A class for handling words in an older version of Fynotek. All objects created by this class are immutable. Old Fynotek documentation can be found <a href="https://docs.google.com/document/d/1U66rWinK0Qy-xab_ifZ4KC4c95icbjSgiUk9Qc27-80/edit">here</a>.
@@ -14,7 +13,7 @@ public final class OldFynotekWord extends BaseFynotekWord {
      * This constructor assumes that a word is in its root form, with no inflection.
      * @param word word to be converted to an OldFynotekWord.
      */
-    public OldFynotekWord(@NotNull String word) {
+    public OldFynotekWord(String word) {
         super(word, null);
     }
     /**
@@ -28,25 +27,25 @@ public final class OldFynotekWord extends BaseFynotekWord {
      * @param word word to be converted to an OldFynotekWord.
      * @param inflection this word's inflection, or <code>null</code> if it does not have one.
      */
-    public OldFynotekWord(@NotNull String word, @NotNull Inflection inflection) {
+    public OldFynotekWord(String word, Inflection inflection) {
         super(word, inflection);
     }
 
     // Private constructors
-    private OldFynotekWord(@NotNull String a, @NotNull String b, @NotNull String c, @Nullable Inflection inflection) {
+    private OldFynotekWord(String a, String b, String c, @Nullable Inflection inflection) {
         super(a, b, c, inflection);
     }
-    private OldFynotekWord(@NotNull String[] word, @NotNull Inflection inflection) {
+    private OldFynotekWord(String[] word, Inflection inflection) {
         super(word, inflection);
     }
-    private OldFynotekWord(@NotNull BaseFynotekWord word) {
+    private OldFynotekWord(BaseFynotekWord word) {
         super(word);
     }
 
 
     // Internal-use methods
     @Override
-    protected @NotNull String[] _ablaut(@NotNull Ablaut ablaut) {
+    protected String[] _ablaut(Ablaut ablaut) {
         if (ablaut == Ablaut.Y) throw new IllegalArgumentException("Y ablaut is undefined in Old Fynotek");
         if (ablaut == Ablaut.DEFAULT || vowels.isEmpty()) return new String[]{beginning, vowels, end};
         if (ablaut == Ablaut.REDUPLICATION) {
@@ -84,7 +83,7 @@ public final class OldFynotekWord extends BaseFynotekWord {
      * @since 3.0
      */
     @Override
-    public @NotNull OldFynotekWord ablaut(@NotNull Ablaut ablaut) throws IllegalArgumentException {
+    public OldFynotekWord ablaut(Ablaut ablaut) throws IllegalArgumentException {
         return new OldFynotekWord(_ablaut(ablaut), ablaut);
     }
 
@@ -108,7 +107,7 @@ public final class OldFynotekWord extends BaseFynotekWord {
      * If you do not have old and modern words interoperating, always pass in <code>GNOMIC</code> to ensure proper behavior of {@link #equals}.
      */
     @Override
-    public @NotNull OldFynotekWord verbTense(@NotNull Tense tenseOfVerb) {
+    public OldFynotekWord verbTense(Tense tenseOfVerb) {
         return new OldFynotekWord(_ablaut((tenseOfVerb == Tense.GNOMIC ? Tense.HYP_GNOMIC : tenseOfVerb).getAblaut()), tenseOfVerb);
     }
 
@@ -118,7 +117,7 @@ public final class OldFynotekWord extends BaseFynotekWord {
      * @since 3.0
      */
     @Override
-    public @NotNull OldFynotekWord inflect(@Nullable Inflection inflection) {
+    public OldFynotekWord inflect(@Nullable Inflection inflection) {
         return (OldFynotekWord) super.inflect(inflection);
     }
 
@@ -127,14 +126,14 @@ public final class OldFynotekWord extends BaseFynotekWord {
      * If the word to be matched with is a {@link FynotekWord} marked for a noun case, this word is returned with the FynotekWord's inflection, but with {@link Ablaut#DEFAULT} ablaut applied.
      */
     @Override
-    public @NotNull OldFynotekWord match(@NotNull BaseFynotekWord word) {
+    public OldFynotekWord match(BaseFynotekWord word) {
         if (word.inflection == null || word.inflection instanceof FynotekWord.Case) return new OldFynotekWord(beginning, vowels, end, word.inflection);
         if (word.inflection instanceof Tense tenseOfVerb) return verbTense(tenseOfVerb);
         return ablaut((Ablaut) word.inflection);
     }
 
     @Override
-    public @NotNull OldFynotekWord personSuffix(@NotNull Person person) {
+    public OldFynotekWord personSuffix(Person person) {
         if (person == Person.P1) return this;
         String suffix = (person == Person.P2 ? "a" : "o");
         if (end.isEmpty()) suffix = "n" + suffix;
@@ -146,7 +145,7 @@ public final class OldFynotekWord extends BaseFynotekWord {
      * @param sequence the sequence to be checked for validity.
      * @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
      */
-    public static boolean isValidSequence(@NotNull String sequence) {
+    public static boolean isValidSequence(String sequence) {
         return BaseFynotekWord.isValidSequence(sequence, "[aeiouyptkmnñrfshjw'\\s]", (byte) 2, true);
     }
 }
