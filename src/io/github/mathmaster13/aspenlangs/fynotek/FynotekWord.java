@@ -12,7 +12,7 @@ import java.math.BigInteger;
 public final class FynotekWord extends BaseFynotekWord {
     /**
      * Represents if this FynotekWord is a proper noun or not.
-     * @see #_ablaut(Ablaut)
+     * @see #ablaut(Ablaut)
      * @see #properSuffix(Ablaut)
      * @see #match(BaseFynotekWord)
      */
@@ -129,26 +129,26 @@ public final class FynotekWord extends BaseFynotekWord {
             } else {
                 newVowels += ablaut.secondary;
                 if (newVowels.length() > 2) {
-                    newVowels = newVowels.substring(newVowels.length()-2);
+                    newVowels = newVowels.substring(newVowels.length() - 2);
                 }
             }
         }
         return new String[]{beginning, newVowels, end};
     }
 
-    private String[] properSuffix(Ablaut vowel) {
-        if (vowel == Ablaut.DEFAULT) return new String[]{beginning, vowels, end};
-        if (vowel == Ablaut.REDUPLICATION) {
-            int vowelLength = vowels.length();
-            if (vowelLength == 0) return new String[]{beginning, vowels, end};
-            String vowelToReduplicate = (vowelLength == 1 ? vowels : Character.toString(vowels.charAt(vowelLength - 1)));
-            FynotekWord output = this.suffix(vowelToReduplicate + vowelToReduplicate);
-            return new String[]{output.beginning, output.vowels, output.end};
+    private String[] properSuffix(Ablaut ablaut) {
+        if (ablaut == Ablaut.DEFAULT ||
+                (ablaut == Ablaut.REDUPLICATION && vowels.isEmpty()))
+            return new String[]{beginning, vowels, end};
+        String suffix;
+        if (ablaut == Ablaut.REDUPLICATION) {
+            String vowelToReduplicate = Character.toString(vowels.charAt(vowels.length() - 1));
+            suffix = vowelToReduplicate + vowelToReduplicate;
         } else {
-            String suffix = Character.toString(vowel.asChar);
-            boolean addN = (end.length() == 0 && vowels.length() >= 2);
-            return new String[]{addN ? beginning + vowels + "n" : beginning, addN ? suffix : vowels + suffix, end};
+            suffix = Character.toString(ablaut.asChar);
         }
+        boolean addN = (end.length() == 0 && (vowels.length() >= 2 || ablaut == Ablaut.REDUPLICATION));
+        return new String[] {beginning + vowels + (addN ? "n" : end), suffix, ""};
     }
 
     private static boolean isStop(char letter) {
@@ -174,9 +174,8 @@ public final class FynotekWord extends BaseFynotekWord {
         return output.toString();
     }
 
-    // Note: This method will be re-implemented soon to use code from isValidSequence.
+    // TODO re-implement this using regex
     private static boolean isValidConsonantSequence(String sequence) {
-        sequence = sequence.toLowerCase().trim();
         // Checks for consonant-related phonotactic problems
         int i = 0;
         while (i < sequence.length()) {
@@ -279,7 +278,8 @@ public final class FynotekWord extends BaseFynotekWord {
      * @see #prefix(String)
      */
     public FynotekWord suffix(String suffix) {
-        if (suffix.isEmpty()) return this;
+        suffix = suffix.trim().toLowerCase();
+        if (suffix.isBlank()) return this;
         String output = this.toString();
         if (end.isEmpty()) {
             // Check for VVV sequence
@@ -351,8 +351,9 @@ public final class FynotekWord extends BaseFynotekWord {
      * @see #MAX_MAGNITUDE
      */
     public static String number(BigInteger num) {
-        if (num.abs().compareTo(MAX_MAGNITUDE) > 0) throw new IllegalArgumentException("Number is too large");
-        return number(num.toString(6), (num.signum() == -1));
+        final BigInteger magnitude = num.abs();
+        if (magnitude.compareTo(MAX_MAGNITUDE) > 0) throw new IllegalArgumentException("Number is too large");
+        return number(magnitude.toString(6), (num.signum() == -1));
     }
 
     /**
@@ -364,7 +365,12 @@ public final class FynotekWord extends BaseFynotekWord {
         return number(Long.toString(Math.abs(num), 6), (Math.signum(num) == -1));
     }
 
-
+    private static final String CONSONANTS = "([ptk](?![ptk])|[mnñrfshjwl])";
+    /**
+     * A regex that represents Fynotek's phonotactics, as defined by its <a href="https://aspenlangs.neocities.org/fyndoc.html">documentation</a>.
+     * // TODO since
+     */
+    public static final String PHONOTACTICS = CONSONANTS + "{0,2}[aeiouy]{1,2}(" + CONSONANTS + "{1,3}[aeiouy]{1,2})*" + CONSONANTS + "{0,2}";
     /**
      * Returns whether the given sequence is phonotactically and orthographically valid in Fynotek.
      * Capitalization is ignored (for example, <code>"A"</code> and <code>"a"</code> are treated the same way).
@@ -373,15 +379,13 @@ public final class FynotekWord extends BaseFynotekWord {
      * A sequence containing punctuation marks, numbers, or other non-letter characters returns <code>false</code>,
      * as well as an empty sequence or one containing only whitespace.
      *
-     * Note that despite that "annnnn" (with any number of Ns) is used in Fynotek, it is not considered a valid sequence because it breaks phonotactics
-     * (so only "an" and "ann" are valid sequences when used with this function).
+     * Note that despite "annnnn" (with any number of Ns) breaking Fynotek phonotactics,
+     * it is considered valid by this function, since it is used in Fynotek.
      * @param sequence the sequence to be checked for validity.
      * @return <code>true</code> if <code>sequence</code> is a valid sequence, and <code>false</code> if otherwise.
      */
     // This function is a copy of `isValidSequence(String, Regex)` from the aspenlangs package,
     // in order to avoid this project having Kotlin dependencies.
-    // TODO untested
-    // TODO how should "annnn" be handled to be consistent with the aspenlangs package?
     public static boolean isValidSequence(String sequence) {
         sequence = sequence.trim().toLowerCase();
         if (isBlank(sequence)) return false;
@@ -390,9 +394,8 @@ public final class FynotekWord extends BaseFynotekWord {
         final String[] wordArray = sequence.split("\\s+");
         if (wordArray.length == 0) return false;
 
-        final String consonants = "([ptk](?![ptk])|[mnñrfshjwl])";
         for (String word : wordArray)
-            if (!word.matches(consonants + "{0,2}[aeiouy]{1,2}(" + consonants + "{1,3}[aeiouy]{1,2})*" + consonants + "{0,2}"))
+            if (!word.matches("an+") && !word.matches(PHONOTACTICS))
                 return false;
         return true;
     }

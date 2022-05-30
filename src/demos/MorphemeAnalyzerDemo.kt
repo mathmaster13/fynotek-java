@@ -66,7 +66,7 @@ import kotlin.math.pow
     "saraso"
 )
 
-val possessorSuffixes = arrayOf(
+@JvmField val possessorSuffixes = arrayOf(
     "umiy",
     "umii",
     "ami",
@@ -363,15 +363,15 @@ fun main() {
     print("Enter a Fynotek word (NOT a proper noun) to be analyzed:  ")
     val word = java.util.Scanner(System.`in`).next().lowercase()
 
-    // an
-    if (word.matches(Regex("^an+$"))) {
-        println("an")
-        return
-    }
-
     // Basic checks
     if (!isValidSequence(word)) {
         println("This is not a valid Fynotek word. Please try again.")
+        return
+    }
+
+    // an
+    if (word.matches(Regex("^an+$"))) {
+        println("an")
         return
     }
 

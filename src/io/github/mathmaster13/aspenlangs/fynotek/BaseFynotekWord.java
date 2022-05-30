@@ -2,6 +2,8 @@ package io.github.mathmaster13.aspenlangs.fynotek;
 import javax.annotation.Nullable;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A class for handling words in Fynotek, a conlang by mochaspen, in both its modern and old form.
@@ -23,7 +25,7 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
     /**
      * A Fynotek word's final vowel or diphthong.
      * @see #BaseFynotekWord(String)
-     * @see #_ablaut(Ablaut)
+     * @see #ablaut(Ablaut)
      */
     public final String vowels;
     /**
@@ -283,6 +285,8 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
      */
     public abstract BaseFynotekWord ablaut(Ablaut ablaut);
 
+    /** Looks for the last two vowels in a word. */
+    private static final Matcher LAST_VOWELS_MATCHER = Pattern.compile("([aeiouy]{1,2})[^aeiouy]*\\z").matcher("");
     /**
      * Returns an array of 3 Strings: the first containing the part of <code>word</code> before its final vowel
      * or diphthong, the second containing its final vowel or diphthong, and the third containing the part
@@ -296,35 +300,16 @@ public abstract sealed class BaseFynotekWord permits FynotekWord, OldFynotekWord
      */
     public static String[] separateVowels(String word) {
         word = word.trim().toLowerCase(); // TODO: Change implementation to preserve capitalization (maybe?)
-        if (word.isEmpty()) { // If you want to re-add the null check, change the condition to (word == null || word.isEmpty())
-            return new String[] {"", "", ""};
-        } else if (word.length() == 1) {
-            if (isVowel(word.charAt(0))) {
-                return new String[] {"", word, ""};
-            } else {
-                return new String[] {"", "", word};
-            }
-        } else {
-            int vowelIndex = 0;
-            int vowelLength = 0;
-            for (int i = word.length() - 1; i >= 0; i--) {
-                if (isVowel(word.charAt(i))) {
-                    if (i > 0 && isVowel(word.charAt(i - 1))) {
-                        vowelIndex = i - 1;
-                        vowelLength = 2;
-                    } else {
-                        vowelIndex = i;
-                        vowelLength = 1;
-                    }
-                    break;
-                }
-            }
+
+        LAST_VOWELS_MATCHER.reset(word);
+        if (LAST_VOWELS_MATCHER.find())
             return new String[] {
-                word.substring(0, vowelIndex),
-                word.substring(vowelIndex, vowelIndex + vowelLength),
-                word.substring(vowelIndex + vowelLength)
+                word.substring(0, LAST_VOWELS_MATCHER.start(1)),
+                LAST_VOWELS_MATCHER.group(1),
+                word.substring(LAST_VOWELS_MATCHER.end(1))
             };
-        }
+        else // no vowels? (megamind)
+            return new String[] {"", "", word};
     }
 
     /**

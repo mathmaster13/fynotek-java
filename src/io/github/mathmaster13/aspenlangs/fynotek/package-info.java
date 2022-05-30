@@ -7,7 +7,7 @@
  * <br><br>
  * This project is still in development, and features may be changed or removed at any time.
  * @author mathmaster13
- * @version 3.0
+ * @version // TODO version
 */
 @NonNullPackage
 package io.github.mathmaster13.aspenlangs.fynotek;
